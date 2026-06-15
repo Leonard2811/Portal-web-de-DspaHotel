@@ -198,6 +198,10 @@
                     <div class="room-card-img">
                         {% if room.images.first %}
                             <img src="{{ room.images.first.image.url }}" alt="{{ room }}">
+                        {% elif room.room_type == 'matrimonial' %}
+                            <img src="{% static 'images/rooms/habitacion matrimonial 1.jpg' %}" alt="Habitación Matrimonial">
+                        {% elif room.room_type == 'double' %}
+                            <img src="{% static 'images/rooms/habitacion doble 1.jpg' %}" alt="Habitación Doble">
                         {% else %}
                             <div class="room-placeholder">
                                 <i class="fas fa-bed"></i>

@@ -13,7 +13,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2.2">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -22,7 +22,6 @@
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 <img src="{% static 'images/logo/logo de empresa.PNG' %}" alt="D'Spa Hotel Logo" class="navbar-logo me-2" onerror="this.style.display='none'">
-                <span class="brand-text">D'Spa Hotel</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -46,7 +45,12 @@
                                 <li><a class="dropdown-item" href="{% url 'staff_dashboard' %}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Staff</a></li>
                                 {% endif %}
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="m-0 p-0">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-start"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</button>
+                                    </form>
+                                </li>
                             </ul>
                         </li>
                     {% else %}

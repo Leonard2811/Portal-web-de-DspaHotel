@@ -130,10 +130,8 @@ def rooms_view(request):
 
 def room_detail(request, room_id):
     room = get_object_or_404(Room, id=room_id, is_active=True)
-    similar_rooms = Room.objects.filter(room_type=room.room_type, is_active=True).exclude(id=room.id)[:3]
     context = {
         'room': room,
-        'similar_rooms': similar_rooms,
     }
     return render(request, 'core/room_detail.html', context)
 

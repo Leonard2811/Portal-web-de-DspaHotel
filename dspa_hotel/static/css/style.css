@@ -69,11 +69,20 @@ img { max-width: 100%; height: auto; }
     box-shadow: var(--shadow-md);
 }
 
+#mainNavbar.scrolled .navbar-logo {
+    height: 60px;
+}
+
 .navbar-logo {
-    height: 48px;
+    height: 90px;
     width: auto;
     object-fit: contain;
-    filter: brightness(1.1);
+    /* Scale the image up to overcome internal transparent margins in the PNG */
+    transform: scale(1.4);
+    transform-origin: left center;
+    /* Add a subtle drop-shadow in case the logo is dark, so it contrasts with the dark navbar */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+    transition: var(--transition);
 }
 
 .brand-text {
@@ -651,6 +660,9 @@ img { max-width: 100%; height: auto; }
     cursor: pointer;
     border: 2px solid transparent;
     transition: var(--transition);
+    height: 70px;
+    width: 100%;
+    object-fit: cover;
 }
 
 .room-thumb:hover { border-color: var(--color-gold); }
