@@ -1,0 +1,309 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Servicios - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/spa/spa 1.jpg' %}" alt="Servicios D'Spa Hotel" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Nuestros Servicios</h1>
+        <p>Todo lo que necesita para una estancia perfecta</p>
+    </div>
+</section>
+
+<!-- Wellness Services -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag">Bienestar</span>
+            <h2 class="section-title">Servicios de Bienestar</h2>
+            <p class="section-subtitle">Relájese y rejuvenezca con nuestras opciones de bienestar</p>
+        </div>
+        <div class="row g-4">
+            <!-- Spa -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card-detailed">
+                    <div class="service-card-img">
+                        <img src="{% static 'images/spa/spa 1.jpg' %}" alt="Spa">
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-spa"></i></div>
+                        <h4>Spa</h4>
+                        <p>Tratamientos corporales, faciales y terapias de relajación con productos de primera calidad.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Gym -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card-detailed">
+                    <div class="service-gallery-mini">
+                        <div id="gymCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/gym/gym 1.jpg' %}" alt="Gimnasio 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/gym/gym 2.jpg' %}" alt="Gimnasio 2">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/gym/gym 3.jpg' %}" alt="Gimnasio 3">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#gymCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#gymCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-dumbbell"></i></div>
+                        <h4>Gimnasio</h4>
+                        <p>Equipos de última generación, entrenadores certificados y ambiente motivador.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sauna -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card-detailed">
+                    <div class="service-card-img">
+                        <div class="service-placeholder-lg"><i class="fas fa-hot-tub"></i></div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-hot-tub"></i></div>
+                        <h4>Sauna</h4>
+                        <p>Sauna seco y húmedo para desintoxicación y relajación profunda.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Jacuzzi -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card-detailed">
+                    <div class="service-card-img">
+                        <div class="service-placeholder-lg"><i class="fas fa-water"></i></div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-water"></i></div>
+                        <h4>Jacuzzi</h4>
+                        <p>Jacuzzi con hidroterapia, aromaterapia y vista relajante.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Piscina -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card-detailed">
+                    <div class="service-card-img">
+                        <div class="service-placeholder-lg"><i class="fas fa-swimming-pool"></i></div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-swimming-pool"></i></div>
+                        <h4>Piscina</h4>
+                        <p>Piscina al aire libre con servicio de bar y ambiente tropical.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Cafetería Gym -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card-detailed">
+                    <div class="service-gallery-mini">
+                        <div id="cafeteriaCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/gym/gym 4.jpg' %}" alt="Cafetería Gym 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/gym/gym 5.jpg' %}" alt="Cafetería Gym 2">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#cafeteriaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#cafeteriaCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-coffee"></i></div>
+                        <h4>Cafetería del Gimnasio</h4>
+                        <p>Batidos, snacks saludables y bebidas energéticas después de su entrenamiento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Corporate Services -->
+<section class="section-padding bg-light-custom">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag">Corporativo</span>
+            <h2 class="section-title">Servicios Corporativos</h2>
+            <p class="section-subtitle">Espacios ideales para negocios y eventos</p>
+        </div>
+        <div class="row g-4">
+            <!-- Salón de Eventos -->
+            <div class="col-lg-6">
+                <div class="service-card-detailed service-card-horizontal">
+                    <div class="service-gallery-mini">
+                        <div id="salonCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/events/salon.jpg' %}" alt="Salón de Eventos">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/events/sala de reuniones 1.jpg' %}" alt="Sala de Reuniones 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/events/sala de reuniones 2.jpg' %}" alt="Sala de Reuniones 2">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#salonCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#salonCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-glass-cheers"></i></div>
+                        <h4>Salón de Eventos y Conferencias</h4>
+                        <p>Salones versátiles equipados con tecnología audiovisual para conferencias, reuniones ejecutivas, celebraciones y eventos corporativos de cualquier escala.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Restaurante -->
+            <div class="col-lg-6">
+                <div class="service-card-detailed service-card-horizontal">
+                    <div class="service-gallery-mini">
+                        <div id="restaurantCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/restaurant/restaurante 1.jpg' %}" alt="Restaurante 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/restaurant/restaurante 2.jpg' %}" alt="Restaurante 2">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-utensils"></i></div>
+                        <h4>Restaurante</h4>
+                        <p>Gastronomía de primer nivel con menú variado de cocina nacional e internacional, ingredientes frescos y presentaciones exquisitas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- General Services -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag">General</span>
+            <h2 class="section-title">Otros Servicios</h2>
+        </div>
+        <div class="row g-4">
+            <!-- Sala de Confort -->
+            <div class="col-lg-6">
+                <div class="service-card-detailed service-card-horizontal">
+                    <div class="service-gallery-mini">
+                        <div id="confortCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/lobby/lobby 2.jpg' %}" alt="Sala de Confort 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/lobby/lobby 3.jpg' %}" alt="Sala de Confort 2">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#confortCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#confortCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-couch"></i></div>
+                        <h4>Sala de Confort</h4>
+                        <p>Espacio diseñado para la lectura, el descanso y el disfrute de un ambiente tranquilo con bebidas calientes.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Estacionamiento -->
+            <div class="col-lg-6">
+                <div class="service-card-detailed service-card-horizontal">
+                    <div class="service-card-img">
+                        <div class="service-placeholder-lg"><i class="fas fa-parking"></i></div>
+                    </div>
+                    <div class="service-card-body">
+                        <div class="service-icon"><i class="fas fa-parking"></i></div>
+                        <h4>Estacionamiento Privado</h4>
+                        <p>Estacionamiento privado con capacidad para 60 vehículos, seguridad 24/7 y acceso directo al hotel.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dynamic Services from DB -->
+{% if wellness_services or corporate_services or general_services %}
+<section class="section-padding bg-light-custom">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Servicios Adicionales</h2>
+        </div>
+        <div class="row g-4">
+            {% for service in wellness_services %}
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.name }}">
+                        {% else %}
+                            <div class="service-placeholder"><i class="{{ service.icon_class }}"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="service-card-body">
+                        <h4>{{ service.name }}</h4>
+                        <p>{{ service.description|truncatewords:25 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% for service in corporate_services %}
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.name }}">
+                        {% else %}
+                            <div class="service-placeholder"><i class="{{ service.icon_class }}"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="service-card-body">
+                        <h4>{{ service.name }}</h4>
+                        <p>{{ service.description|truncatewords:25 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% for service in general_services %}
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.name }}">
+                        {% else %}
+                            <div class="service-placeholder"><i class="{{ service.icon_class }}"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="service-card-body">
+                        <h4>{{ service.name }}</h4>
+                        <p>{{ service.description|truncatewords:25 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

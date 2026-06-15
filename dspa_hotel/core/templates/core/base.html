@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="D'Spa Hotel - Tu oasis de confort y bienestar en Lechería, Venezuela. Hospedaje, spa, gimnasio, restaurante y más.">
+    <title>{% block title %}D'Spa Hotel{% endblock %}</title>
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6.4 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'images/logo/logo de empresa.PNG' %}" alt="D'Spa Hotel Logo" class="navbar-logo me-2" onerror="this.style.display='none'">
+                <span class="brand-text">D'Spa Hotel</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Quiénes Somos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'rooms' %}">Habitaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contáctanos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'location' %}">Ubicación</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle"></i> {{ user.first_name|default:user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a class="dropdown-item" href="{% url 'my_reservations' %}"><i class="fas fa-calendar-check me-2"></i>Mis Reservaciones</a></li>
+                                {% if user.is_staff %}
+                                <li><a class="dropdown-item" href="{% url 'staff_dashboard' %}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Staff</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
+                    {% endif %}
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-reservation" href="{% url 'booking' %}">
+                            <i class="fas fa-concierge-bell me-1"></i> Reservar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages-container" style="margin-top: 80px;">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mx-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand">
+                        <h3 class="footer-title">D'Spa Hotel</h3>
+                        <p class="footer-desc">Tu oasis de confort y bienestar en Lechería, Venezuela. Experiencias únicas de descanso, productividad y relajación.</p>
+                        <div class="footer-social">
+                            <a href="https://www.instagram.com/dspahotel?igsh=ZjAwOHc0YXowZHBy" target="_blank" class="social-link" title="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://api.whatsapp.com/send?phone=584248304994" target="_blank" class="social-link" title="WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="mailto:Dspahotelreservaciones@gmail.com" class="social-link" title="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="footer-title">Enlaces Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right me-2"></i>Inicio</a></li>
+                        <li><a href="{% url 'about' %}"><i class="fas fa-chevron-right me-2"></i>Quiénes Somos</a></li>
+                        <li><a href="{% url 'services' %}"><i class="fas fa-chevron-right me-2"></i>Servicios</a></li>
+                        <li><a href="{% url 'rooms' %}"><i class="fas fa-chevron-right me-2"></i>Habitaciones</a></li>
+                        <li><a href="{% url 'booking' %}"><i class="fas fa-chevron-right me-2"></i>Reservar</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="footer-title">Contacto</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt me-2"></i>AV. Intercomunal, Lechería, VE 6016</li>
+                        <li><i class="fas fa-phone me-2"></i>+58 424-8304994</li>
+                        <li><i class="fas fa-envelope me-2"></i>Dspahotelreservaciones@gmail.com</li>
+                        <li><a href="https://www.instagram.com/dspahotel?igsh=ZjAwOHc0YXowZHBy" target="_blank" style="color: inherit; text-decoration: none;"><i class="fab fa-instagram me-2"></i>@dspahotel</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="footer-bottom">
+                <p>&copy; 2024 D'Spa Hotel. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Bubble -->
+    <a href="https://api.whatsapp.com/send?phone=584248304994" target="_blank" class="whatsapp-bubble" id="whatsappBubble" title="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-toggle" id="chatbotToggle" onclick="toggleChatbot()" title="Asistente Virtual">
+        <i class="fas fa-comments"></i>
+    </div>
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <span><i class="fas fa-robot me-2"></i>Asistente D'Spa Hotel</span>
+            <button class="chatbot-close" onclick="toggleChatbot()">&times;</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-msg bot">Bienvenido a D'Spa Hotel. Seleccione una pregunta o escriba su consulta.</div>
+        </div>
+        <div class="chatbot-quick-btns" id="chatbotQuickBtns">
+            <button onclick="askBot('tipos_habitaciones')">Tipos de habitaciones</button>
+            <button onclick="askBot('servicios')">Servicios del hotel</button>
+            <button onclick="askBot('ubicacion')">Ubicacion</button>
+            <button onclick="askBot('reservar')">Como reservar</button>
+            <button onclick="askBot('mascotas')">Mascotas</button>
+            <button onclick="askBot('estacionamiento')">Estacionamiento</button>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" id="chatbotInput" placeholder="Escriba su consulta..." onkeypress="if(event.key==='Enter')sendChatMessage()">
+            <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

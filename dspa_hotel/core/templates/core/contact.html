@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Contáctanos - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/lobby/lobby 1.jpg' %}" alt="Contacto" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Contáctanos</h1>
+        <p>Estamos aquí para atenderle</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Medios de Contacto</h2>
+            <p class="section-subtitle">Elija su canal preferido para comunicarse con nosotros</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <!-- WhatsApp -->
+            <div class="col-lg-4 col-md-6">
+                <a href="https://api.whatsapp.com/send?phone=584248304994" target="_blank" class="contact-card-link">
+                    <div class="contact-card">
+                        <div class="contact-icon whatsapp-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h4>WhatsApp</h4>
+                        <p>+58 424-8304994</p>
+                        <span class="contact-action">Enviar mensaje <i class="fas fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+            <!-- Instagram -->
+            <div class="col-lg-4 col-md-6">
+                <a href="https://www.instagram.com/dspahotel?igsh=ZjAwOHc0YXowZHBy" target="_blank" class="contact-card-link">
+                    <div class="contact-card">
+                        <div class="contact-icon instagram-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <h4>Instagram</h4>
+                        <p>@dspahotel</p>
+                        <span class="contact-action">Visitar perfil <i class="fas fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+            <!-- Email -->
+            <div class="col-lg-4 col-md-6">
+                <a href="mailto:Dspahotelreservaciones@gmail.com" class="contact-card-link">
+                    <div class="contact-card">
+                        <div class="contact-icon email-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4>Correo Electrónico</h4>
+                        <p>Dspahotelreservaciones@gmail.com</p>
+                        <span class="contact-action">Enviar correo <i class="fas fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+            <!-- Phone -->
+            <div class="col-lg-4 col-md-6">
+                <a href="tel:+584248304994" class="contact-card-link">
+                    <div class="contact-card">
+                        <div class="contact-icon phone-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h4>Teléfono</h4>
+                        <p>+58 424-8304994</p>
+                        <span class="contact-action">Llamar ahora <i class="fas fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+            <!-- Address -->
+            <div class="col-lg-4 col-md-6">
+                <a href="{% url 'location' %}" class="contact-card-link">
+                    <div class="contact-card">
+                        <div class="contact-icon location-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h4>Dirección</h4>
+                        <p>AV. Intercomunal, Lechería, VE 6016</p>
+                        <span class="contact-action">Ver ubicación <i class="fas fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="cta-title">Prefiere escribirnos directamente?</h2>
+        <p class="cta-subtitle">Comuníquese por WhatsApp para una atención inmediata</p>
+        <a href="https://api.whatsapp.com/send?phone=584248304994" target="_blank" class="btn btn-reservation btn-lg">
+            <i class="fab fa-whatsapp me-2"></i>Chatear por WhatsApp
+        </a>
+    </div>
+</section>
+{% endblock %}

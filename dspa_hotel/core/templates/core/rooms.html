@@ -1,0 +1,214 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Habitaciones - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/rooms/habitacion matrimonial 1.jpg' %}" alt="Habitaciones" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Nuestras Habitaciones</h1>
+        <p>Confort y elegancia para una estancia inolvidable</p>
+    </div>
+</section>
+
+<!-- Matrimonial Rooms -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag">Deluxe</span>
+            <h2 class="section-title">Habitaciones Deluxe Matrimonial</h2>
+            <p class="section-subtitle">Diseñada para una o dos personas. Ambiente cómodo y elegante.</p>
+        </div>
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-7">
+                <div id="matrimonialCarousel" class="carousel slide room-carousel" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#matrimonialCarousel" data-bs-slide-to="0" class="active"></button>
+                        <button type="button" data-bs-target="#matrimonialCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#matrimonialCarousel" data-bs-slide-to="2"></button>
+                    </div>
+                    <div class="carousel-inner rounded-4">
+                        <div class="carousel-item active">
+                            <img src="{% static 'images/rooms/habitacion matrimonial 1.jpg' %}" class="d-block w-100" alt="Matrimonial 1">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{% static 'images/rooms/habitacion matrimonial 2.jpg' %}" class="d-block w-100" alt="Matrimonial 2">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{% static 'images/rooms/habitacion matrimonial 3.jpg' %}" class="d-block w-100" alt="Matrimonial 3">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#matrimonialCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#matrimonialCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="room-info-card">
+                    <h3>Deluxe Matrimonial</h3>
+                    <p>Habitación con cama matrimonial king size, diseñada para brindar el máximo confort. Ambiente cálido y elegante con todas las comodidades para su descanso.</p>
+                    <div class="amenities-grid">
+                        <div class="amenity-item"><i class="fas fa-bath"></i><span>Baño Privado</span></div>
+                        <div class="amenity-item"><i class="fas fa-door-closed"></i><span>Closet</span></div>
+                        <div class="amenity-item"><i class="fas fa-lock"></i><span>Caja Fuerte</span></div>
+                        <div class="amenity-item"><i class="fas fa-tv"></i><span>TV</span></div>
+                        <div class="amenity-item"><i class="fas fa-umbrella-beach"></i><span>Terraza</span></div>
+                    </div>
+                    <div class="room-capacity-info">
+                        <i class="fas fa-user-friends"></i> Capacidad: 2 adultos, 1 niño
+                    </div>
+                    <div class="room-actions mt-4">
+                        {% if matrimonial_rooms.first %}
+                        <a href="{% url 'room_detail' matrimonial_rooms.first.id %}" class="btn btn-outline-custom">Ver Detalles</a>
+                        <a href="{% url 'booking' %}?room_id={{ matrimonial_rooms.first.id }}" class="btn btn-reservation">Reservar Ahora</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Double Rooms -->
+<section class="section-padding bg-light-custom">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag">Deluxe</span>
+            <h2 class="section-title">Habitaciones Deluxe Doble</h2>
+            <p class="section-subtitle">Diseñada para una o dos personas con espacio adicional.</p>
+        </div>
+        <div class="row g-5 align-items-center flex-lg-row-reverse">
+            <div class="col-lg-7">
+                <div id="doubleCarousel" class="carousel slide room-carousel" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="0" class="active"></button>
+                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="2"></button>
+                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="3"></button>
+                    </div>
+                    <div class="carousel-inner rounded-4">
+                        <div class="carousel-item active">
+                            <img src="{% static 'images/rooms/habitacion doble 1.jpg' %}" class="d-block w-100" alt="Doble 1">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{% static 'images/rooms/habitacion doble 2.jpg' %}" class="d-block w-100" alt="Doble 2">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{% static 'images/rooms/habitacion doble 3.jpg' %}" class="d-block w-100" alt="Doble 3">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{% static 'images/rooms/habitacion doble 4.jpg' %}" class="d-block w-100" alt="Doble 4">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#doubleCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#doubleCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="room-info-card">
+                    <h3>Deluxe Doble</h3>
+                    <p>Habitación con dos camas individuales o cama doble, perfecta para compartir con amplio espacio y comodidades de primer nivel.</p>
+                    <div class="amenities-grid">
+                        <div class="amenity-item"><i class="fas fa-bath"></i><span>Baño Privado</span></div>
+                        <div class="amenity-item"><i class="fas fa-door-closed"></i><span>Closet</span></div>
+                        <div class="amenity-item"><i class="fas fa-lock"></i><span>Caja Fuerte</span></div>
+                        <div class="amenity-item"><i class="fas fa-tv"></i><span>TV</span></div>
+                        <div class="amenity-item"><i class="fas fa-umbrella-beach"></i><span>Terraza</span></div>
+                    </div>
+                    <div class="room-capacity-info">
+                        <i class="fas fa-user-friends"></i> Capacidad: 2 adultos, 1 niño
+                    </div>
+                    <div class="room-actions mt-4">
+                        {% if double_rooms.first %}
+                        <a href="{% url 'room_detail' double_rooms.first.id %}" class="btn btn-outline-custom">Ver Detalles</a>
+                        <a href="{% url 'booking' %}?room_id={{ double_rooms.first.id }}" class="btn btn-reservation">Reservar Ahora</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- General Amenities Gallery -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag">Amenities</span>
+            <h2 class="section-title">Amenities Generales</h2>
+            <p class="section-subtitle">Cada detalle pensado para su comodidad</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-lg-4 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/rooms/baños de habitacion 1.jpg' %}" alt="Baño de Habitación 1">
+                    <div class="amenity-gallery-overlay"><span>Baños de Habitación</span></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/rooms/baños de habitacion 2.jpg' %}" alt="Baño de Habitación 2">
+                    <div class="amenity-gallery-overlay"><span>Baños Modernos</span></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/rooms/baños de habitacion 3.jpg' %}" alt="Baño de Habitación 3">
+                    <div class="amenity-gallery-overlay"><span>Acabados Premium</span></div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/rooms/pasillo de habitaciones.jpg' %}" alt="Pasillo">
+                    <div class="amenity-gallery-overlay"><span>Pasillos</span></div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/rooms/varcon de habitaciones 1.jpg' %}" alt="Balcón 1">
+                    <div class="amenity-gallery-overlay"><span>Balcón</span></div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/rooms/varcon de habitaciones 2.jpg' %}" alt="Balcón 2">
+                    <div class="amenity-gallery-overlay"><span>Vista desde Balcón</span></div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/rooms/mini nevera.jpg' %}" alt="Mini Nevera">
+                    <div class="amenity-gallery-overlay"><span>Mini Nevera</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lobby Gallery -->
+        <div class="text-center mt-5 mb-4">
+            <h3 class="section-title">Lobby</h3>
+        </div>
+        <div class="row g-3">
+            <div class="col-lg-4 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/lobby/lobby 1.jpg' %}" alt="Lobby 1">
+                    <div class="amenity-gallery-overlay"><span>Lobby Principal</span></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/lobby/lobby 2.jpg' %}" alt="Lobby 2">
+                    <div class="amenity-gallery-overlay"><span>Recepción</span></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="amenity-gallery-card">
+                    <img src="{% static 'images/lobby/lobby 3.jpg' %}" alt="Lobby 3">
+                    <div class="amenity-gallery-overlay"><span>Área Social</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

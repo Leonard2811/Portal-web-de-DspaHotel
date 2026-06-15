@@ -1,0 +1,115 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Subir Comprobante - Reservación #{{ reservation.id }} - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="payment-card">
+                    <div class="payment-header">
+                        <h2><i class="fas fa-receipt me-2"></i>Subir Comprobante de Pago</h2>
+                        <p>Reservación #{{ reservation.id }}</p>
+                    </div>
+
+                    <!-- Reservation Summary -->
+                    <div class="reservation-summary mb-4">
+                        <h4>Resumen de Reservación</h4>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="label">Servicio:</span>
+                                <span class="value">{{ reservation.get_service_type_display }}</span>
+                            </div>
+                            {% if reservation.room %}
+                            <div class="summary-item">
+                                <span class="label">Habitación:</span>
+                                <span class="value">{{ reservation.room }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="summary-item">
+                                <span class="label">Check-in:</span>
+                                <span class="value">{{ reservation.check_in|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Check-out:</span>
+                                <span class="value">{{ reservation.check_out|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Noches:</span>
+                                <span class="value">{{ reservation.nights }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Huéspedes:</span>
+                                <span class="value">{{ reservation.adults_count }} adultos, {{ reservation.children_count }} niños</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span class="label">Total a Pagar:</span>
+                                <span class="value">${{ reservation.total_price }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Info -->
+                    <div class="bank-info mb-4">
+                        <h4><i class="fas fa-university me-2"></i>Datos Bancarios</h4>
+                        <div class="bank-details">
+                            <p><strong>Titular:</strong> D'Spa Hotel C.A.</p>
+                            <p><strong>Banco:</strong> Banesco</p>
+                            <p><strong>Cuenta:</strong> 0134-0000-0000-0000-0000</p>
+                            <p><strong>RIF:</strong> J-00000000-0</p>
+                            <p><strong>Pago Móvil:</strong> 0424-8304994 / CI: V-00000000 / Banesco</p>
+                        </div>
+                    </div>
+
+                    <!-- Upload Form -->
+                    <form method="post" enctype="multipart/form-data" class="upload-form">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="amount" class="form-label">Monto Pagado</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" step="0.01" class="form-control" name="amount" id="amount" value="{{ reservation.total_price }}" required>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="proof_image" class="form-label">Comprobante de Pago</label>
+                                <input type="file" class="form-control" name="proof_image" id="proof_image" accept="image/*" required>
+                                <small class="text-muted">Suba una imagen clara del comprobante de pago (captura de pantalla o foto).</small>
+                            </div>
+                            <div class="col-12">
+                                <div id="imagePreview" class="image-preview" style="display:none;">
+                                    <img id="previewImg" src="" alt="Preview">
+                                </div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="submit" class="btn btn-reservation btn-lg w-100">
+                                    <i class="fas fa-upload me-2"></i>Subir Comprobante
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('proof_image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('previewImg').src = ev.target.result;
+            document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

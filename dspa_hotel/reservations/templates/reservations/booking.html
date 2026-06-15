@@ -1,0 +1,220 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Reservar - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/lobby/lobby 1.jpg' %}" alt="Reservar" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Realizar Reservación</h1>
+        <p>Busque disponibilidad y reserve su estancia</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <!-- Search Form -->
+        <div class="booking-search-card mb-5">
+            <h3 class="mb-4"><i class="fas fa-search me-2"></i>Buscar Disponibilidad</h3>
+            <form id="bookingSearchForm" class="row g-3 align-items-end">
+                <div class="col-md-2 col-6">
+                    <label for="booking_service" class="form-label">Servicio</label>
+                    <select class="form-select" id="booking_service" name="service_type">
+                        {% for value, label in service_choices %}
+                        <option value="{{ value }}" {% if service_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 col-6">
+                    <label for="booking_checkin" class="form-label">Check-in</label>
+                    <input type="date" class="form-control" id="booking_checkin" name="check_in" value="{{ today }}" min="{{ today }}" required>
+                </div>
+                <div class="col-md-2 col-6">
+                    <label for="booking_checkout" class="form-label">Check-out</label>
+                    <input type="date" class="form-control" id="booking_checkout" name="check_out" min="{{ today }}" required>
+                </div>
+                <div class="col-md-2 col-6">
+                    <label for="booking_adults" class="form-label">Adultos</label>
+                    <input type="number" class="form-control" id="booking_adults" name="adults" value="1" min="1" max="4">
+                </div>
+                <div class="col-md-2 col-6">
+                    <label for="booking_children" class="form-label">Niños</label>
+                    <input type="number" class="form-control" id="booking_children" name="children" value="0" min="0" max="3">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-reservation w-100" onclick="searchBookingRooms()">
+                        <i class="fas fa-search me-1"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Selected Room (if pre-selected) -->
+        {% if selected_room %}
+        <div class="booking-selected-room mb-5">
+            <h3 class="mb-3"><i class="fas fa-bed me-2"></i>Habitación Seleccionada</h3>
+            <div class="row g-4 align-items-center">
+                <div class="col-md-4">
+                    {% if selected_room.images.first %}
+                    <img src="{{ selected_room.images.first.image.url }}" alt="{{ selected_room }}" class="img-fluid rounded-3">
+                    {% else %}
+                    <div class="room-placeholder"><i class="fas fa-bed"></i></div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <h4>{{ selected_room.get_room_type_display }} - {{ selected_room.room_number }}</h4>
+                    <p>{{ selected_room.description }}</p>
+                    <div class="room-price-display">
+                        <span class="price-label">Precio por noche:</span>
+                        <span class="price-amount">${{ selected_room.price_per_night }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Booking Results -->
+        <div id="bookingResults" style="display: none;">
+            <h3 class="mb-3"><i class="fas fa-list me-2"></i>Habitaciones Disponibles</h3>
+            <div id="bookingResultsContainer" class="row g-4"></div>
+        </div>
+
+        <!-- Reservation Form -->
+        <div class="booking-form-card mt-5" id="reservationFormSection" {% if not selected_room %}style="display:none;"{% endif %}>
+            <h3 class="mb-4"><i class="fas fa-concierge-bell me-2"></i>Completar Reservación</h3>
+            <form action="{% url 'create_reservation' %}" method="post" id="reservationForm">
+                {% csrf_token %}
+                <input type="hidden" name="room_id" id="form_room_id" value="{% if selected_room %}{{ selected_room.id }}{% endif %}">
+                <input type="hidden" name="service_type" id="form_service_type" value="{{ service_type }}">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Check-in</label>
+                        <input type="date" class="form-control" name="check_in" id="form_checkin" value="{{ today }}" min="{{ today }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Check-out</label>
+                        <input type="date" class="form-control" name="check_out" id="form_checkout" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Adultos</label>
+                        <input type="number" class="form-control" name="adults" value="1" min="1" max="4">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Niños</label>
+                        <input type="number" class="form-control" name="children" value="0" min="0" max="3">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Precio Estimado</label>
+                        <div class="price-calculator" id="priceCalculator">
+                            <span class="calculated-price">Seleccione fechas para calcular</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Peticiones Especiales (opcional)</label>
+                        <textarea class="form-control" name="special_requests" rows="3" placeholder="Indique cualquier requerimiento especial..."></textarea>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">
+                                Acepto los términos y condiciones de D'Spa Hotel, incluyendo las políticas de cancelación y pago.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-reservation btn-lg">
+                            <i class="fas fa-calendar-check me-2"></i>Confirmar Reservación
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function searchBookingRooms() {
+    const checkIn = document.getElementById('booking_checkin').value;
+    const checkOut = document.getElementById('booking_checkout').value;
+    const adults = document.getElementById('booking_adults').value;
+    const children = document.getElementById('booking_children').value;
+
+    if (!checkIn || !checkOut) {
+        alert('Seleccione fechas de check-in y check-out');
+        return;
+    }
+
+    fetch(`/api/search-availability/?check_in=${checkIn}&check_out=${checkOut}&adults=${adults}&children=${children}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                const container = document.getElementById('bookingResultsContainer');
+                container.innerHTML = '';
+                let html = '';
+
+                if (data.matrimonial_count === 0 && data.double_count === 0) {
+                    html = '<div class="col-12"><div class="alert alert-warning">No hay habitaciones disponibles para las fechas seleccionadas.</div></div>';
+                } else {
+                    if (data.matrimonial_count > 0 && data.matrimonial_room) {
+                        html += createBookingRoomCard(data.matrimonial_room, 'Deluxe Matrimonial', data.nights, checkIn, checkOut, data.matrimonial_count);
+                    }
+                    if (data.double_count > 0 && data.double_room) {
+                        html += createBookingRoomCard(data.double_room, 'Deluxe Doble', data.nights, checkIn, checkOut, data.double_count);
+                    }
+                }
+
+                container.innerHTML = html;
+                document.getElementById('bookingResults').style.display = 'block';
+            }
+        });
+}
+
+function createBookingRoomCard(room, typeName, nights, checkIn, checkOut, count) {
+    return `
+        <div class="col-lg-6 col-md-6">
+            <div class="booking-room-card">
+                <div class="booking-room-header">
+                    <h5>${typeName}</h5>
+                    <span class="badge bg-success" style="font-size: 0.9rem;">${count} disponible(s)</span>
+                </div>
+                <div class="booking-room-body">
+                    <p>${room.description}</p>
+                    <div class="booking-room-price">
+                        <div><strong>Precio por noche:</strong> $${room.price}</div>
+                        <div><strong>${nights} noche(s):</strong> $${room.total}</div>
+                    </div>
+                    <div class="booking-room-capacity">
+                        <i class="fas fa-user-friends"></i> ${room.capacity_adults} adultos, ${room.capacity_children} niño(s)
+                    </div>
+                </div>
+                <button class="btn btn-reservation w-100" onclick="selectRoom(${room.id}, '${room.price}', '${checkIn}', '${checkOut}')">
+                    <i class="fas fa-check me-1"></i> Seleccionar
+                </button>
+            </div>
+        </div>`;
+}
+
+function selectRoom(roomId, price, checkIn, checkOut) {
+    document.getElementById('form_room_id').value = roomId;
+    document.getElementById('form_checkin').value = checkIn;
+    document.getElementById('form_checkout').value = checkOut;
+    document.getElementById('reservationFormSection').style.display = 'block';
+
+    const ci = new Date(checkIn);
+    const co = new Date(checkOut);
+    const nights = Math.ceil((co - ci) / (1000 * 60 * 60 * 24));
+    const total = (parseFloat(price) * nights).toFixed(2);
+    document.getElementById('priceCalculator').innerHTML = `
+        <div class="price-breakdown">
+            <span>$${price} x ${nights} noche(s) = </span>
+            <strong class="price-amount">$${total}</strong>
+        </div>`;
+
+    document.getElementById('reservationFormSection').scrollIntoView({behavior: 'smooth'});
+}
+</script>
+{% endblock %}

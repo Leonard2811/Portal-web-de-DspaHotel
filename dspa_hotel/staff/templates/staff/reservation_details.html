@@ -1,0 +1,181 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Reservación #{{ reservation.id }} - Staff - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0">Reservación #{{ reservation.id }}</h2>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Volver al Dashboard</a>
+        </div>
+
+        <div class="row g-4">
+            <!-- Customer Info -->
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-user me-2"></i>Datos del Cliente</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">Nombre Completo:</span>
+                            <span>{{ reservation.customer.user.get_full_name }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Usuario:</span>
+                            <span>{{ reservation.customer.user.username }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Documento:</span>
+                            <span>{{ reservation.customer.id_document }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Teléfono:</span>
+                            <span>{{ reservation.customer.phone }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Email:</span>
+                            <span>{{ reservation.customer.user.email }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Dirección:</span>
+                            <span>{{ reservation.customer.address }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Fecha de Nacimiento:</span>
+                            <span>{{ reservation.customer.birth_date|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservation Info -->
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-calendar-check me-2"></i>Datos de la Reservación</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">Servicio:</span>
+                            <span>{{ reservation.get_service_type_display }}</span>
+                        </div>
+                        {% if reservation.room %}
+                        <div class="detail-item">
+                            <span class="label">Habitación:</span>
+                            <span>{{ reservation.room }} ({{ reservation.room.room_number }})</span>
+                        </div>
+                        {% endif %}
+                        <div class="detail-item">
+                            <span class="label">Check-in:</span>
+                            <span>{{ reservation.check_in|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Check-out:</span>
+                            <span>{{ reservation.check_out|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Noches:</span>
+                            <span>{{ reservation.nights }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Huéspedes:</span>
+                            <span>{{ reservation.adults_count }} adultos, {{ reservation.children_count }} niños</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Precio Total:</span>
+                            <span class="fw-bold">${{ reservation.total_price }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Estado:</span>
+                            <span class="badge
+                                {% if reservation.status == 'confirmed' %}bg-success
+                                {% elif reservation.status == 'pending' %}bg-warning text-dark
+                                {% elif reservation.status == 'payment_uploaded' %}bg-info
+                                {% elif reservation.status == 'cancelled' %}bg-danger
+                                {% elif reservation.status == 'completed' %}bg-secondary
+                                {% endif %} fs-6">
+                                {{ reservation.get_status_display }}
+                            </span>
+                        </div>
+                        {% if reservation.special_requests %}
+                        <div class="detail-item">
+                            <span class="label">Peticiones Especiales:</span>
+                            <span>{{ reservation.special_requests }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="detail-item">
+                            <span class="label">Creada:</span>
+                            <span>{{ reservation.created_at|date:"d/m/Y H:i" }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Update Status -->
+                    <form method="post" action="{% url 'update_reservation_status' reservation.id %}" class="mt-3">
+                        {% csrf_token %}
+                        <div class="d-flex gap-2">
+                            <select name="status" class="form-select">
+                                <option value="pending" {% if reservation.status == 'pending' %}selected{% endif %}>Pendiente de Pago</option>
+                                <option value="payment_uploaded" {% if reservation.status == 'payment_uploaded' %}selected{% endif %}>Comprobante Subido</option>
+                                <option value="confirmed" {% if reservation.status == 'confirmed' %}selected{% endif %}>Confirmada</option>
+                                <option value="completed" {% if reservation.status == 'completed' %}selected{% endif %}>Completada</option>
+                                <option value="cancelled" {% if reservation.status == 'cancelled' %}selected{% endif %}>Cancelada</option>
+                            </select>
+                            <button type="submit" class="btn btn-reservation" onclick="return confirm('¿Cambiar estado de la reservación?')">
+                                <i class="fas fa-save me-1"></i> Actualizar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="dashboard-card mt-4">
+            <h4><i class="fas fa-receipt me-2"></i>Historial de Pagos</h4>
+            {% if payments %}
+            <div class="row g-4">
+                {% for payment in payments %}
+                <div class="col-lg-6">
+                    <div class="payment-detail-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5>Pago - ${{ payment.amount }}</h5>
+                                <small class="text-muted">{{ payment.payment_date|date:"d/m/Y H:i" }}</small>
+                            </div>
+                            <span class="badge
+                                {% if payment.verification_status == 'verified' %}bg-success
+                                {% elif payment.verification_status == 'rejected' %}bg-danger
+                                {% else %}bg-warning text-dark
+                                {% endif %} fs-6">
+                                {{ payment.get_verification_status_display }}
+                            </span>
+                        </div>
+                        {% if payment.proof_image %}
+                        <div class="payment-proof-image">
+                            <a href="{{ payment.proof_image.url }}" target="_blank">
+                                <img src="{{ payment.proof_image.url }}" alt="Comprobante" class="img-fluid rounded">
+                            </a>
+                        </div>
+                        {% endif %}
+                        {% if payment.staff_notes %}
+                        <div class="mt-2">
+                            <strong>Notas:</strong> {{ payment.staff_notes }}
+                        </div>
+                        {% endif %}
+                        {% if payment.verification_status == 'pending' %}
+                        <div class="mt-3">
+                            <a href="{% url 'verify_payment' payment.id %}" class="btn btn-reservation">
+                                <i class="fas fa-check-double me-1"></i>Verificar Pago
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-3">No hay pagos registrados para esta reservación</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

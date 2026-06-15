@@ -1,0 +1,272 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Staff - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0"><i class="fas fa-tachometer-alt me-2"></i>Dashboard del Staff</h2>
+            <a href="{% url 'room_management' %}" class="btn btn-outline-custom"><i class="fas fa-door-open me-2"></i>Gestionar Habitaciones</a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="stat-value">{{ total_reservations }}</div>
+                    <div class="stat-label">Total Reservas</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                    <div class="stat-value">{{ pending_reservations }}</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-uploaded">
+                    <div class="stat-icon"><i class="fas fa-file-upload"></i></div>
+                    <div class="stat-value">{{ payment_uploaded }}</div>
+                    <div class="stat-label">Comprobantes</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-confirmed">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-value">{{ confirmed_reservations }}</div>
+                    <div class="stat-label">Confirmadas</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-income">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-value">${{ total_income }}</div>
+                    <div class="stat-label">Ingresos</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-cancelled">
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-value">{{ cancelled_reservations }}</div>
+                    <div class="stat-label">Canceladas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Room Availability -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="room-stat-card">
+                    <i class="fas fa-hotel"></i>
+                    <div>
+                        <div class="room-stat-value">{{ total_rooms }}</div>
+                        <div class="room-stat-label">Total Habitaciones</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="room-stat-card available">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <div class="room-stat-value">{{ available_rooms }}</div>
+                        <div class="room-stat-label">Disponibles</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="room-stat-card occupied">
+                    <i class="fas fa-user-check"></i>
+                    <div>
+                        <div class="room-stat-value">{{ occupied_rooms }}</div>
+                        <div class="room-stat-label">Ocupadas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="room-stat-card maintenance">
+                    <i class="fas fa-tools"></i>
+                    <div>
+                        <div class="room-stat-value">{{ maintenance_rooms }}</div>
+                        <div class="room-stat-label">Mantenimiento</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Today's Activity -->
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-sign-in-alt me-2"></i>Check-ins de Hoy</h4>
+                    {% if todays_checkins %}
+                    <div class="activity-list">
+                        {% for r in todays_checkins %}
+                        <div class="activity-item">
+                            <div>
+                                <strong>{{ r.customer.user.get_full_name }}</strong>
+                                <span class="text-muted ms-2">{{ r.customer.id_document }}</span>
+                            </div>
+                            <div>
+                                {% if r.room %}Hab. {{ r.room.room_number }}{% endif %}
+                                <a href="{% url 'staff_reservation_detail' r.id %}" class="btn btn-sm btn-outline-custom ms-2"><i class="fas fa-eye"></i></a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-3">Sin check-ins programados para hoy</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-sign-out-alt me-2"></i>Check-outs de Hoy</h4>
+                    {% if todays_checkouts %}
+                    <div class="activity-list">
+                        {% for r in todays_checkouts %}
+                        <div class="activity-item">
+                            <div>
+                                <strong>{{ r.customer.user.get_full_name }}</strong>
+                                <span class="text-muted ms-2">{{ r.customer.id_document }}</span>
+                            </div>
+                            <div>
+                                {% if r.room %}Hab. {{ r.room.room_number }}{% endif %}
+                                <a href="{% url 'staff_reservation_detail' r.id %}" class="btn btn-sm btn-outline-custom ms-2"><i class="fas fa-eye"></i></a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-3">Sin check-outs programados para hoy</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Payments Alert -->
+        {% if pending_payments %}
+        <div class="alert alert-warning mb-4">
+            <h5><i class="fas fa-exclamation-triangle me-2"></i>Comprobantes Pendientes de Verificación ({{ pending_payments.count }})</h5>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Reservación</th>
+                            <th>Cliente</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in pending_payments %}
+                        <tr>
+                            <td>#{{ p.reservation.id }}</td>
+                            <td>{{ p.reservation.customer.user.get_full_name }}</td>
+                            <td>${{ p.amount }}</td>
+                            <td>{{ p.payment_date|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'verify_payment' p.id %}" class="btn btn-sm btn-reservation">
+                                    <i class="fas fa-check-double me-1"></i>Verificar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- All Reservations Table -->
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4><i class="fas fa-list me-2"></i>Todas las Reservaciones</h4>
+                <!-- Filters -->
+                <form method="get" class="d-flex gap-2">
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">Todos los estados</option>
+                        {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="service" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">Todos los servicios</option>
+                        {% for value, label in service_choices %}
+                        <option value="{{ value }}" {% if service_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Documento</th>
+                            <th>Servicio</th>
+                            <th>Habitación</th>
+                            <th>Check-in</th>
+                            <th>Check-out</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Comprobante</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in all_reservations %}
+                        <tr>
+                            <td><strong>{{ reservation.id }}</strong></td>
+                            <td>{{ reservation.customer.user.get_full_name }}</td>
+                            <td>{{ reservation.customer.id_document }}</td>
+                            <td>{{ reservation.get_service_type_display }}</td>
+                            <td>{% if reservation.room %}{{ reservation.room.room_number }}{% else %}-{% endif %}</td>
+                            <td>{{ reservation.check_in|date:"d/m/Y" }}</td>
+                            <td>{{ reservation.check_out|date:"d/m/Y" }}</td>
+                            <td><strong>${{ reservation.total_price }}</strong></td>
+                            <td>
+                                <span class="badge
+                                    {% if reservation.status == 'confirmed' %}bg-success
+                                    {% elif reservation.status == 'pending' %}bg-warning text-dark
+                                    {% elif reservation.status == 'payment_uploaded' %}bg-info
+                                    {% elif reservation.status == 'cancelled' %}bg-danger
+                                    {% elif reservation.status == 'completed' %}bg-secondary
+                                    {% endif %}">
+                                    {{ reservation.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if reservation.payments.first %}
+                                    {% if reservation.payments.first.proof_image %}
+                                    <a href="{{ reservation.payments.first.proof_image.url }}" target="_blank" class="btn btn-sm btn-outline-custom">
+                                        <i class="fas fa-image"></i>
+                                    </a>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'staff_reservation_detail' reservation.id %}" class="btn btn-sm btn-outline-custom" title="Ver Detalle">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="11" class="text-center text-muted py-3">No hay reservaciones registradas</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

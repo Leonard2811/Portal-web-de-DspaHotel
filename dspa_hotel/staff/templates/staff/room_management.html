@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Habitaciones - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0"><i class="fas fa-door-open me-2"></i>Gestión de Habitaciones</h2>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Dashboard</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Tipo</th>
+                        <th>Capacidad</th>
+                        <th>Precio/Noche</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in rooms %}
+                    <tr>
+                        <td><strong>{{ room.room_number }}</strong></td>
+                        <td>{{ room.get_room_type_display }}</td>
+                        <td>{{ room.capacity_adults }}A / {{ room.capacity_children }}N</td>
+                        <td>${{ room.price_per_night }}</td>
+                        <td>
+                            <span class="badge
+                                {% if room.status == 'available' %}bg-success
+                                {% elif room.status == 'occupied' %}bg-danger
+                                {% elif room.status == 'maintenance' %}bg-warning text-dark
+                                {% elif room.status == 'reserved' %}bg-info
+                                {% endif %}">
+                                {{ room.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="post" class="d-flex gap-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="room_id" value="{{ room.id }}">
+                                <select name="status" class="form-select form-select-sm" style="width: auto;">
+                                    <option value="available" {% if room.status == 'available' %}selected{% endif %}>Disponible</option>
+                                    <option value="occupied" {% if room.status == 'occupied' %}selected{% endif %}>Ocupada</option>
+                                    <option value="maintenance" {% if room.status == 'maintenance' %}selected{% endif %}>Mantenimiento</option>
+                                    <option value="reserved" {% if room.status == 'reserved' %}selected{% endif %}>Reservada</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-reservation"><i class="fas fa-save"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

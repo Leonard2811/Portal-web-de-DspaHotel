@@ -1,0 +1,247 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}D'Spa Hotel - Tu Oasis de Confort y Bienestar{% endblock %}
+
+{% block content %}
+<!-- Hero Carousel -->
+<section id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{% static 'images/facade/fachada perfil.jpg' %}" class="d-block w-100" alt="Fachada D'Spa Hotel">
+            <div class="carousel-caption">
+                <h1 class="hero-title animate-fadeInUp">D'escansar en D'Spa Hotel</h1>
+                <p class="hero-subtitle animate-fadeInUp delay-1">Tu oasis de confort y bienestar</p>
+                <a href="{% url 'booking' %}" class="btn btn-reservation btn-lg mt-3 animate-fadeInUp delay-2">Reservar Ahora</a>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'images/lobby/lobby 1.jpg' %}" class="d-block w-100" alt="Lobby D'Spa Hotel">
+            <div class="carousel-caption">
+                <h1 class="hero-title animate-fadeInUp">D'isfrutar cada momento</h1>
+                <p class="hero-subtitle animate-fadeInUp delay-1">Experiencias únicas te esperan</p>
+                <a href="{% url 'services' %}" class="btn btn-reservation btn-lg mt-3 animate-fadeInUp delay-2">Nuestros Servicios</a>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'images/restaurant/restaurante 1.jpg' %}" class="d-block w-100" alt="Restaurante D'Spa Hotel">
+            <div class="carousel-caption">
+                <h1 class="hero-title animate-fadeInUp">D'esconectar del estrés</h1>
+                <p class="hero-subtitle animate-fadeInUp delay-1">Relax y productividad en un solo lugar</p>
+                <a href="{% url 'rooms' %}" class="btn btn-reservation btn-lg mt-3 animate-fadeInUp delay-2">Ver Habitaciones</a>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</section>
+
+<!-- Search Availability Section -->
+<section class="availability-section" id="checkAvailability">
+    <div class="container">
+        <div class="availability-card">
+            <h2 class="section-title text-center mb-4">Buscar Disponibilidad</h2>
+            <form id="availabilityForm" class="row g-3 align-items-end">
+                <div class="col-md-3 col-6">
+                    <label for="check_in" class="form-label">Check-in</label>
+                    <input type="date" class="form-control" id="check_in" name="check_in" value="{{ today }}" min="{{ today }}" required>
+                </div>
+                <div class="col-md-3 col-6">
+                    <label for="check_out" class="form-label">Check-out</label>
+                    <input type="date" class="form-control" id="check_out" name="check_out" value="{{ tomorrow }}" min="{{ tomorrow }}" required>
+                </div>
+                <div class="col-md-2 col-6">
+                    <label for="adults" class="form-label">Adultos</label>
+                    <input type="number" class="form-control" id="adults" name="adults" value="1" min="1" max="4">
+                </div>
+                <div class="col-md-2 col-6">
+                    <label for="children" class="form-label">Niños</label>
+                    <input type="number" class="form-control" id="children" name="children" value="0" min="0" max="3">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-reservation w-100" onclick="searchRooms()">
+                        <i class="fas fa-search me-1"></i> Buscar
+                    </button>
+                </div>
+            </form>
+            <!-- Results -->
+            <div id="availabilityResults" class="mt-4" style="display: none;">
+                <div class="row g-3" id="resultsContainer"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Services -->
+<section class="section-padding" id="featuredServices">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Nuestros Servicios</h2>
+            <p class="section-subtitle">Descubra todo lo que D'Spa Hotel tiene para ofrecerle</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        <img src="{% static 'images/spa/spa 1.jpg' %}" alt="Spa">
+                        <div class="service-card-overlay">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <h4>Spa & Bienestar</h4>
+                        <p>Relájese con nuestros tratamientos exclusivos de spa y bienestar integral.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        <img src="{% static 'images/gym/gym 1.jpg' %}" alt="Gimnasio">
+                        <div class="service-card-overlay">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <h4>Gimnasio</h4>
+                        <p>Equipos de última generación para mantener su rutina de ejercicios.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        <img src="{% static 'images/restaurant/restaurante 1.jpg' %}" alt="Restaurante">
+                        <div class="service-card-overlay">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <h4>Restaurante</h4>
+                        <p>Gastronomía de primer nivel con ingredientes selectos y sabores únicos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        <img src="{% static 'images/events/salon.jpg' %}" alt="Salón de Eventos">
+                        <div class="service-card-overlay">
+                            <i class="fas fa-glass-cheers"></i>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <h4>Salón de Eventos</h4>
+                        <p>Espacios versátiles para conferencias, reuniones y celebraciones.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        <div class="service-placeholder">
+                            <i class="fas fa-swimming-pool"></i>
+                        </div>
+                        <div class="service-card-overlay">
+                            <i class="fas fa-swimming-pool"></i>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <h4>Piscina</h4>
+                        <p>Disfrute de nuestra piscina con ambiente tropical y servicio de bar.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <div class="service-card-img">
+                        <div class="service-placeholder">
+                            <i class="fas fa-hot-tub"></i>
+                        </div>
+                        <div class="service-card-overlay">
+                            <i class="fas fa-hot-tub"></i>
+                        </div>
+                    </div>
+                    <div class="service-card-body">
+                        <h4>Jacuzzi</h4>
+                        <p>Relax total en nuestro jacuzzi con vista panorámica y aromaterapia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'services' %}" class="btn btn-outline-custom">Ver Todos los Servicios <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Rooms -->
+<section class="section-padding bg-light-custom" id="featuredRooms">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Habitaciones Destacadas</h2>
+            <p class="section-subtitle">Confort y elegancia para una estancia inolvidable</p>
+        </div>
+        <div class="row g-4">
+            {% for room in featured_rooms %}
+            <div class="col-lg-4 col-md-6">
+                <div class="room-card">
+                    <div class="room-card-img">
+                        {% if room.images.first %}
+                            <img src="{{ room.images.first.image.url }}" alt="{{ room }}">
+                        {% else %}
+                            <div class="room-placeholder">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                        {% endif %}
+                        <span class="room-badge">{{ room.get_room_type_display }}</span>
+                    </div>
+                    <div class="room-card-body">
+                        <h4>{{ room.get_room_type_display }}</h4>
+                        <p>{{ room.description|truncatewords:20 }}</p>
+                        <div class="room-amenities">
+                            {% if room.has_tv %}<span><i class="fas fa-tv"></i> TV</span>{% endif %}
+                            {% if room.has_safe %}<span><i class="fas fa-lock"></i> Caja Fuerte</span>{% endif %}
+                            {% if room.has_terrace %}<span><i class="fas fa-umbrella-beach"></i> Terraza</span>{% endif %}
+                            {% if room.has_closet %}<span><i class="fas fa-door-closed"></i> Closet</span>{% endif %}
+                        </div>
+                        <div class="room-capacity">
+                            <i class="fas fa-user-friends"></i> {{ room.capacity_adults }} adultos, {{ room.capacity_children }} niños
+                        </div>
+                        <div class="room-card-actions">
+                            <a href="{% url 'room_detail' room.id %}" class="btn btn-outline-custom btn-sm">Ver Detalles</a>
+                            <a href="{% url 'booking' %}?room_id={{ room.id }}" class="btn btn-reservation btn-sm">Reservar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No hay habitaciones disponibles en este momento.</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'rooms' %}" class="btn btn-outline-custom">Ver Todas las Habitaciones <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="cta-title">Reserve su estancia ahora</h2>
+        <p class="cta-subtitle">Viva la experiencia D'Spa Hotel con las mejores tarifas garantizadas</p>
+        <a href="{% url 'booking' %}" class="btn btn-reservation btn-lg"><i class="fas fa-concierge-bell me-2"></i>Reservar Ahora</a>
+    </div>
+</section>
+{% endblock %}

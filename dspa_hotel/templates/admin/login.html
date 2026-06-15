@@ -1,0 +1,95 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+<style>
+    body.login {
+        background: linear-gradient(135deg, #38352e 0%, #5a554a 50%, #8a7f6b 100%) !important;
+    }
+    #container {
+        background: transparent !important;
+    }
+    #content-main {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 16px 60px rgba(0,0,0,0.3);
+        padding: 40px !important;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+    #header {
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 40px 0 20px !important;
+        text-align: center;
+    }
+    #header #site-name a {
+        justify-content: center;
+    }
+    #header #site-name a span {
+        font-size: 1.8rem !important;
+    }
+    .login #content {
+        padding: 0 !important;
+    }
+    .login .form-row {
+        padding: 12px 0 !important;
+    }
+    .login .form-row label {
+        color: #38352e !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+    }
+    .login input[type="text"],
+    .login input[type="password"] {
+        border: 2px solid rgba(138, 127, 107, 0.3) !important;
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease !important;
+    }
+    .login input[type="text"]:focus,
+    .login input[type="password"]:focus {
+        border-color: #8a7f6b !important;
+        box-shadow: 0 0 0 3px rgba(138, 127, 107, 0.15) !important;
+        outline: none !important;
+    }
+    .login .submit-row {
+        padding: 20px 0 0 !important;
+        text-align: center !important;
+    }
+    .login .submit-row input[type="submit"] {
+        background: linear-gradient(135deg, #c9a96e, #8a7f6b) !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 14px 40px !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+    }
+    .login .submit-row input[type="submit"]:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 25px rgba(201, 169, 110, 0.4) !important;
+    }
+    .errornote {
+        border-radius: 8px !important;
+        margin: 0 0 16px !important;
+    }
+    .login #content-main::before {
+        content: "Panel de Administracion";
+        display: block;
+        text-align: center;
+        font-size: 0.85rem;
+        color: #8a7f6b;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}

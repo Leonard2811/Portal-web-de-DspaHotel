@@ -1,0 +1,107 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Confirmación - Reservación #{{ reservation.id }} - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="confirmation-card text-center">
+                    <div class="confirmation-icon">
+                        {% if reservation.status == 'payment_uploaded' %}
+                        <i class="fas fa-clock"></i>
+                        {% elif reservation.status == 'confirmed' %}
+                        <i class="fas fa-check-circle"></i>
+                        {% else %}
+                        <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <h2>Reservación #{{ reservation.id }}</h2>
+
+                    {% if reservation.status == 'payment_uploaded' %}
+                    <div class="status-badge pending">
+                        <i class="fas fa-hourglass-half me-2"></i>Pendiente de Verificación
+                    </div>
+                    <p class="confirmation-msg">Su comprobante ha sido recibido y será verificado por nuestro equipo. Le notificaremos cuando su reservación sea confirmada.</p>
+                    {% elif reservation.status == 'confirmed' %}
+                    <div class="status-badge confirmed">
+                        <i class="fas fa-check-circle me-2"></i>Confirmada
+                    </div>
+                    <p class="confirmation-msg">Su reservación ha sido confirmada exitosamente.</p>
+                    {% elif reservation.status == 'pending' %}
+                    <div class="status-badge warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Pendiente de Pago
+                    </div>
+                    <p class="confirmation-msg">Por favor suba su comprobante de pago para confirmar la reservación.</p>
+                    {% endif %}
+
+                    <!-- Details -->
+                    <div class="confirmation-details text-start mt-4">
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-concierge-bell me-2"></i>Servicio:</span>
+                            <span>{{ reservation.get_service_type_display }}</span>
+                        </div>
+                        {% if reservation.room %}
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-bed me-2"></i>Habitación:</span>
+                            <span>{{ reservation.room }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-calendar-check me-2"></i>Check-in:</span>
+                            <span>{{ reservation.check_in|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-calendar-times me-2"></i>Check-out:</span>
+                            <span>{{ reservation.check_out|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-moon me-2"></i>Noches:</span>
+                            <span>{{ reservation.nights }}</span>
+                        </div>
+                        <div class="detail-row total">
+                            <span class="label"><i class="fas fa-dollar-sign me-2"></i>Total:</span>
+                            <span>${{ reservation.total_price }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment History -->
+                    {% if payments %}
+                    <div class="mt-4 text-start">
+                        <h5>Comprobantes Subidos</h5>
+                        {% for payment in payments %}
+                        <div class="payment-record">
+                            <span><i class="fas fa-receipt me-2"></i>${{ payment.amount }} - {{ payment.payment_date|date:"d/m/Y H:i" }}</span>
+                            <span class="badge {% if payment.verification_status == 'verified' %}bg-success{% elif payment.verification_status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                                {{ payment.get_verification_status_display }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Instructions -->
+                    <div class="confirmation-instructions mt-4">
+                        <h5>Instrucciones</h5>
+                        <ul>
+                            <li>Nuestro equipo verificará su comprobante en las próximas horas.</li>
+                            <li>Recibirá la confirmación una vez aprobado el pago.</li>
+                            <li>Para cualquier consulta, comuníquese por WhatsApp al +58 424-8304994.</li>
+                            <li>Presente su número de reservación al momento del check-in.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4">
+                        {% if reservation.status == 'pending' %}
+                        <a href="{% url 'upload_payment' reservation.id %}" class="btn btn-reservation"><i class="fas fa-upload me-2"></i>Subir Comprobante</a>
+                        {% endif %}
+                        <a href="{% url 'my_reservations' %}" class="btn btn-outline-custom ms-2"><i class="fas fa-list me-2"></i>Mis Reservaciones</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,360 @@
+[
+{
+    "model": "core.hotelinfo",
+    "pk": 1,
+    "fields": {
+        "name": "D'Spa Hotel",
+        "mission": "Ofrecer a nuestros huéspedes una experiencia integral de hospedaje, bienestar y productividad, combinando confort, servicios de calidad y atención personalizada en un ambiente moderno y acogedor que supere las expectativas de cada visitante.",
+        "vision": "Ser reconocidos como el hotel boutique líder en la región oriental de Venezuela, destacándose por su innovación en servicios de bienestar, excelencia operativa y compromiso con la satisfacción total del cliente.",
+        "description": "D'Spa Hotel es un espacio diseñado para brindar a nuestros huéspedes una experiencia integral de descanso, bienestar y productividad. Ubicados en la hermosa zona de Lechería, Estado Anzoátegui, ofrecemos hospedaje de primera categoría junto con servicios complementarios como spa, gimnasio, restaurante, salones para eventos y mucho más. Nuestro compromiso es garantizar que cada visita sea una experiencia memorable.",
+        "objectives": "Garantizar la satisfacción total del huésped en cada interacción;Mantener estándares de calidad internacionales en todos los servicios;Innovar constantemente en la oferta de servicios de bienestar;Desarrollar el talento humano de nuestro equipo de trabajo;Contribuir al desarrollo turístico de la región oriental;Promover prácticas sostenibles en la industria hotelera",
+        "value_proposition": "En D'Spa Hotel combinamos lo mejor del hospedaje boutique con servicios integrales de bienestar. Nuestros huéspedes disfrutan de habitaciones elegantemente equipadas, un spa de primer nivel, gimnasio moderno, restaurante gourmet y espacios versátiles para eventos corporativos, todo en un solo lugar diseñado para el descanso y la productividad.",
+        "competitive_advantages": "Ubicación estratégica en la zona de Lechería;Servicios integrales de bienestar bajo un mismo techo;Atención personalizada las 24 horas;Infraestructura moderna y acogedora;Relación calidad-precio excepcional;Estacionamiento privado con capacidad para 60 vehículos;Versatilidad para eventos corporativos y sociales",
+        "values": "Excelencia;Profesionalismo;Compromiso;Integridad;Confidencialidad;Calidad de servicio;Atención personalizada"
+    }
+},
+{
+    "model": "core.contactinfo",
+    "pk": 1,
+    "fields": {
+        "whatsapp_number": "584248304994",
+        "whatsapp_link": "https://api.whatsapp.com/send?phone=584248304994",
+        "instagram_username": "dspahotel",
+        "instagram_link": "https://www.instagram.com/dspahotel?igsh=ZjAwOHc0YXowZHBy",
+        "email": "Dspahotelreservaciones@gmail.com",
+        "phone": "+58 424-8304994",
+        "address": "AV. Intercomunal, Lecheria, VE 6016",
+        "google_maps_embed": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3921.5!2d-64.7!3d10.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDEyJzAwLjAiTiA2NMKwNDInMDAuMCJX!5e0!3m2!1ses!2sve!4v1234567890\" width=\"100%\" height=\"500\" style=\"border:0; border-radius: 16px;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>"
+    }
+},
+{
+    "model": "core.service",
+    "pk": 1,
+    "fields": {
+        "name": "Spa",
+        "description": "Tratamientos corporales, faciales y terapias de relajación con productos de primera calidad. Disfrute de masajes relajantes, aromaterapia y cuidado integral.",
+        "icon_class": "fas fa-spa",
+        "category": "wellness",
+        "is_active": true,
+        "order": 1
+    }
+},
+{
+    "model": "core.service",
+    "pk": 2,
+    "fields": {
+        "name": "Gimnasio",
+        "description": "Equipos de última generación, entrenadores certificados y ambiente motivador. Incluye cafetería con batidos y snacks saludables.",
+        "icon_class": "fas fa-dumbbell",
+        "category": "wellness",
+        "is_active": true,
+        "order": 2
+    }
+},
+{
+    "model": "core.service",
+    "pk": 3,
+    "fields": {
+        "name": "Sauna",
+        "description": "Sauna seco y húmedo para desintoxicación y relajación profunda. Ideal para liberar tensiones después de un largo día.",
+        "icon_class": "fas fa-hot-tub",
+        "category": "wellness",
+        "is_active": true,
+        "order": 3
+    }
+},
+{
+    "model": "core.service",
+    "pk": 4,
+    "fields": {
+        "name": "Jacuzzi",
+        "description": "Jacuzzi con hidroterapia, aromaterapia y ambiente relajante. Perfecto para una experiencia de bienestar completa.",
+        "icon_class": "fas fa-water",
+        "category": "wellness",
+        "is_active": true,
+        "order": 4
+    }
+},
+{
+    "model": "core.service",
+    "pk": 5,
+    "fields": {
+        "name": "Piscina",
+        "description": "Piscina al aire libre con servicio de bar, ambiente tropical y área de descanso con tumbonas.",
+        "icon_class": "fas fa-swimming-pool",
+        "category": "wellness",
+        "is_active": true,
+        "order": 5
+    }
+},
+{
+    "model": "core.service",
+    "pk": 6,
+    "fields": {
+        "name": "Restaurante",
+        "description": "Gastronomía de primer nivel con menú variado de cocina nacional e internacional. Ingredientes frescos y presentaciones exquisitas.",
+        "icon_class": "fas fa-utensils",
+        "category": "general",
+        "is_active": true,
+        "order": 6
+    }
+},
+{
+    "model": "core.service",
+    "pk": 7,
+    "fields": {
+        "name": "Salón de Eventos",
+        "description": "Espacios versátiles equipados con tecnología audiovisual para conferencias, reuniones ejecutivas y celebraciones de cualquier escala.",
+        "icon_class": "fas fa-glass-cheers",
+        "category": "corporate",
+        "is_active": true,
+        "order": 7
+    }
+},
+{
+    "model": "core.service",
+    "pk": 8,
+    "fields": {
+        "name": "Sala de Conferencias",
+        "description": "Sala equipada con proyector, pizarra y sistema de sonido para reuniones corporativas y presentaciones profesionales.",
+        "icon_class": "fas fa-chalkboard-teacher",
+        "category": "corporate",
+        "is_active": true,
+        "order": 8
+    }
+},
+{
+    "model": "core.service",
+    "pk": 9,
+    "fields": {
+        "name": "Estacionamiento Privado",
+        "description": "Estacionamiento privado con capacidad para 60 vehículos, seguridad 24/7 y acceso directo al hotel.",
+        "icon_class": "fas fa-parking",
+        "category": "general",
+        "is_active": true,
+        "order": 9
+    }
+},
+{
+    "model": "core.service",
+    "pk": 10,
+    "fields": {
+        "name": "Catering",
+        "description": "Servicio de catering para eventos especiales con menús personalizados y atención de primer nivel.",
+        "icon_class": "fas fa-concierge-bell",
+        "category": "corporate",
+        "is_active": true,
+        "order": 10
+    }
+},
+{
+    "model": "core.room",
+    "pk": 1,
+    "fields": {
+        "room_type": "matrimonial",
+        "room_number": "M-101",
+        "description": "Habitación Deluxe Matrimonial con cama king size, diseñada para brindar el máximo confort en un ambiente cálido y elegante.",
+        "detailed_description": "Amplia habitación con cama matrimonial king size, baño privado completo con agua caliente, TV de pantalla plana con cable, caja fuerte digital, closet espacioso, terraza con vista, escritorio de trabajo, aire acondicionado, minibar y WiFi de alta velocidad. Servicio de limpieza diario y amenidades de cortesía.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "45.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": false,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 2,
+    "fields": {
+        "room_type": "matrimonial",
+        "room_number": "M-102",
+        "description": "Habitación Deluxe Matrimonial con vista panorámica y ambiente de relajación total.",
+        "detailed_description": "Elegante habitación con cama matrimonial king size, baño privado de lujo, TV de pantalla plana, caja fuerte digital, closet amplio, terraza privada, escritorio ejecutivo, aire acondicionado silencioso y WiFi de alta velocidad. Decoración moderna con toques de calidez.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "45.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": false,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 3,
+    "fields": {
+        "room_type": "matrimonial",
+        "room_number": "M-103",
+        "description": "Habitación Deluxe Matrimonial premium con terraza privada y amenidades exclusivas.",
+        "detailed_description": "Habitación superior con cama king size de alta gama, baño privado con ducha de lluvia, TV smart de 55 pulgadas, caja fuerte, closet vestidor, terraza privada amoblada, mini nevera, escritorio de trabajo, aire acondicionado y WiFi premium.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "55.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": true,
+        "has_balcony": true,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 4,
+    "fields": {
+        "room_type": "matrimonial",
+        "room_number": "M-201",
+        "description": "Habitación Deluxe Matrimonial en segundo piso con excelente iluminación natural.",
+        "detailed_description": "Habitación en segundo piso con cama matrimonial king size, baño completo, TV pantalla plana, caja fuerte, closet, terraza con vista, aire acondicionado y WiFi. Ambiente luminoso y acogedor.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "45.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": true,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 5,
+    "fields": {
+        "room_type": "matrimonial",
+        "room_number": "M-202",
+        "description": "Habitación Deluxe Matrimonial con decoración contemporánea y comodidades de primer nivel.",
+        "detailed_description": "Habitación con diseño contemporáneo, cama king size, baño privado moderno, TV LED, caja fuerte, closet, terraza, aire acondicionado inverter y WiFi de alta velocidad. Perfecta para parejas que buscan confort.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "45.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": false,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 6,
+    "fields": {
+        "room_type": "double",
+        "room_number": "D-101",
+        "description": "Habitación Deluxe Doble con dos camas individuales, ideal para compartir con amplio espacio.",
+        "detailed_description": "Espaciosa habitación con dos camas individuales de alta calidad, baño privado completo, TV de pantalla plana, caja fuerte digital, closet amplio, terraza, aire acondicionado, escritorio de trabajo y WiFi de alta velocidad. Ideal para amigos o colegas de trabajo.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "50.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": false,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 7,
+    "fields": {
+        "room_type": "double",
+        "room_number": "D-102",
+        "description": "Habitación Deluxe Doble con vista al jardín y ambiente tranquilo.",
+        "detailed_description": "Habitación doble con vista al jardín, dos camas individuales premium, baño privado con agua caliente, TV pantalla plana, caja fuerte, closet, terraza con vista, aire acondicionado y WiFi. Ambiente sereno para descanso óptimo.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "50.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": false,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 8,
+    "fields": {
+        "room_type": "double",
+        "room_number": "D-103",
+        "description": "Habitación Deluxe Doble premium con balcón y mini nevera.",
+        "detailed_description": "Habitación doble premium con dos camas de lujo, baño privado con acabados de primera, TV smart 55 pulgadas, caja fuerte, closet vestidor, balcón privado, mini nevera, aire acondicionado y WiFi premium. La mejor opción en habitación doble.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "60.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": true,
+        "has_balcony": true,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 9,
+    "fields": {
+        "room_type": "double",
+        "room_number": "D-201",
+        "description": "Habitación Deluxe Doble en segundo piso con amplia iluminación.",
+        "detailed_description": "Habitación doble en segundo piso con dos camas individuales, baño completo, TV LED, caja fuerte, closet, terraza, aire acondicionado y WiFi. Excelente iluminación natural y ventilación.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "50.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": true,
+        "is_active": true
+    }
+},
+{
+    "model": "core.room",
+    "pk": 10,
+    "fields": {
+        "room_type": "double",
+        "room_number": "D-202",
+        "description": "Habitación Deluxe Doble con diseño moderno y todas las comodidades.",
+        "detailed_description": "Habitación doble de diseño moderno con dos camas premium, baño privado actualizado, TV pantalla plana, caja fuerte, closet, terraza, aire acondicionado silencioso y WiFi de alta velocidad.",
+        "capacity_adults": 2,
+        "capacity_children": 1,
+        "price_per_night": "50.00",
+        "status": "available",
+        "has_terrace": true,
+        "has_safe": true,
+        "has_tv": true,
+        "has_closet": true,
+        "has_minibar": false,
+        "has_balcony": false,
+        "is_active": true
+    }
+}
+]

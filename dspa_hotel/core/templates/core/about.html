@@ -1,0 +1,176 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Quiénes Somos - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<!-- Hero About -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/facade/fachada perfil.jpg' %}" alt="D'Spa Hotel Fachada" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Quiénes Somos</h1>
+        <p>Conozca la historia y los valores de D'Spa Hotel</p>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="section-padding">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="about-image-wrapper">
+                    <img src="{% static 'images/facade/fachada perfil.jpg' %}" alt="Fachada D'Spa Hotel" class="about-main-image">
+                    <div class="about-image-accent"></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <span class="section-tag">Acerca de Nosotros</span>
+                    <h2 class="section-title text-start">D'Spa Hotel</h2>
+                    {% if hotel_info %}
+                        <p class="about-description">{{ hotel_info.description }}</p>
+                    {% else %}
+                        <p class="about-description">D'Spa Hotel es un espacio diseñado para brindar a nuestros huéspedes una experiencia integral de descanso, bienestar y productividad. Ubicados en la hermosa zona de Lechería, Estado Anzoátegui, ofrecemos hospedaje de primera categoría junto con servicios complementarios como spa, gimnasio, restaurante, salones para eventos y mucho más.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section-padding bg-light-custom">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="mv-card">
+                    <div class="mv-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Misión</h3>
+                    {% if hotel_info %}
+                        <p>{{ hotel_info.mission }}</p>
+                    {% else %}
+                        <p>Ofrecer a nuestros huéspedes una experiencia integral de hospedaje, bienestar y productividad, combinando confort, servicios de calidad y atención personalizada en un ambiente moderno y acogedor que supere las expectativas de cada visitante.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mv-card">
+                    <div class="mv-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Visión</h3>
+                    {% if hotel_info %}
+                        <p>{{ hotel_info.vision }}</p>
+                    {% else %}
+                        <p>Ser reconocidos como el hotel boutique líder en la región oriental de Venezuela, destacándose por su innovación en servicios de bienestar, excelencia operativa y compromiso con la satisfacción total del cliente.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Nuestros Valores</h2>
+            <p class="section-subtitle">Los pilares que guían nuestra excelencia</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-award"></i></div>
+                    <h5>Excelencia</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-briefcase"></i></div>
+                    <h5>Profesionalismo</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-handshake"></i></div>
+                    <h5>Compromiso</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h5>Integridad</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-user-secret"></i></div>
+                    <h5>Confidencialidad</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-star"></i></div>
+                    <h5>Calidad de Servicio</h5>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-heart"></i></div>
+                    <h5>Atención Personalizada</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Objectives & Value Proposition -->
+<section class="section-padding bg-dark-custom">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <h3 class="text-light mb-4"><i class="fas fa-crosshairs me-2"></i>Objetivos</h3>
+                <ul class="objectives-list">
+                    {% if hotel_info %}
+                        {% for obj in hotel_info.get_objectives_list %}
+                        <li><i class="fas fa-check-circle me-2"></i>{{ obj }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li><i class="fas fa-check-circle me-2"></i>Garantizar la satisfacción total del huésped</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Mantener estándares de calidad internacionales</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Innovar constantemente en servicios de bienestar</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Desarrollar el talento humano de nuestro equipo</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Contribuir al desarrollo turístico de la región</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="text-light mb-4"><i class="fas fa-gem me-2"></i>Propuesta de Valor</h3>
+                {% if hotel_info %}
+                    <p class="text-light opacity-75">{{ hotel_info.value_proposition }}</p>
+                {% else %}
+                    <p class="text-light opacity-75">En D'Spa Hotel combinamos lo mejor del hospedaje boutique con servicios integrales de bienestar. Nuestros huéspedes disfrutan de habitaciones elegantemente equipadas, un spa de primer nivel, gimnasio moderno, restaurante gourmet y espacios versátiles para eventos corporativos, todo en un solo lugar diseñado para el descanso y la productividad.</p>
+                {% endif %}
+
+                <h3 class="text-light mb-4 mt-5"><i class="fas fa-trophy me-2"></i>Ventajas Competitivas</h3>
+                <ul class="objectives-list">
+                    {% if hotel_info %}
+                        {% for adv in hotel_info.get_advantages_list %}
+                        <li><i class="fas fa-chevron-right me-2"></i>{{ adv }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li><i class="fas fa-chevron-right me-2"></i>Ubicación estratégica en Lechería</li>
+                        <li><i class="fas fa-chevron-right me-2"></i>Servicios integrales de bienestar</li>
+                        <li><i class="fas fa-chevron-right me-2"></i>Atención personalizada 24/7</li>
+                        <li><i class="fas fa-chevron-right me-2"></i>Infraestructura moderna y acogedora</li>
+                        <li><i class="fas fa-chevron-right me-2"></i>Relación calidad-precio excepcional</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
