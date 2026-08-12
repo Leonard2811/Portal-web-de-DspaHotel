@@ -1,0 +1,272 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Usuarios - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container-fluid px-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="section-title mb-0"><i class="fas fa-users-cog me-2"></i>Gestión de Usuarios</h2>
+            <div class="d-flex gap-2">
+                <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom">
+                    <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+                </a>
+                <button class="btn btn-reservation" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                    <i class="fas fa-user-plus me-2"></i>Crear Usuario
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Role Legend -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-4 col-md-6">
+                <div style="background: var(--color-white); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border-left: 4px solid var(--color-gold);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, var(--color-gold), var(--color-primary)); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-crown text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0" style="color: var(--color-dark);">Super Administrador</h6>
+                            <small style="color: var(--color-text-light);">{{ role_descriptions.super_admin }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div style="background: var(--color-white); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border-left: 4px solid var(--color-info);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, var(--color-info), #1976d2); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-clipboard-list text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0" style="color: var(--color-dark);">Encargado de Reservaciones</h6>
+                            <small style="color: var(--color-text-light);">{{ role_descriptions.encargado_reservas }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div style="background: var(--color-white); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border-left: 4px solid #6c757d;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, #6c757d, #5a636b); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-eye text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0" style="color: var(--color-dark);">Recepcionista de Datos</h6>
+                            <small style="color: var(--color-text-light);">{{ role_descriptions.recepcionista }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div style="background: var(--color-white); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-md);">
+            <h4 class="mb-3" style="color: var(--color-dark);"><i class="fas fa-list me-2"></i>Usuarios del Sistema ({{ users_with_roles|length }})</h4>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="users-table">
+                    <thead>
+                        <tr style="background: var(--color-light);">
+                            <th style="color: var(--color-dark); font-weight: 600; border: none;">Usuario</th>
+                            <th style="color: var(--color-dark); font-weight: 600; border: none;">Nombre Completo</th>
+                            <th style="color: var(--color-dark); font-weight: 600; border: none;">Correo</th>
+                            <th style="color: var(--color-dark); font-weight: 600; border: none;">Rol</th>
+                            <th style="color: var(--color-dark); font-weight: 600; border: none;">Último Acceso</th>
+                            <th style="color: var(--color-dark); font-weight: 600; border: none;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in users_with_roles %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width: 36px; height: 36px; border-radius: 50%; 
+                                        background: {% if item.role == 'super_admin' %}linear-gradient(135deg, var(--color-gold), var(--color-primary)){% elif item.role == 'encargado_reservas' %}linear-gradient(135deg, var(--color-info), #1976d2){% else %}linear-gradient(135deg, #6c757d, #5a636b){% endif %};
+                                        display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px;">
+                                        {{ item.user.username|first|upper }}
+                                    </div>
+                                    <strong style="color: var(--color-dark);">{{ item.user.username }}</strong>
+                                    {% if item.user == request.user %}
+                                    <span class="badge bg-secondary" style="font-size: 10px;">TÚ</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td style="color: var(--color-text);">{{ item.user.get_full_name|default:"-" }}</td>
+                            <td style="color: var(--color-text-light);">{{ item.user.email|default:"-" }}</td>
+                            <td>
+                                <span class="badge text-white"
+                                    style="{% if item.role == 'super_admin' %}background: linear-gradient(135deg, var(--color-gold), var(--color-primary));{% elif item.role == 'encargado_reservas' %}background: linear-gradient(135deg, var(--color-info), #1976d2);{% else %}background: #6c757d;{% endif %} padding: 6px 12px; font-size: 12px; border-radius: 50px;">
+                                    {% if item.role == 'super_admin' %}<i class="fas fa-crown me-1"></i>
+                                    {% elif item.role == 'encargado_reservas' %}<i class="fas fa-clipboard-list me-1"></i>
+                                    {% else %}<i class="fas fa-eye me-1"></i>{% endif %}
+                                    {{ item.role_display }}
+                                </span>
+                            </td>
+                            <td style="color: var(--color-text-light);">
+                                {% if item.user.last_login %}
+                                    {{ item.user.last_login|date:"d/m/Y H:i" }}
+                                {% else %}
+                                    <span>Nunca</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'edit_user' item.user.id %}" class="btn btn-sm btn-outline-custom" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if item.user != request.user %}
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar"
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.user.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Delete Confirmation Modal -->
+                        {% if item.user != request.user %}
+                        <div class="modal fade" id="deleteModal{{ item.user.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
+                                    <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
+                                        <h5 class="modal-title" style="color: var(--color-dark);"><i class="fas fa-exclamation-triangle text-danger me-2"></i>Confirmar Eliminación</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p style="color: var(--color-text);">¿Estás seguro de que deseas eliminar al usuario <strong>"{{ item.user.username }}"</strong> ({{ item.role_display }})?</p>
+                                        <p class="text-danger mb-0"><small><i class="fas fa-exclamation-circle me-1"></i>Esta acción no se puede deshacer.</small></p>
+                                    </div>
+                                    <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1);">
+                                        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                                        <form method="post" action="{% url 'delete_user' item.user.id %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-trash me-1"></i>Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4" style="color: var(--color-text-light);">No hay usuarios registrados</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Create User Modal -->
+<div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
+                <h5 class="modal-title" style="color: var(--color-dark);"><i class="fas fa-user-plus me-2" style="color: var(--color-gold);"></i>Crear Nuevo Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'create_user' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-user me-1" style="color: var(--color-primary);"></i>Nombre de Usuario *</label>
+                            <input type="text" name="username" class="form-control" required
+                                placeholder="ej: maria_admin" style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-lock me-1" style="color: var(--color-primary);"></i>Contraseña *</label>
+                            <input type="password" name="password" class="form-control" required minlength="6"
+                                placeholder="Mínimo 6 caracteres" style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-id-card me-1" style="color: var(--color-primary);"></i>Nombre</label>
+                            <input type="text" name="first_name" class="form-control"
+                                placeholder="Nombre" style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-id-card me-1" style="color: var(--color-primary);"></i>Apellido</label>
+                            <input type="text" name="last_name" class="form-control"
+                                placeholder="Apellido" style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-envelope me-1" style="color: var(--color-primary);"></i>Correo Electrónico</label>
+                            <input type="email" name="email" class="form-control"
+                                placeholder="correo@ejemplo.com" style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-user-shield me-1" style="color: var(--color-primary);"></i>Rol *</label>
+                            <select name="role" class="form-select" required style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                                <option value="">-- Seleccionar Rol --</option>
+                                {% for value, label in role_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Role description area -->
+                        <div class="col-12">
+                            <div id="roleDescription" class="p-3" style="background: var(--color-light); border-radius: var(--radius-md); border: 1px solid rgba(138,127,107,0.15); display: none;">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fas fa-info-circle" style="color: var(--color-gold);"></i>
+                                    <strong id="roleTitle" style="color: var(--color-dark);"></strong>
+                                </div>
+                                <p class="mb-0" id="roleDesc" style="color: var(--color-text-light); font-size: 0.9rem;"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1);">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-reservation">
+                        <i class="fas fa-save me-1"></i>Crear Usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelector('select[name="role"]').addEventListener('change', function() {
+    const descriptions = {
+        'super_admin': {title: 'Super Administrador', desc: 'Acceso total al sistema. Puede crear, editar, eliminar y gestionar usuarios.'},
+        'encargado_reservas': {title: 'Encargado de Reservaciones', desc: 'Puede ver, crear y editar reservaciones y planillas. No puede eliminar ni gestionar usuarios.'},
+        'recepcionista': {title: 'Recepcionista de Datos', desc: 'Solo lectura. Puede ver información pero no crear, editar ni eliminar nada.'},
+    };
+    
+    const container = document.getElementById('roleDescription');
+    const title = document.getElementById('roleTitle');
+    const desc = document.getElementById('roleDesc');
+    
+    if (this.value && descriptions[this.value]) {
+        const role = descriptions[this.value];
+        title.textContent = role.title;
+        desc.textContent = role.desc;
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

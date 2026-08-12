@@ -40,6 +40,7 @@
                             </span>
                         </td>
                         <td>
+                            {% if not is_readonly %}
                             <form method="post" class="d-flex gap-1">
                                 {% csrf_token %}
                                 <input type="hidden" name="room_id" value="{{ room.id }}">
@@ -51,6 +52,9 @@
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-reservation"><i class="fas fa-save"></i></button>
                             </form>
+                            {% else %}
+                            <span style="color: var(--color-text-light); font-size: 0.85rem;"><i class="fas fa-lock me-1"></i>Solo lectura</span>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

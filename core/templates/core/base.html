@@ -68,14 +68,124 @@
 
     <!-- Messages -->
     {% if messages %}
-    <div class="messages-container" style="margin-top: 80px;">
+    <div class="dspa-messages-container" id="dspaMessages">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mx-3" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="dspa-alert dspa-alert-{{ message.tags }}" role="alert">
+            <div class="dspa-alert-icon">
+                {% if message.tags == 'success' %}
+                <i class="fas fa-check-circle"></i>
+                {% elif message.tags == 'error' or message.tags == 'danger' %}
+                <i class="fas fa-exclamation-circle"></i>
+                {% elif message.tags == 'warning' %}
+                <i class="fas fa-exclamation-triangle"></i>
+                {% else %}
+                <i class="fas fa-info-circle"></i>
+                {% endif %}
+            </div>
+            <div class="dspa-alert-content">{{ message }}</div>
+            <button type="button" class="dspa-alert-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         {% endfor %}
     </div>
+    <style>
+        .dspa-messages-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 420px;
+            width: 100%;
+        }
+        .dspa-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            animation: dspaSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            border-left: 4px solid;
+            backdrop-filter: blur(10px);
+        }
+        .dspa-alert-success {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-left-color: var(--color-success);
+            color: #166534;
+        }
+        .dspa-alert-success .dspa-alert-icon { color: var(--color-success); }
+        .dspa-alert-error, .dspa-alert-danger {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            border-left-color: var(--color-danger);
+            color: #991b1b;
+        }
+        .dspa-alert-error .dspa-alert-icon,
+        .dspa-alert-danger .dspa-alert-icon { color: var(--color-danger); }
+        .dspa-alert-warning {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-left-color: var(--color-warning);
+            color: #92400e;
+        }
+        .dspa-alert-warning .dspa-alert-icon { color: var(--color-warning); }
+        .dspa-alert-info {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left-color: var(--color-info);
+            color: #1e40af;
+        }
+        .dspa-alert-info .dspa-alert-icon { color: var(--color-info); }
+        .dspa-alert-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .dspa-alert-content {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .dspa-alert-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0.5;
+            font-size: 0.85rem;
+            padding: 4px;
+            color: inherit;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+        .dspa-alert-close:hover { opacity: 1; }
+        @keyframes dspaSlideIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes dspaSlideOut {
+            from { opacity: 1; transform: translateX(0); max-height: 100px; }
+            to { opacity: 0; transform: translateX(40px); max-height: 0; padding: 0; margin: 0; }
+        }
+        @media (max-width: 480px) {
+            .dspa-messages-container {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+    <script>
+        // Auto-dismiss messages after 5 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.dspa-alert').forEach(function(alert, index) {
+                setTimeout(function() {
+                    alert.style.animation = 'dspaSlideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+                    setTimeout(function() { alert.remove(); }, 400);
+                }, index * 200);
+            });
+        }, 5000);
+    </script>
     {% endif %}
 
     <!-- Content -->

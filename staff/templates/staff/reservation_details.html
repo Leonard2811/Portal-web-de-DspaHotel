@@ -6,10 +6,54 @@
 {% block content %}
 <section class="section-padding" style="margin-top: 80px;">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <h2 class="section-title mb-0">Reservación #{{ reservation.id }}</h2>
-            <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Volver al Dashboard</a>
+            <div class="d-flex gap-2">
+                {% if request.user.is_superuser %}
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteReservationModal">
+                    <i class="fas fa-trash me-2"></i>Eliminar
+                </button>
+                {% endif %}
+                <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Volver al Dashboard</a>
+            </div>
         </div>
+
+        <!-- Delete Reservation Modal -->
+        {% if request.user.is_superuser %}
+        <div class="modal fade" id="deleteReservationModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
+                    <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
+                        <h5 class="modal-title" style="color: var(--color-dark);">
+                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>Eliminar Reservación
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" style="color: var(--color-text);">
+                        <p>¿Estás seguro de que deseas eliminar la <strong>Reservación #{{ reservation.id }}</strong>?</p>
+                        <div style="background: var(--color-light); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
+                            <small>
+                                <strong>Cliente:</strong> {{ reservation.customer.user.get_full_name }}<br>
+                                <strong>Servicio:</strong> {{ reservation.get_service_type_display }}<br>
+                                {% if reservation.room %}<strong>Habitación:</strong> {{ reservation.room.room_number }}<br>{% endif %}
+                                <strong>Total:</strong> ${{ reservation.total_price }}
+                            </small>
+                        </div>
+                        <p class="text-danger mb-0"><small><i class="fas fa-exclamation-circle me-1"></i>Esta acción eliminará la reservación y todos sus comprobantes de pago. No se puede deshacer.</small></p>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1);">
+                        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                        <form method="post" action="{% url 'delete_reservation' reservation.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Sí, Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <div class="row g-4">
             <!-- Customer Info -->
@@ -108,22 +152,48 @@
                         </div>
                     </div>
 
+                    {% if not is_readonly %}
                     <!-- Update Status -->
-                    <form method="post" action="{% url 'update_reservation_status' reservation.id %}" class="mt-3">
+                    <form method="post" action="{% url 'update_reservation_status' reservation.id %}" class="mt-3" id="statusForm">
                         {% csrf_token %}
                         <div class="d-flex gap-2">
-                            <select name="status" class="form-select">
+                            <select name="status" class="form-select" id="statusSelect">
                                 <option value="pending" {% if reservation.status == 'pending' %}selected{% endif %}>Pendiente de Pago</option>
                                 <option value="payment_uploaded" {% if reservation.status == 'payment_uploaded' %}selected{% endif %}>Comprobante Subido</option>
                                 <option value="confirmed" {% if reservation.status == 'confirmed' %}selected{% endif %}>Confirmada</option>
                                 <option value="completed" {% if reservation.status == 'completed' %}selected{% endif %}>Completada</option>
                                 <option value="cancelled" {% if reservation.status == 'cancelled' %}selected{% endif %}>Cancelada</option>
                             </select>
-                            <button type="submit" class="btn btn-reservation" onclick="return confirm('¿Cambiar estado de la reservación?')">
+                            <button type="button" class="btn btn-reservation" data-bs-toggle="modal" data-bs-target="#confirmStatusModal">
                                 <i class="fas fa-save me-1"></i> Actualizar
                             </button>
                         </div>
                     </form>
+
+                    <!-- Confirm Status Modal -->
+                    <div class="modal fade" id="confirmStatusModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered modal-sm">
+                            <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
+                                <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
+                                    <h5 class="modal-title" style="color: var(--color-dark); font-size: 1rem;">
+                                        <i class="fas fa-exchange-alt me-2" style="color: var(--color-gold);"></i>Confirmar Cambio
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center" style="color: var(--color-text);">
+                                    <p>¿Cambiar el estado de esta reservación?</p>
+                                    <p class="fw-bold" id="newStatusLabel" style="color: var(--color-dark);"></p>
+                                </div>
+                                <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1); justify-content: center;">
+                                    <button type="button" class="btn btn-outline-custom btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-reservation btn-sm" onclick="document.getElementById('statusForm').submit();">
+                                        <i class="fas fa-check me-1"></i>Sí, Cambiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -161,7 +231,7 @@
                             <strong>Notas:</strong> {{ payment.staff_notes }}
                         </div>
                         {% endif %}
-                        {% if payment.verification_status == 'pending' %}
+                        {% if payment.verification_status == 'pending' and not is_readonly %}
                         <div class="mt-3">
                             <a href="{% url 'verify_payment' payment.id %}" class="btn btn-reservation">
                                 <i class="fas fa-check-double me-1"></i>Verificar Pago
@@ -178,4 +248,15 @@
         </div>
     </div>
 </section>
+
+{% if not is_readonly %}
+<script>
+// Update modal with selected status label
+document.getElementById('confirmStatusModal').addEventListener('show.bs.modal', function() {
+    var select = document.getElementById('statusSelect');
+    var label = select.options[select.selectedIndex].text;
+    document.getElementById('newStatusLabel').textContent = 'Nuevo estado: ' + label;
+});
+</script>
+{% endif %}
 {% endblock %}

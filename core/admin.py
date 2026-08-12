@@ -10,6 +10,18 @@ class HotelInfoAdmin(admin.ModelAdmin):
         ('Detalles', {'fields': ('objectives', 'value_proposition', 'competitive_advantages', 'values')}),
     )
 
+    def has_change_permission(self, request, obj=None):
+        if request.user.groups.filter(name='Recepcionistas de Datos').exists():
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if request.user.groups.filter(name='Super Administradores').exists():
+            return True
+        return False
+
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
@@ -17,6 +29,23 @@ class ServiceAdmin(admin.ModelAdmin):
     list_filter = ('category', 'is_active')
     search_fields = ('name',)
     ordering = ('order', 'name')
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.groups.filter(name='Recepcionistas de Datos').exists():
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if request.user.groups.filter(name='Super Administradores').exists():
+            return True
+        return False
+
+    def has_add_permission(self, request):
+        if request.user.groups.filter(name='Recepcionistas de Datos').exists():
+            return False
+        return super().has_add_permission(request)
 
 
 class RoomImageInline(admin.TabularInline):
@@ -31,7 +60,36 @@ class RoomAdmin(admin.ModelAdmin):
     search_fields = ('room_number',)
     inlines = [RoomImageInline]
 
+    def has_change_permission(self, request, obj=None):
+        if request.user.groups.filter(name='Recepcionistas de Datos').exists():
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if request.user.groups.filter(name='Super Administradores').exists():
+            return True
+        return False
+
+    def has_add_permission(self, request):
+        if request.user.groups.filter(name='Recepcionistas de Datos').exists():
+            return False
+        return super().has_add_permission(request)
+
 
 @admin.register(ContactInfo)
 class ContactInfoAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone', 'whatsapp_number')
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.groups.filter(name='Recepcionistas de Datos').exists():
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if request.user.groups.filter(name='Super Administradores').exists():
+            return True
+        return False

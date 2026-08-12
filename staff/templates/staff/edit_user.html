@@ -1,0 +1,142 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Editar Usuario: {{ target_user.username }} - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container" style="max-width: 800px;">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0"><i class="fas fa-user-edit me-2"></i>Editar Usuario</h2>
+            <a href="{% url 'user_management' %}" class="btn btn-outline-custom">
+                <i class="fas fa-arrow-left me-2"></i>Volver
+            </a>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Edit Form Card -->
+        <div style="background: var(--color-white); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-md);">
+            <!-- User Header -->
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid rgba(138,127,107,0.15);">
+                <div style="width: 60px; height: 60px; border-radius: 50%; 
+                    background: {% if current_role == 'super_admin' %}linear-gradient(135deg, var(--color-gold), var(--color-primary)){% elif current_role == 'encargado_reservas' %}linear-gradient(135deg, var(--color-info), #1976d2){% else %}linear-gradient(135deg, #6c757d, #5a636b){% endif %};
+                    display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 22px;">
+                    {{ target_user.username|first|upper }}
+                </div>
+                <div>
+                    <h4 class="mb-0" style="color: var(--color-dark);">{{ target_user.username }}</h4>
+                    <span style="color: var(--color-text-light);">Creado: {{ target_user.date_joined|date:"d/m/Y" }}</span>
+                    {% if target_user == request.user %}
+                    <span class="badge bg-secondary ms-2" style="font-size: 10px;">TU CUENTA</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'edit_user' target_user.id %}">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-user me-1" style="color: var(--color-primary);"></i>Nombre de Usuario</label>
+                        <input type="text" class="form-control" value="{{ target_user.username }}" disabled
+                            style="border: 2px solid rgba(138,127,107,0.1); border-radius: var(--radius-sm); padding: 10px 14px; opacity: 0.6; background: var(--color-light);">
+                        <small style="color: var(--color-text-light);">El nombre de usuario no se puede cambiar.</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-envelope me-1" style="color: var(--color-primary);"></i>Correo Electrónico</label>
+                        <input type="email" name="email" class="form-control" value="{{ target_user.email }}"
+                            placeholder="correo@ejemplo.com"
+                            style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-id-card me-1" style="color: var(--color-primary);"></i>Nombre</label>
+                        <input type="text" name="first_name" class="form-control" value="{{ target_user.first_name }}"
+                            placeholder="Nombre"
+                            style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-id-card me-1" style="color: var(--color-primary);"></i>Apellido</label>
+                        <input type="text" name="last_name" class="form-control" value="{{ target_user.last_name }}"
+                            placeholder="Apellido"
+                            style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="col-12">
+                        <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-user-shield me-1" style="color: var(--color-primary);"></i>Rol del Usuario</label>
+                        <div class="row g-2">
+                            {% for value, label in role_choices %}
+                            <div class="col-md-4">
+                                <div class="role-option p-3" id="role-{{ value }}" style="border-radius: var(--radius-md); border: 2px solid {% if current_role == value %}var(--color-gold){% else %}rgba(138,127,107,0.15){% endif %}; background: {% if current_role == value %}var(--color-light){% else %}transparent{% endif %}; cursor: pointer; transition: all 0.3s ease;"
+                                    onclick="selectRole('{{ value }}', this)">
+                                    <input type="radio" name="role" value="{{ value }}" class="d-none"
+                                        {% if current_role == value %}checked{% endif %}>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="fas {% if value == 'super_admin' %}fa-crown{% elif value == 'encargado_reservas' %}fa-clipboard-list{% else %}fa-eye{% endif %}"
+                                            style="color: {% if value == 'super_admin' %}var(--color-gold){% elif value == 'encargado_reservas' %}var(--color-info){% else %}#6c757d{% endif %};"></i>
+                                        <strong style="font-size: 13px; color: var(--color-dark);">{{ label }}</strong>
+                                    </div>
+                                    <small style="color: var(--color-text-light); font-size: 11px;">
+                                        {% if value == 'super_admin' %}Acceso total
+                                        {% elif value == 'encargado_reservas' %}Ver, crear, editar
+                                        {% else %}Solo lectura{% endif %}
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Cambiar contraseña -->
+                    <div class="col-12">
+                        <hr style="border-color: rgba(138,127,107,0.15);">
+                        <label class="form-label" style="color: var(--color-dark); font-weight: 500;"><i class="fas fa-key me-1" style="color: var(--color-primary);"></i>Cambiar Contraseña</label>
+                        <input type="password" name="new_password" class="form-control" minlength="6"
+                            placeholder="Dejar vacío para mantener la contraseña actual (mín. 6 caracteres)"
+                            style="border: 2px solid rgba(138,127,107,0.2); border-radius: var(--radius-sm); padding: 10px 14px;">
+                        <small style="color: var(--color-text-light);">Solo completar si deseas cambiar la contraseña.</small>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="col-12 d-flex justify-content-end gap-2 mt-4">
+                        <a href="{% url 'user_management' %}" class="btn btn-outline-custom">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-reservation">
+                            <i class="fas fa-save me-1"></i>Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+function selectRole(value, element) {
+    // Reset all
+    document.querySelectorAll('.role-option').forEach(el => {
+        el.style.borderColor = 'rgba(138,127,107,0.15)';
+        el.style.background = 'transparent';
+        el.querySelector('input[type="radio"]').checked = false;
+    });
+    
+    // Select clicked
+    const radio = element.querySelector('input[type="radio"]');
+    radio.checked = true;
+    element.style.borderColor = 'var(--color-gold)';
+    element.style.background = 'var(--color-light)';
+}
+</script>
+{% endblock %}
