@@ -2,9 +2,27 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-dspa-hotel-2024-secret-key-change-in-production'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+
+# En PythonAnywhere, configura estas variables de entorno en la pestaña "Web"
+# Si no existen, usa los valores por defecto (desarrollo local)
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-dspa-hotel-2024-secret-key-change-in-production'
+)
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
+
+# Agrega tu subdominio de PythonAnywhere aqui
+ALLOWED_HOSTS = [
+    '*',
+    '.pythonanywhere.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+# Necesario para que el admin funcione en PythonAnywhere
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.pythonanywhere.com',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -13,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'admin_custom',
     'core',
     'reservations',
     'staff',
@@ -20,6 +39,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -33,7 +53,7 @@ ROOT_URLCONF = 'dspa_hotel.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,6 +88,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -4,14 +4,15 @@
 *.pyc
 __pycache__/
 local_settings.py
-db.sqlite3
 db.sqlite3-journal
-media
 
 # Virtual Environment
 venv/
 env/
 ENV/
+
+# Static collected
+staticfiles/
 
 # OS generated files
 .DS_Store
