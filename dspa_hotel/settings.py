@@ -1,7 +1,11 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Cargar variables de entorno desde .env
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # En PythonAnywhere, configura estas variables de entorno en la pestaña "Web"
 # Si no existen, usa los valores por defecto (desarrollo local)

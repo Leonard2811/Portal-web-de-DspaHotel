@@ -26,22 +26,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ========== Chatbot ==========
-const chatbotResponses = {
-    'tipos_habitaciones': 'Contamos con 30 habitaciones: 20 Habitaciones Deluxe (cama matrimonial, para 2 personas) y 10 Habitaciones Dobles (dos camas, de 2 a 4 personas). Distribuidas en 5 pisos. Todas equipadas con bano privado, TV, caja fuerte, closet y terraza.',
-    'servicios': 'Ofrecemos hospedaje, restaurante (cierra a las 10:00 PM), gimnasio, spa, sauna, jacuzzi, piscina, salones para eventos y estacionamiento privado.',
-    'ubicacion': 'Estamos en AV. Intercomunal, Lecheria, Estado Anzoategui, Venezuela.',
-    'reservar': 'Debe registrarse en nuestro portal, buscar disponibilidad y completar el formulario de reservacion.',
-    'mascotas': 'No se permiten mascotas en el hotel. Agradecemos su comprension.',
-    'estacionamiento': 'Si, contamos con estacionamiento privado con capacidad para 60 vehiculos.',
-    'horario': 'Nuestro servicio de recepcion opera las 24 horas del dia, los 7 dias de la semana.',
-    'pago': 'Aceptamos transferencias bancarias y pago movil. Los datos bancarios se proporcionan al momento de la reservacion.',
-    'cancelacion': 'Las cancelaciones deben realizarse con al menos 24 horas de anticipacion.',
-    'checkin': 'El check-in es a partir de las 3:00 PM y el check-out hasta las 12:00 PM.',
-    'precios': 'Nuestras habitaciones tienen un precio de $110 + IVA por noche (2 personas). En habitaciones Dobles, cada persona adicional tiene un costo de $20 por noche.',
-    'desayuno': 'El horario de desayuno es de 7:00 AM a 10:00 AM. El restaurante cierra a las 10:00 PM.',
-    'restaurante': 'Nuestro restaurante ofrece cocina nacional e internacional. Desayuno: 7:00 AM a 10:00 AM. El restaurante cierra a las 10:00 PM.',
-};
-
 function toggleChatbot() {
     const container = document.getElementById('chatbotContainer');
     if (container) {
@@ -50,12 +34,10 @@ function toggleChatbot() {
 }
 
 function askBot(key) {
-    const response = chatbotResponses[key];
-    if (response) {
-        addChatMessage(getQuestionText(key), 'user');
-        setTimeout(() => {
-            addChatMessage(response, 'bot');
-        }, 500);
+    const text = getQuestionText(key);
+    if (text) {
+        document.getElementById('chatbotInput').value = text;
+        sendChatMessage();
     }
 }
 
@@ -78,6 +60,8 @@ function getQuestionText(key) {
     return questions[key] || key;
 }
 
+let chatHistory = [];
+
 function sendChatMessage() {
     const input = document.getElementById('chatbotInput');
     if (!input) return;
@@ -88,77 +72,41 @@ function sendChatMessage() {
     addChatMessage(message, 'user');
     input.value = '';
 
-    setTimeout(() => {
-        const response = findBestResponse(message);
-        addChatMessage(response, 'bot');
-    }, 600);
-}
+    // Show typing indicator
+    const messagesContainer = document.getElementById('chatbotMessages');
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'chatbot-msg bot';
+    typingIndicator.id = 'chatbotTypingIndicator';
+    typingIndicator.innerHTML = '<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
+    messagesContainer.appendChild(typingIndicator);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-function findBestResponse(message) {
-    const msg = message.toLowerCase();
-
-    if (msg.includes('habitacion') || msg.includes('cuarto') || msg.includes('tipo')) {
-        return chatbotResponses['tipos_habitaciones'];
-    }
-    if (msg.includes('servicio') || msg.includes('ofrecen') || msg.includes('incluye')) {
-        return chatbotResponses['servicios'];
-    }
-    if (msg.includes('ubicacion') || msg.includes('donde') || msg.includes('direccion') || msg.includes('llegar')) {
-        return chatbotResponses['ubicacion'];
-    }
-    if (msg.includes('reservar') || msg.includes('reservacion') || msg.includes('booking')) {
-        return chatbotResponses['reservar'];
-    }
-    if (msg.includes('mascota') || msg.includes('perro') || msg.includes('gato') || msg.includes('animal')) {
-        return chatbotResponses['mascotas'];
-    }
-    if (msg.includes('estacionamiento') || msg.includes('parking') || msg.includes('carro') || msg.includes('vehiculo')) {
-        return chatbotResponses['estacionamiento'];
-    }
-    if (msg.includes('precio') || msg.includes('costo') || msg.includes('tarifa') || msg.includes('cuanto')) {
-        return chatbotResponses['precios'];
-    }
-    if (msg.includes('desayuno') || msg.includes('breakfast')) {
-        return chatbotResponses['desayuno'];
-    }
-    if (msg.includes('pago') || msg.includes('pagar') || msg.includes('transferencia')) {
-        return chatbotResponses['pago'];
-    }
-    if (msg.includes('cancelar') || msg.includes('cancelacion')) {
-        return chatbotResponses['cancelacion'];
-    }
-    if (msg.includes('check-in') || msg.includes('checkin') || msg.includes('check-out') || msg.includes('checkout') || msg.includes('entrada') || msg.includes('salida')) {
-        return chatbotResponses['checkin'];
-    }
-    if (msg.includes('horario') || msg.includes('hora') || msg.includes('abierto')) {
-        return 'Check-in: 3:00 PM | Check-out: 12:00 PM | Desayuno: 7:00 AM a 10:00 AM | Restaurante cierra: 10:00 PM. Recepcion 24 horas.';
-    }
-    if (msg.includes('spa') || msg.includes('masaje') || msg.includes('relajacion')) {
-        return 'Contamos con servicio de spa con tratamientos corporales, faciales y terapias de relajacion. Puede reservar su sesion a traves de nuestro portal o contactarnos por WhatsApp.';
-    }
-    if (msg.includes('gym') || msg.includes('gimnasio') || msg.includes('ejercicio')) {
-        return 'Nuestro gimnasio cuenta con equipos de ultima generacion y entrenadores certificados. Esta disponible para todos los huespedes del hotel.';
-    }
-    if (msg.includes('restaurante') || msg.includes('comida') || msg.includes('comer')) {
-        return chatbotResponses['restaurante'];
-    }
-    if (msg.includes('piscina') || msg.includes('nadar')) {
-        return 'Contamos con piscina al aire libre con servicio de bar y ambiente tropical, disponible para huespedes del hotel.';
-    }
-    if (msg.includes('evento') || msg.includes('salon') || msg.includes('conferencia') || msg.includes('reunion')) {
-        return 'Disponemos de salones versatiles para eventos corporativos, conferencias, reuniones y celebraciones. Contactenos para cotizacion personalizada.';
-    }
-    if (msg.includes('whatsapp') || msg.includes('contacto') || msg.includes('telefono') || msg.includes('llamar')) {
-        return 'Puede contactarnos por WhatsApp al +58 424-8304994 o por correo a Dspahotelreservaciones@gmail.com. Estamos para servirle.';
-    }
-    if (msg.includes('hola') || msg.includes('buenas') || msg.includes('buenos')) {
-        return 'Bienvenido a D\'Spa Hotel. En que podemos ayudarle? Puede seleccionar una pregunta rapida o escribir su consulta.';
-    }
-    if (msg.includes('gracias') || msg.includes('thanks')) {
-        return 'Con gusto. Si tiene alguna otra consulta, no dude en preguntar. Sera un placer atenderle en D\'Spa Hotel.';
-    }
-
-    return 'Gracias por su consulta. Para informacion mas detallada, le invitamos a contactarnos por WhatsApp al +58 424-8304994 o por correo a Dspahotelreservaciones@gmail.com.';
+    // Send to API
+    fetch('/api/chat/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: message, history: chatHistory })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const indicator = document.getElementById('chatbotTypingIndicator');
+        if (indicator) indicator.remove();
+        
+        if (data.reply) {
+            chatHistory.push({ role: 'user', text: message });
+            chatHistory.push({ role: 'bot', text: data.reply });
+            addChatMessage(data.reply, 'bot');
+        } else {
+            addChatMessage('Lo siento, ocurrió un error.', 'bot');
+        }
+    })
+    .catch(error => {
+        const indicator = document.getElementById('chatbotTypingIndicator');
+        if (indicator) indicator.remove();
+        addChatMessage('Error de conexión. Intente más tarde.', 'bot');
+    });
 }
 
 function addChatMessage(text, sender) {

@@ -196,23 +196,47 @@ function createBookingRoomCard(room, typeName, nights, checkIn, checkOut, count)
         </div>`;
 }
 
+let selectedRoomPrice = 0;
+
+function updatePrice() {
+    if (!selectedRoomPrice) return;
+    const ci = document.getElementById('form_checkin').value;
+    const co = document.getElementById('form_checkout').value;
+    
+    if (ci && co) {
+        const d1 = new Date(ci);
+        const d2 = new Date(co);
+        const nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+        if (nights > 0) {
+            const total = (parseFloat(selectedRoomPrice) * nights).toFixed(2);
+            document.getElementById('priceCalculator').innerHTML = `
+                <div class="price-breakdown">
+                    <span>$${selectedRoomPrice} x ${nights} noche(s) = </span>
+                    <strong class="price-amount">$${total} <small>+ IVA</small></strong>
+                </div>`;
+            return;
+        }
+    }
+    document.getElementById('priceCalculator').innerHTML = '<span class="calculated-price">Seleccione fechas válidas para calcular</span>';
+}
+
 function selectRoom(roomId, price, checkIn, checkOut) {
     document.getElementById('form_room_id').value = roomId;
     document.getElementById('form_checkin').value = checkIn;
     document.getElementById('form_checkout').value = checkOut;
     document.getElementById('reservationFormSection').style.display = 'block';
 
-    const ci = new Date(checkIn);
-    const co = new Date(checkOut);
-    const nights = Math.ceil((co - ci) / (1000 * 60 * 60 * 24));
-    const total = (parseFloat(price) * nights).toFixed(2);
-    document.getElementById('priceCalculator').innerHTML = `
-        <div class="price-breakdown">
-            <span>$${price} x ${nights} noche(s) = </span>
-            <strong class="price-amount">$${total} <small>+ IVA</small></strong>
-        </div>`;
+    selectedRoomPrice = price;
+    updatePrice();
 
     document.getElementById('reservationFormSection').scrollIntoView({behavior: 'smooth'});
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const ciInput = document.getElementById('form_checkin');
+    const coInput = document.getElementById('form_checkout');
+    if (ciInput) ciInput.addEventListener('change', updatePrice);
+    if (coInput) coInput.addEventListener('change', updatePrice);
+});
 </script>
 {% endblock %}

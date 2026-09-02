@@ -48,11 +48,21 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-6">
+                                <style>
+                                    #id_password1, #id_password2 { border-right: none; }
+                                    .password-toggle-addon { border-left: none; }
+                                </style>
                                 <label for="id_password1" class="form-label">Contraseña</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                     {{ form.password1 }}
+                                    <span class="input-group-text text-muted password-toggle-addon" style="cursor: pointer; background: white;" onclick="togglePassword('id_password1', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
                                 </div>
+                                <small class="text-muted d-block mt-1">
+                                    <i class="fas fa-info-circle me-1"></i>Mínimo 8 caracteres. No debe ser muy común ni igual a tu usuario.
+                                </small>
                                 {% if form.password1.errors %}
                                 <small class="text-danger">{{ form.password1.errors.0 }}</small>
                                 {% endif %}
@@ -62,6 +72,9 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                     {{ form.password2 }}
+                                    <span class="input-group-text text-muted password-toggle-addon" style="cursor: pointer; background: white;" onclick="togglePassword('id_password2', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
                                 </div>
                                 {% if form.password2.errors %}
                                 <small class="text-danger">{{ form.password2.errors.0 }}</small>
@@ -87,4 +100,30 @@
         </div>
     </div>
 </section>
+
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Add Bootstrap classes to Django form inputs
+document.addEventListener("DOMContentLoaded", function() {
+    const formInputs = document.querySelectorAll('.auth-form input');
+    formInputs.forEach(input => {
+        if (input.type !== 'hidden' && input.type !== 'submit' && input.type !== 'checkbox') {
+            input.classList.add('form-control');
+        }
+    });
+});
+</script>
 {% endblock %}
