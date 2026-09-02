@@ -177,7 +177,6 @@ function searchRooms() {
     const checkIn = document.getElementById('check_in').value;
     const checkOut = document.getElementById('check_out').value;
     const adults = document.getElementById('adults').value;
-    const children = document.getElementById('children').value;
 
     if (!checkIn || !checkOut) {
         alert('Por favor seleccione las fechas de check-in y check-out.');
@@ -198,7 +197,7 @@ function searchRooms() {
     container.innerHTML = '<div class="col-12 text-center py-4"><div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Buscando...</span></div><p class="mt-2 text-muted">Buscando disponibilidad...</p></div>';
     resultsDiv.style.display = 'block';
 
-    fetch(`/api/search-availability/?check_in=${checkIn}&check_out=${checkOut}&adults=${adults}&children=${children}`)
+    fetch(`/api/search-availability/?check_in=${checkIn}&check_out=${checkOut}&adults=${adults}&children=0`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {

@@ -59,15 +59,11 @@
                     <label for="check_out" class="form-label">Check-out</label>
                     <input type="date" class="form-control" id="check_out" name="check_out" value="{{ tomorrow }}" min="{{ tomorrow }}" required>
                 </div>
-                <div class="col-md-2 col-6">
-                    <label for="adults" class="form-label">Adultos</label>
+                <div class="col-md-3 col-6">
+                    <label for="adults" class="form-label">Huéspedes</label>
                     <input type="number" class="form-control" id="adults" name="adults" value="1" min="1" max="4">
                 </div>
-                <div class="col-md-2 col-6">
-                    <label for="children" class="form-label">Niños</label>
-                    <input type="number" class="form-control" id="children" name="children" value="0" min="0" max="3">
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-3 col-6 d-flex align-items-end mt-3 mt-md-0">
                     <button type="button" class="btn btn-reservation w-100" onclick="searchRooms()">
                         <i class="fas fa-search me-1"></i> Buscar
                     </button>
@@ -219,7 +215,7 @@
                             {% if room.has_closet %}<span><i class="fas fa-door-closed"></i> Closet</span>{% endif %}
                         </div>
                         <div class="room-capacity">
-                            <i class="fas fa-user-friends"></i> {{ room.capacity_adults }} adultos, {{ room.capacity_children }} niños
+                            <i class="fas fa-user-friends"></i> {{ room.capacity_adults }} personas máx.
                         </div>
                         <div class="room-card-actions">
                             <a href="{% url 'room_detail' room.id %}" class="btn btn-outline-custom btn-sm">Ver Detalles</a>
