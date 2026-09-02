@@ -40,10 +40,18 @@ class PaymentProofInline(admin.TabularInline):
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'service_type', 'room', 'check_in', 'check_out', 'status', 'total_price')
-    list_filter = ('status', 'service_type', 'check_in')
+    list_display = ('id', 'customer', 'service_type', 'room', 'get_room_floor', 'get_room_channel', 'check_in', 'check_out', 'status', 'total_price')
+    list_filter = ('status', 'service_type', 'room__floor', 'room__sales_channel', 'check_in')
     search_fields = ('customer__user__first_name', 'customer__user__last_name', 'customer__id_document')
     ordering = ('-created_at',)
+
+    @admin.display(description='Piso', ordering='room__floor')
+    def get_room_floor(self, obj):
+        return obj.room.floor if obj.room else '-'
+
+    @admin.display(description='Canal', ordering='room__sales_channel')
+    def get_room_channel(self, obj):
+        return obj.room.get_sales_channel_display() if obj.room else '-'
     inlines = [PaymentProofInline]
 
     def has_change_permission(self, request, obj=None):

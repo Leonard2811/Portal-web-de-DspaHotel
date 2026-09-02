@@ -27,16 +27,19 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // ========== Chatbot ==========
 const chatbotResponses = {
-    'tipos_habitaciones': 'Contamos con Habitaciones Deluxe Matrimoniales y Dobles, equipadas con bano privado, TV, caja fuerte, closet y terraza.',
-    'servicios': 'Ofrecemos hospedaje, restaurante, gimnasio, spa, sauna, jacuzzi, piscina, salones para eventos y estacionamiento privado.',
+    'tipos_habitaciones': 'Contamos con 30 habitaciones: 20 Habitaciones Deluxe (cama matrimonial, para 2 personas) y 10 Habitaciones Dobles (dos camas, de 2 a 4 personas). Distribuidas en 5 pisos. Todas equipadas con bano privado, TV, caja fuerte, closet y terraza.',
+    'servicios': 'Ofrecemos hospedaje, restaurante (cierra a las 10:00 PM), gimnasio, spa, sauna, jacuzzi, piscina, salones para eventos y estacionamiento privado.',
     'ubicacion': 'Estamos en AV. Intercomunal, Lecheria, Estado Anzoategui, Venezuela.',
     'reservar': 'Debe registrarse en nuestro portal, buscar disponibilidad y completar el formulario de reservacion.',
-    'mascotas': 'Por politicas de higiene y confort, no aceptamos mascotas.',
+    'mascotas': 'No se permiten mascotas en el hotel. Agradecemos su comprension.',
     'estacionamiento': 'Si, contamos con estacionamiento privado con capacidad para 60 vehiculos.',
     'horario': 'Nuestro servicio de recepcion opera las 24 horas del dia, los 7 dias de la semana.',
     'pago': 'Aceptamos transferencias bancarias y pago movil. Los datos bancarios se proporcionan al momento de la reservacion.',
     'cancelacion': 'Las cancelaciones deben realizarse con al menos 24 horas de anticipacion.',
-    'checkin': 'El check-in es a partir de las 2:00 PM y el check-out hasta las 12:00 PM.',
+    'checkin': 'El check-in es a partir de las 3:00 PM y el check-out hasta las 12:00 PM.',
+    'precios': 'Nuestras habitaciones tienen un precio de $110 + IVA por noche (2 personas). En habitaciones Dobles, cada persona adicional tiene un costo de $20 por noche.',
+    'desayuno': 'El horario de desayuno es de 7:00 AM a 10:00 AM. El restaurante cierra a las 10:00 PM.',
+    'restaurante': 'Nuestro restaurante ofrece cocina nacional e internacional. Desayuno: 7:00 AM a 10:00 AM. El restaurante cierra a las 10:00 PM.',
 };
 
 function toggleChatbot() {
@@ -68,6 +71,9 @@ function getQuestionText(key) {
         'pago': 'Que metodos de pago aceptan?',
         'cancelacion': 'Cual es la politica de cancelacion?',
         'checkin': 'Cual es el horario de check-in?',
+        'precios': 'Cuales son los precios?',
+        'desayuno': 'Cual es el horario de desayuno?',
+        'restaurante': 'Cual es el horario del restaurante?',
     };
     return questions[key] || key;
 }
@@ -109,10 +115,13 @@ function findBestResponse(message) {
     if (msg.includes('estacionamiento') || msg.includes('parking') || msg.includes('carro') || msg.includes('vehiculo')) {
         return chatbotResponses['estacionamiento'];
     }
-    if (msg.includes('horario') || msg.includes('hora') || msg.includes('abierto')) {
-        return chatbotResponses['horario'];
+    if (msg.includes('precio') || msg.includes('costo') || msg.includes('tarifa') || msg.includes('cuanto')) {
+        return chatbotResponses['precios'];
     }
-    if (msg.includes('pago') || msg.includes('pagar') || msg.includes('transferencia') || msg.includes('precio')) {
+    if (msg.includes('desayuno') || msg.includes('breakfast')) {
+        return chatbotResponses['desayuno'];
+    }
+    if (msg.includes('pago') || msg.includes('pagar') || msg.includes('transferencia')) {
         return chatbotResponses['pago'];
     }
     if (msg.includes('cancelar') || msg.includes('cancelacion')) {
@@ -121,14 +130,17 @@ function findBestResponse(message) {
     if (msg.includes('check-in') || msg.includes('checkin') || msg.includes('check-out') || msg.includes('checkout') || msg.includes('entrada') || msg.includes('salida')) {
         return chatbotResponses['checkin'];
     }
+    if (msg.includes('horario') || msg.includes('hora') || msg.includes('abierto')) {
+        return 'Check-in: 3:00 PM | Check-out: 12:00 PM | Desayuno: 7:00 AM a 10:00 AM | Restaurante cierra: 10:00 PM. Recepcion 24 horas.';
+    }
     if (msg.includes('spa') || msg.includes('masaje') || msg.includes('relajacion')) {
         return 'Contamos con servicio de spa con tratamientos corporales, faciales y terapias de relajacion. Puede reservar su sesion a traves de nuestro portal o contactarnos por WhatsApp.';
     }
     if (msg.includes('gym') || msg.includes('gimnasio') || msg.includes('ejercicio')) {
         return 'Nuestro gimnasio cuenta con equipos de ultima generacion y entrenadores certificados. Esta disponible para todos los huespedes del hotel.';
     }
-    if (msg.includes('restaurante') || msg.includes('comida') || msg.includes('comer') || msg.includes('desayuno')) {
-        return 'Nuestro restaurante ofrece cocina nacional e internacional con ingredientes frescos. El desayuno esta incluido para huespedes del hotel.';
+    if (msg.includes('restaurante') || msg.includes('comida') || msg.includes('comer')) {
+        return chatbotResponses['restaurante'];
     }
     if (msg.includes('piscina') || msg.includes('nadar')) {
         return 'Contamos con piscina al aire libre con servicio de bar y ambiente tropical, disponible para huespedes del hotel.';
@@ -192,27 +204,27 @@ function searchRooms() {
             if (data.success) {
                 let html = '';
 
-                if (data.matrimonial_count === 0 && data.double_count === 0) {
+                if (data.deluxe_count === 0 && data.doble_count === 0) {
                     html = '<div class="col-12"><div class="alert alert-warning text-center"><i class="fas fa-exclamation-circle me-2"></i>No hay habitaciones disponibles para las fechas seleccionadas. Intente con otras fechas.</div></div>';
                 } else {
                     // Summary
                     html += `<div class="col-12 mb-3">
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle me-2"></i>
-                            <strong>${data.matrimonial_count + data.double_count}</strong> habitaciones disponibles para <strong>${data.nights}</strong> noche(s)
+                            <strong>${data.deluxe_count + data.doble_count}</strong> habitaciones disponibles para <strong>${data.nights}</strong> noche(s)
                         </div>
                     </div>`;
 
-                    // Matrimonial rooms
-                    if (data.matrimonial_count > 0 && data.matrimonial_room) {
-                        html += '<div class="col-12"><h5 class="mb-3"><i class="fas fa-bed me-2"></i>Habitaciones Deluxe Matrimonial</h5></div>';
-                        html += createAvailabilityCard(data.matrimonial_room, 'Deluxe Matrimonial', data.nights, data.matrimonial_count);
+                    // Deluxe rooms
+                    if (data.deluxe_count > 0 && data.deluxe_room) {
+                        html += '<div class="col-12"><h5 class="mb-3"><i class="fas fa-bed me-2"></i>Habitaciones Deluxe</h5></div>';
+                        html += createAvailabilityCard(data.deluxe_room, 'Deluxe', data.nights, data.deluxe_count);
                     }
 
-                    // Double rooms
-                    if (data.double_count > 0 && data.double_room) {
-                        html += '<div class="col-12 mt-3"><h5 class="mb-3"><i class="fas fa-bed me-2"></i>Habitaciones Deluxe Doble</h5></div>';
-                        html += createAvailabilityCard(data.double_room, 'Deluxe Doble', data.nights, data.double_count);
+                    // Doble rooms
+                    if (data.doble_count > 0 && data.doble_room) {
+                        html += '<div class="col-12 mt-3"><h5 class="mb-3"><i class="fas fa-bed me-2"></i>Habitaciones Dobles</h5></div>';
+                        html += createAvailabilityCard(data.doble_room, 'Doble', data.nights, data.doble_count);
                     }
                 }
 
@@ -228,21 +240,24 @@ function searchRooms() {
 }
 
 function createAvailabilityCard(room, typeName, nights, count) {
+    const extraFee = parseFloat(room.extra_guest_fee || 0);
+    const extraInfo = extraFee > 0 ? `<div class="mt-1"><small><i class="fas fa-info-circle me-1"></i>Persona adicional: $${extraFee}/noche</small></div>` : '';
     return `
         <div class="col-lg-6 col-md-6">
             <div class="booking-room-card">
                 <div class="booking-room-header">
-                    <h5>${typeName}</h5>
+                    <h5>Habitación ${typeName}</h5>
                     <span class="badge bg-success" style="font-size: 0.9rem;">${count} disponible(s)</span>
                 </div>
                 <div class="booking-room-body">
                     <p class="mb-2">${room.description}</p>
                     <div class="booking-room-price">
-                        <div><strong>Precio por noche:</strong> $${room.price}</div>
-                        <div><strong>Total ${nights} noche(s):</strong> <span style="color: var(--color-gold); font-weight: 700; font-size: 1.1rem;">$${room.total}</span></div>
+                        <div><strong>Precio por noche:</strong> $${room.price} <small>+ IVA</small></div>
+                        <div><strong>Total ${nights} noche(s):</strong> <span style="color: var(--color-gold); font-weight: 700; font-size: 1.1rem;">$${room.total} <small>+ IVA</small></span></div>
+                        ${extraInfo}
                     </div>
                     <div class="booking-room-capacity">
-                        <i class="fas fa-user-friends me-1"></i> ${room.capacity_adults} adultos, ${room.capacity_children} nino(s)
+                        <i class="fas fa-user-friends me-1"></i> ${room.capacity_adults} personas max.
                     </div>
                 </div>
                 <a href="/reservations/booking/?room_id=${room.id}" class="btn btn-reservation w-100" style="border-radius: 0 0 12px 12px;">

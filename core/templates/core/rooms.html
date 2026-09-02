@@ -10,45 +10,49 @@
     <img src="{% static 'images/rooms/habitacion matrimonial 1.jpg' %}" alt="Habitaciones" class="page-hero-bg">
     <div class="page-hero-content">
         <h1>Nuestras Habitaciones</h1>
-        <p>Confort y elegancia para una estancia inolvidable</p>
+        <p>30 habitaciones de confort y elegancia para una estancia inolvidable</p>
     </div>
 </section>
 
-<!-- Matrimonial Rooms -->
+<!-- Deluxe Rooms -->
 <section class="section-padding">
     <div class="container">
         <div class="text-center mb-5">
             <span class="section-tag">Deluxe</span>
-            <h2 class="section-title">Habitaciones Deluxe Matrimonial</h2>
-            <p class="section-subtitle">Diseñada para una o dos personas. Ambiente cómodo y elegante.</p>
+            <h2 class="section-title">Habitaciones Deluxe</h2>
+            <p class="section-subtitle">Cama matrimonial king size. Diseñada para 2 personas. Pisos 1 al 5.</p>
         </div>
         <div class="row g-5 align-items-center">
             <div class="col-lg-7">
-                <div id="matrimonialCarousel" class="carousel slide room-carousel" data-bs-ride="carousel">
+                <div id="deluxeCarousel" class="carousel slide room-carousel" data-bs-ride="carousel">
                     <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#matrimonialCarousel" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#matrimonialCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#matrimonialCarousel" data-bs-slide-to="2"></button>
+                        <button type="button" data-bs-target="#deluxeCarousel" data-bs-slide-to="0" class="active"></button>
+                        <button type="button" data-bs-target="#deluxeCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#deluxeCarousel" data-bs-slide-to="2"></button>
                     </div>
                     <div class="carousel-inner rounded-4">
                         <div class="carousel-item active">
-                            <img src="{% static 'images/rooms/habitacion matrimonial 1.jpg' %}" class="d-block w-100" alt="Matrimonial 1">
+                            <img src="{% static 'images/rooms/habitacion matrimonial 1.jpg' %}" class="d-block w-100" alt="Deluxe 1">
                         </div>
                         <div class="carousel-item">
-                            <img src="{% static 'images/rooms/habitacion matrimonial 2.jpg' %}" class="d-block w-100" alt="Matrimonial 2">
+                            <img src="{% static 'images/rooms/habitacion matrimonial 2.jpg' %}" class="d-block w-100" alt="Deluxe 2">
                         </div>
                         <div class="carousel-item">
-                            <img src="{% static 'images/rooms/habitacion matrimonial 3.jpg' %}" class="d-block w-100" alt="Matrimonial 3">
+                            <img src="{% static 'images/rooms/habitacion matrimonial 3.jpg' %}" class="d-block w-100" alt="Deluxe 3">
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#matrimonialCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#matrimonialCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#deluxeCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#deluxeCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
                 </div>
             </div>
             <div class="col-lg-5">
                 <div class="room-info-card">
-                    <h3>Deluxe Matrimonial</h3>
+                    <h3>Habitación Deluxe</h3>
                     <p>Habitación con cama matrimonial king size, diseñada para brindar el máximo confort. Ambiente cálido y elegante con todas las comodidades para su descanso.</p>
+                    <div class="room-price-display mt-3 mb-3">
+                        <span class="price-label">Precio por noche</span>
+                        <span class="price-amount">$110 <small>+ IVA</small></span>
+                    </div>
                     <div class="amenities-grid">
                         <div class="amenity-item"><i class="fas fa-bath"></i><span>Baño Privado</span></div>
                         <div class="amenity-item"><i class="fas fa-door-closed"></i><span>Closet</span></div>
@@ -57,12 +61,12 @@
                         <div class="amenity-item"><i class="fas fa-umbrella-beach"></i><span>Terraza</span></div>
                     </div>
                     <div class="room-capacity-info">
-                        <i class="fas fa-user-friends"></i> Capacidad: 2 adultos, 1 niño
+                        <i class="fas fa-user-friends"></i> Capacidad: 2 personas
                     </div>
                     <div class="room-actions mt-4">
-                        {% if matrimonial_rooms.first %}
-                        <a href="{% url 'room_detail' matrimonial_rooms.first.id %}" class="btn btn-outline-custom">Ver Detalles</a>
-                        <a href="{% url 'booking' %}?room_id={{ matrimonial_rooms.first.id }}" class="btn btn-reservation">Reservar Ahora</a>
+                        {% if deluxe_rooms.first %}
+                        <a href="{% url 'room_detail' deluxe_rooms.first.id %}" class="btn btn-outline-custom">Ver Detalles</a>
+                        <a href="{% url 'booking' %}?room_id={{ deluxe_rooms.first.id }}" class="btn btn-reservation">Reservar Ahora</a>
                         {% endif %}
                     </div>
                 </div>
@@ -71,22 +75,22 @@
     </div>
 </section>
 
-<!-- Double Rooms -->
+<!-- Doble Rooms -->
 <section class="section-padding bg-light-custom">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="section-tag">Deluxe</span>
-            <h2 class="section-title">Habitaciones Deluxe Doble</h2>
-            <p class="section-subtitle">Diseñada para una o dos personas con espacio adicional.</p>
+            <span class="section-tag">Doble</span>
+            <h2 class="section-title">Habitaciones Dobles</h2>
+            <p class="section-subtitle">Dos camas individuales. Para 2 a 4 personas. Pisos 1 y 2.</p>
         </div>
         <div class="row g-5 align-items-center flex-lg-row-reverse">
             <div class="col-lg-7">
-                <div id="doubleCarousel" class="carousel slide room-carousel" data-bs-ride="carousel">
+                <div id="dobleCarousel" class="carousel slide room-carousel" data-bs-ride="carousel">
                     <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="2"></button>
-                        <button type="button" data-bs-target="#doubleCarousel" data-bs-slide-to="3"></button>
+                        <button type="button" data-bs-target="#dobleCarousel" data-bs-slide-to="0" class="active"></button>
+                        <button type="button" data-bs-target="#dobleCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#dobleCarousel" data-bs-slide-to="2"></button>
+                        <button type="button" data-bs-target="#dobleCarousel" data-bs-slide-to="3"></button>
                     </div>
                     <div class="carousel-inner rounded-4">
                         <div class="carousel-item active">
@@ -102,14 +106,21 @@
                             <img src="{% static 'images/rooms/habitacion doble 4.jpg' %}" class="d-block w-100" alt="Doble 4">
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#doubleCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#doubleCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#dobleCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#dobleCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
                 </div>
             </div>
             <div class="col-lg-5">
                 <div class="room-info-card">
-                    <h3>Deluxe Doble</h3>
-                    <p>Habitación con dos camas individuales o cama doble, perfecta para compartir con amplio espacio y comodidades de primer nivel.</p>
+                    <h3>Habitación Doble</h3>
+                    <p>Habitación con dos camas individuales, perfecta para compartir con amplio espacio y comodidades de primer nivel. Ideal para amigos, familia o colegas.</p>
+                    <div class="room-price-display mt-3 mb-3">
+                        <span class="price-label">Precio por noche (2 personas)</span>
+                        <span class="price-amount">$110 <small>+ IVA</small></span>
+                    </div>
+                    <div class="mb-3" style="font-size: 0.9rem; color: var(--color-gold);">
+                        <i class="fas fa-info-circle me-1"></i> Persona adicional: <strong>$20</strong> por noche
+                    </div>
                     <div class="amenities-grid">
                         <div class="amenity-item"><i class="fas fa-bath"></i><span>Baño Privado</span></div>
                         <div class="amenity-item"><i class="fas fa-door-closed"></i><span>Closet</span></div>
@@ -118,12 +129,12 @@
                         <div class="amenity-item"><i class="fas fa-umbrella-beach"></i><span>Terraza</span></div>
                     </div>
                     <div class="room-capacity-info">
-                        <i class="fas fa-user-friends"></i> Capacidad: 2 adultos, 1 niño
+                        <i class="fas fa-user-friends"></i> Capacidad: 2 a 4 personas
                     </div>
                     <div class="room-actions mt-4">
-                        {% if double_rooms.first %}
-                        <a href="{% url 'room_detail' double_rooms.first.id %}" class="btn btn-outline-custom">Ver Detalles</a>
-                        <a href="{% url 'booking' %}?room_id={{ double_rooms.first.id }}" class="btn btn-reservation">Reservar Ahora</a>
+                        {% if doble_rooms.first %}
+                        <a href="{% url 'room_detail' doble_rooms.first.id %}" class="btn btn-outline-custom">Ver Detalles</a>
+                        <a href="{% url 'booking' %}?room_id={{ doble_rooms.first.id }}" class="btn btn-reservation">Reservar Ahora</a>
                         {% endif %}
                     </div>
                 </div>
@@ -132,8 +143,58 @@
     </div>
 </section>
 
-<!-- General Amenities Gallery -->
+<!-- Hotel Policies -->
 <section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag">Información</span>
+            <h2 class="section-title">Políticas del Hotel</h2>
+            <p class="section-subtitle">Información importante para su estadía</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card text-center p-4">
+                    <div class="mb-3"><i class="fas fa-sign-in-alt" style="font-size: 2.5rem; color: var(--color-gold);"></i></div>
+                    <h5>Check-in</h5>
+                    <p class="mb-0" style="font-size: 1.5rem; font-weight: 700; color: var(--color-gold);">3:00 PM</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card text-center p-4">
+                    <div class="mb-3"><i class="fas fa-sign-out-alt" style="font-size: 2.5rem; color: var(--color-gold);"></i></div>
+                    <h5>Check-out</h5>
+                    <p class="mb-0" style="font-size: 1.5rem; font-weight: 700; color: var(--color-gold);">12:00 PM</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card text-center p-4">
+                    <div class="mb-3"><i class="fas fa-coffee" style="font-size: 2.5rem; color: var(--color-gold);"></i></div>
+                    <h5>Desayuno</h5>
+                    <p class="mb-0" style="font-size: 1.5rem; font-weight: 700; color: var(--color-gold);">7:00 - 10:00 AM</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card text-center p-4">
+                    <div class="mb-3"><i class="fas fa-utensils" style="font-size: 2.5rem; color: var(--color-gold);"></i></div>
+                    <h5>Restaurante</h5>
+                    <p class="mb-0" style="font-size: 1.3rem; font-weight: 700; color: var(--color-gold);">Cierra a las 10:00 PM</p>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mt-2">
+            <div class="col-lg-6 col-md-6 mx-auto">
+                <div class="service-card text-center p-4">
+                    <div class="mb-3"><i class="fas fa-paw" style="font-size: 2.5rem; color: #e74c3c;"></i></div>
+                    <h5>Mascotas</h5>
+                    <p class="mb-0"><strong>No se permiten mascotas</strong> en las instalaciones del hotel.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- General Amenities Gallery -->
+<section class="section-padding bg-light-custom">
     <div class="container">
         <div class="text-center mb-5">
             <span class="section-tag">Comodidades</span>

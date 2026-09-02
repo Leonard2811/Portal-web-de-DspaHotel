@@ -12,10 +12,10 @@ def home(request):
     hotel_info = HotelInfo.objects.first()
     # Get one of each type
     featured_rooms = []
-    matrimonial = Room.objects.filter(room_type='matrimonial', is_active=True).first()
-    double = Room.objects.filter(room_type='double', is_active=True).first()
-    if matrimonial: featured_rooms.append(matrimonial)
-    if double: featured_rooms.append(double)
+    deluxe = Room.objects.filter(room_type='deluxe', is_active=True, sales_channel='web').first()
+    doble = Room.objects.filter(room_type='doble', is_active=True, sales_channel='web').first()
+    if deluxe: featured_rooms.append(deluxe)
+    if doble: featured_rooms.append(doble)
     
     services = Service.objects.filter(is_active=True).order_by('order')[:6]
 
@@ -52,46 +52,48 @@ def search_availability(request):
                 check_out__gt=check_in_date
             ).values_list('room_id', flat=True)
 
-            available_matrimonial = Room.objects.filter(
-                room_type='matrimonial', is_active=True
+            available_deluxe = Room.objects.filter(
+                room_type='deluxe', is_active=True, sales_channel='web'
             ).exclude(id__in=occupied_rooms)
 
-            available_double = Room.objects.filter(
-                room_type='double', is_active=True
+            available_doble = Room.objects.filter(
+                room_type='doble', is_active=True, sales_channel='web'
             ).exclude(id__in=occupied_rooms)
 
             total_guests = adults + children
-            available_matrimonial = [room for room in available_matrimonial if room.capacity_adults + room.capacity_children >= total_guests]
-            available_double = [room for room in available_double if room.capacity_adults + room.capacity_children >= total_guests]
+            available_deluxe = [room for room in available_deluxe if room.capacity_adults + room.capacity_children >= total_guests]
+            available_doble = [room for room in available_doble if room.capacity_adults + room.capacity_children >= total_guests]
 
             nights = (check_out_date - check_in_date).days
             
-            mat_room = available_matrimonial[0] if available_matrimonial else None
-            dob_room = available_double[0] if available_double else None
+            deluxe_room = available_deluxe[0] if available_deluxe else None
+            doble_room = available_doble[0] if available_doble else None
 
             return JsonResponse({
                 'success': True,
                 'nights': nights,
-                'matrimonial_count': len(available_matrimonial),
-                'double_count': len(available_double),
-                'matrimonial_room': {
-                    'id': mat_room.id,
-                    'number': mat_room.room_number,
-                    'price': str(mat_room.price_per_night),
-                    'total': str(mat_room.price_per_night * nights),
-                    'description': mat_room.description,
-                    'capacity_adults': mat_room.capacity_adults,
-                    'capacity_children': mat_room.capacity_children,
-                } if mat_room else None,
-                'double_room': {
-                    'id': dob_room.id,
-                    'number': dob_room.room_number,
-                    'price': str(dob_room.price_per_night),
-                    'total': str(dob_room.price_per_night * nights),
-                    'description': dob_room.description,
-                    'capacity_adults': dob_room.capacity_adults,
-                    'capacity_children': dob_room.capacity_children,
-                } if dob_room else None,
+                'deluxe_count': len(available_deluxe),
+                'doble_count': len(available_doble),
+                'deluxe_room': {
+                    'id': deluxe_room.id,
+                    'number': deluxe_room.room_number,
+                    'price': str(deluxe_room.price_per_night),
+                    'total': str(deluxe_room.price_per_night * nights),
+                    'description': deluxe_room.description,
+                    'capacity_adults': deluxe_room.capacity_adults,
+                    'capacity_children': deluxe_room.capacity_children,
+                    'extra_guest_fee': str(deluxe_room.extra_guest_fee),
+                } if deluxe_room else None,
+                'doble_room': {
+                    'id': doble_room.id,
+                    'number': doble_room.room_number,
+                    'price': str(doble_room.price_per_night),
+                    'total': str(doble_room.price_per_night * nights),
+                    'description': doble_room.description,
+                    'capacity_adults': doble_room.capacity_adults,
+                    'capacity_children': doble_room.capacity_children,
+                    'extra_guest_fee': str(doble_room.extra_guest_fee),
+                } if doble_room else None,
             })
 
     return JsonResponse({'success': False})
@@ -118,18 +120,18 @@ def services_view(request):
 
 
 def rooms_view(request):
-    matrimonial_rooms = Room.objects.filter(room_type='matrimonial', is_active=True)
-    double_rooms = Room.objects.filter(room_type='double', is_active=True)
+    deluxe_rooms = Room.objects.filter(room_type='deluxe', is_active=True, sales_channel='web')
+    doble_rooms = Room.objects.filter(room_type='doble', is_active=True, sales_channel='web')
 
     context = {
-        'matrimonial_rooms': matrimonial_rooms,
-        'double_rooms': double_rooms,
+        'deluxe_rooms': deluxe_rooms,
+        'doble_rooms': doble_rooms,
     }
     return render(request, 'core/rooms.html', context)
 
 
 def room_detail(request, room_id):
-    room = get_object_or_404(Room, id=room_id, is_active=True)
+    room = get_object_or_404(Room, id=room_id, is_active=True, sales_channel='web')
     context = {
         'room': room,
     }

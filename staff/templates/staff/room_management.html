@@ -10,15 +10,54 @@
             <h2 class="section-title mb-0"><i class="fas fa-door-open me-2"></i>Gestión de Habitaciones</h2>
             <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Dashboard</a>
         </div>
+
+        <!-- Filtros -->
+        <div class="card mb-4" style="background: var(--color-bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;">
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-3 col-6">
+                        <label class="form-label"><i class="fas fa-building me-1"></i>Piso</label>
+                        <select name="floor" class="form-select">
+                            <option value="">Todos los pisos</option>
+                            {% for f in floors %}
+                            <option value="{{ f }}" {% if floor_filter == f|stringformat:"d" %}selected{% endif %}>Piso {{ f }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label class="form-label"><i class="fas fa-tags me-1"></i>Canal de Venta</label>
+                        <select name="channel" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="web" {% if channel_filter == 'web' %}selected{% endif %}>Portal Web</option>
+                            <option value="puerta" {% if channel_filter == 'puerta' %}selected{% endif %}>Venta por Puerta</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label class="form-label"><i class="fas fa-bed me-1"></i>Tipo</label>
+                        <select name="type" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="deluxe" {% if type_filter == 'deluxe' %}selected{% endif %}>Deluxe</option>
+                            <option value="doble" {% if type_filter == 'doble' %}selected{% endif %}>Doble</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <button type="submit" class="btn btn-reservation w-100"><i class="fas fa-filter me-1"></i>Filtrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-custom table-hover">
                 <thead>
                     <tr>
                         <th>Número</th>
+                        <th>Piso</th>
                         <th>Tipo</th>
                         <th>Capacidad</th>
                         <th>Precio/Noche</th>
                         <th>Estado</th>
+                        <th>Canal de Venta</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
@@ -26,9 +65,10 @@
                     {% for room in rooms %}
                     <tr>
                         <td><strong>{{ room.room_number }}</strong></td>
+                        <td>{{ room.floor }}</td>
                         <td>{{ room.get_room_type_display }}</td>
-                        <td>{{ room.capacity_adults }}A / {{ room.capacity_children }}N</td>
-                        <td>${{ room.price_per_night }}</td>
+                        <td>{{ room.capacity_adults }} pers.</td>
+                        <td>${{ room.price_per_night }} + IVA</td>
                         <td>
                             <span class="badge
                                 {% if room.status == 'available' %}bg-success
@@ -40,15 +80,24 @@
                             </span>
                         </td>
                         <td>
+                            <span class="badge {% if room.sales_channel == 'web' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                {{ room.get_sales_channel_display }}
+                            </span>
+                        </td>
+                        <td>
                             {% if not is_readonly %}
-                            <form method="post" class="d-flex gap-1">
+                            <form method="post" class="d-flex gap-1 flex-wrap">
                                 {% csrf_token %}
                                 <input type="hidden" name="room_id" value="{{ room.id }}">
-                                <select name="status" class="form-select form-select-sm" style="width: auto;">
+                                <select name="status" class="form-select form-select-sm" style="width: auto; min-width: 120px;">
                                     <option value="available" {% if room.status == 'available' %}selected{% endif %}>Disponible</option>
                                     <option value="occupied" {% if room.status == 'occupied' %}selected{% endif %}>Ocupada</option>
                                     <option value="maintenance" {% if room.status == 'maintenance' %}selected{% endif %}>Mantenimiento</option>
                                     <option value="reserved" {% if room.status == 'reserved' %}selected{% endif %}>Reservada</option>
+                                </select>
+                                <select name="sales_channel" class="form-select form-select-sm" style="width: auto; min-width: 120px;">
+                                    <option value="web" {% if room.sales_channel == 'web' %}selected{% endif %}>Portal Web</option>
+                                    <option value="puerta" {% if room.sales_channel == 'puerta' %}selected{% endif %}>Puerta</option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-reservation"><i class="fas fa-save"></i></button>
                             </form>

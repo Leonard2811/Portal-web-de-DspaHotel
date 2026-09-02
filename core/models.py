@@ -56,8 +56,8 @@ class Service(models.Model):
 
 class Room(models.Model):
     ROOM_TYPES = [
-        ('matrimonial', 'Habitación Deluxe Matrimonial'),
-        ('double', 'Habitación Deluxe Doble'),
+        ('doble', 'Habitación Doble'),
+        ('deluxe', 'Habitación Deluxe'),
     ]
     STATUS_CHOICES = [
         ('available', 'Disponible'),
@@ -66,14 +66,22 @@ class Room(models.Model):
         ('reserved', 'Reservada'),
     ]
 
+    SALES_CHANNEL_CHOICES = [
+        ('web', 'Portal Web'),
+        ('puerta', 'Venta por Puerta'),
+    ]
+
     room_type = models.CharField(max_length=20, choices=ROOM_TYPES, verbose_name="Tipo")
     room_number = models.CharField(max_length=10, unique=True, verbose_name="Número")
+    floor = models.IntegerField(default=1, verbose_name="Piso")
     description = models.TextField(verbose_name="Descripción")
     detailed_description = models.TextField(verbose_name="Descripción Detallada", help_text="Incluir amenities y características")
     capacity_adults = models.IntegerField(default=2, verbose_name="Capacidad Adultos")
-    capacity_children = models.IntegerField(default=1, verbose_name="Capacidad Niños")
-    price_per_night = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio por Noche")
+    capacity_children = models.IntegerField(default=0, verbose_name="Capacidad Niños")
+    price_per_night = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio por Noche", help_text="Precio base en USD (sin IVA)")
+    extra_guest_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Cargo por Persona Adicional", help_text="Aplica para hab. dobles ($20 por persona adicional)")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available', verbose_name="Estado")
+    sales_channel = models.CharField(max_length=20, choices=SALES_CHANNEL_CHOICES, default='web', verbose_name="Canal de Venta", help_text="Las habitaciones de 'Puerta' no se muestran en el portal web")
     has_terrace = models.BooleanField(default=True, verbose_name="Terraza")
     has_safe = models.BooleanField(default=True, verbose_name="Caja Fuerte")
     has_tv = models.BooleanField(default=True, verbose_name="TV")

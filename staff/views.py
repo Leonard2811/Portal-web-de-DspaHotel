@@ -229,20 +229,48 @@ def delete_reservation(request, reservation_id):
 @staff_required
 def room_management(request):
     """Gestión de habitaciones"""
-    rooms = Room.objects.all().order_by('room_type', 'room_number')
+    rooms = Room.objects.all().order_by('floor', 'room_number')
     readonly = _is_recepcionista(request.user)
+
+    # Filtros
+    floor_filter = request.GET.get('floor', '')
+    channel_filter = request.GET.get('channel', '')
+    type_filter = request.GET.get('type', '')
+
+    if floor_filter:
+        rooms = rooms.filter(floor=int(floor_filter))
+    if channel_filter:
+        rooms = rooms.filter(sales_channel=channel_filter)
+    if type_filter:
+        rooms = rooms.filter(room_type=type_filter)
 
     if request.method == 'POST' and not readonly:
         room_id = request.POST.get('room_id')
         new_status = request.POST.get('status')
+        new_channel = request.POST.get('sales_channel')
         room = get_object_or_404(Room, id=room_id)
-        room.status = new_status
+
+        if new_status:
+            room.status = new_status
+        if new_channel:
+            room.sales_channel = new_channel
+
         room.save()
-        messages.success(request, f'Habitación {room.room_number} actualizada a {room.get_status_display()}.')
+        messages.success(request, f'Habitación {room.room_number} actualizada.')
     elif request.method == 'POST' and readonly:
         messages.error(request, 'No tienes permisos para modificar habitaciones.')
 
-    context = {'rooms': rooms, 'is_readonly': readonly}
+    # Pisos disponibles para el filtro
+    floors = sorted(set(Room.objects.values_list('floor', flat=True)))
+
+    context = {
+        'rooms': rooms,
+        'is_readonly': readonly,
+        'floors': floors,
+        'floor_filter': floor_filter,
+        'channel_filter': channel_filter,
+        'type_filter': type_filter,
+    }
     return render(request, 'staff/room_management.html', context)
 
 

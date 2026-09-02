@@ -55,8 +55,9 @@ class RoomImageInline(admin.TabularInline):
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ('room_number', 'room_type', 'status', 'price_per_night', 'is_active')
-    list_filter = ('room_type', 'status', 'is_active')
+    list_display = ('room_number', 'room_type', 'floor', 'status', 'sales_channel', 'price_per_night', 'extra_guest_fee', 'is_active')
+    list_filter = ('room_type', 'floor', 'sales_channel', 'status', 'is_active')
+    list_editable = ('sales_channel', 'status')
     search_fields = ('room_number',)
     inlines = [RoomImageInline]
 
