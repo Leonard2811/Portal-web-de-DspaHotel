@@ -99,6 +99,10 @@
                     <div>
                         <div class="room-stat-value">{{ available_rooms }}</div>
                         <div class="room-stat-label">Disponibles</div>
+                        <div class="small mt-1 text-muted">
+                            <span title="Portal Web"><i class="fas fa-globe me-1"></i>{{ available_web }}</span> | 
+                            <span title="Puerta"><i class="fas fa-door-open me-1"></i>{{ available_door }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -108,6 +112,10 @@
                     <div>
                         <div class="room-stat-value">{{ occupied_rooms }}</div>
                         <div class="room-stat-label">Ocupadas</div>
+                        <div class="small mt-1 text-muted">
+                            <span title="Portal Web"><i class="fas fa-globe me-1"></i>{{ occupied_web }}</span> | 
+                            <span title="Puerta"><i class="fas fa-door-open me-1"></i>{{ occupied_door }}</span>
+                        </div>
                     </div>
                 </div>
             </div>

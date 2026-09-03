@@ -7,7 +7,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from .models import Service, Room, RoomImage, ContactInfo, HotelInfo
 from datetime import datetime, timedelta
 
@@ -255,17 +256,22 @@ def chatbot_api(request):
         if not user_message:
             return JsonResponse({'error': 'Mensaje vacío'}, status=400)
 
-        api_key = os.environ.get('GEMINI_API_KEY')
+        from dotenv import dotenv_values
+        from django.conf import settings
+        env_path = os.path.join(settings.BASE_DIR, '.env')
+        env_vars = dotenv_values(env_path)
+        api_key = env_vars.get('GEMINI_API_KEY', '').strip()
+        
         if not api_key:
             return JsonResponse({'reply': 'La IA no está configurada (Falta API Key). Contacte al administrador.'})
 
-        genai.configure(api_key=api_key)
+        client = genai.Client(api_key=api_key)
         
         # Format history for Gemini
         gemini_history = []
         for msg in history:
             role = 'user' if msg.get('role') == 'user' else 'model'
-            gemini_history.append({"role": role, "parts": [msg.get('text', '')]})
+            gemini_history.append(types.Content(role=role, parts=[types.Part.from_text(text=msg.get('text', ''))]))
             
         # System prompt with hotel details and instructions
         today_str = datetime.now().strftime('%Y-%m-%d')
@@ -298,13 +304,15 @@ def chatbot_api(request):
         - Cómo reservar: A través del portal web, buscando disponibilidad y llenando el formulario.
         """
 
-        model = genai.GenerativeModel(
-            model_name="gemini-3.6-flash",
-            system_instruction=system_instruction,
-            tools=[check_hotel_availability]
+        chat = client.chats.create(
+            model="gemini-3.6-flash",
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                tools=[check_hotel_availability],
+            ),
+            history=gemini_history
         )
 
-        chat = model.start_chat(history=gemini_history, enable_automatic_function_calling=True)
         response = chat.send_message(user_message)
         
         return JsonResponse({'reply': response.text.strip()})

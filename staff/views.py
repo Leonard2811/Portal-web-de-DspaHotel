@@ -79,7 +79,13 @@ def dashboard(request):
     # Habitaciones
     total_rooms = Room.objects.filter(is_active=True).count()
     available_rooms = Room.objects.filter(is_active=True, status='available').count()
+    available_web = Room.objects.filter(is_active=True, status='available', sales_channel='web').count()
+    available_door = Room.objects.filter(is_active=True, status='available', sales_channel='puerta').count()
+    
     occupied_rooms = Room.objects.filter(is_active=True, status='occupied').count()
+    occupied_web = Room.objects.filter(is_active=True, status='occupied', sales_channel='web').count()
+    occupied_door = Room.objects.filter(is_active=True, status='occupied', sales_channel='puerta').count()
+    
     maintenance_rooms = Room.objects.filter(is_active=True, status='maintenance').count()
 
     # Check-ins y check-outs del día
@@ -116,7 +122,11 @@ def dashboard(request):
         'total_income': total_income,
         'total_rooms': total_rooms,
         'available_rooms': available_rooms,
+        'available_web': available_web,
+        'available_door': available_door,
         'occupied_rooms': occupied_rooms,
+        'occupied_web': occupied_web,
+        'occupied_door': occupied_door,
         'maintenance_rooms': maintenance_rooms,
         'todays_checkins': todays_checkins,
         'todays_checkouts': todays_checkouts,
