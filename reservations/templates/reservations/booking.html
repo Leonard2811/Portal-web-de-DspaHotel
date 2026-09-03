@@ -22,9 +22,7 @@
                 <div class="col-md-3 col-6">
                     <label for="booking_service" class="form-label">Servicio</label>
                     <select class="form-select" id="booking_service" name="service_type">
-                        {% for value, label in service_choices %}
-                        <option value="{{ value }}" {% if service_type == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
+                        <option value="room" selected>Habitación</option>
                     </select>
                 </div>
                 <div class="col-md-2 col-6">
