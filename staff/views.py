@@ -198,7 +198,7 @@ def verify_payment(request, payment_id):
                 html_message = render_to_string('staff/emails/payment_verified.html', context)
                 
                 subject = 'Confirmación de Pago y Reservación'
-                text_content = f'Hola {payment.reservation.customer.user.first_name},\n\nTu pago ha sido verificado y tu reservación #{payment.reservation.id} está confirmada.\n\n¡Gracias por elegir DSPA Hotel!'
+                text_content = f'Hola {payment.reservation.customer.user.first_name},\n\nTu pago ha sido verificado y tu reservación está confirmada.\n\n¡Gracias por elegir DSPA Hotel!'
                 from_email = settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@dspahotel.com'
                 
                 msg = EmailMultiAlternatives(subject, text_content, from_email, [customer_email])
@@ -237,7 +237,7 @@ def verify_payment(request, payment_id):
                 
                 reason = f"Notas del personal: {notes}\n" if notes else ""
                 subject = 'Problema con tu Pago de Reservación'
-                text_content = f'Hola {payment.reservation.customer.user.first_name},\n\nLamentablemente, ha habido un problema al verificar el pago de tu reservación #{payment.reservation.id}. El comprobante ha sido rechazado.\n\n{reason}Por favor, contacta con nosotros para más información o sube un nuevo comprobante.\n\nAtentamente,\nEl equipo de DSPA Hotel.'
+                text_content = f'Hola {payment.reservation.customer.user.first_name},\n\nLamentablemente, ha habido un problema al verificar el pago de tu reservación. El comprobante ha sido rechazado.\n\n{reason}Por favor, contacta con nosotros para más información o sube un nuevo comprobante.\n\nAtentamente,\nEl equipo de DSPA Hotel.'
                 from_email = settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@dspahotel.com'
                 
                 msg = EmailMultiAlternatives(subject, text_content, from_email, [customer_email])
