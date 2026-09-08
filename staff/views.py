@@ -8,7 +8,12 @@ from reservations.models import Reservation, PaymentProof, Customer
 from core.models import Room
 from .models import StaffProfile
 from datetime import datetime, date
-
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.templatetags.static import static
+from email.mime.image import MIMEImage
+import os
 
 def staff_required(view_func):
     """Decorador para verificar que el usuario es staff"""
@@ -174,12 +179,78 @@ def verify_payment(request, payment_id):
                 payment.reservation.room.status = 'reserved'
                 payment.reservation.room.save()
             messages.success(request, f'Pago verificado. Reservación #{payment.reservation.id} confirmada.')
+            
+            # Enviar correo de confirmación
+            customer_email = payment.reservation.customer.user.email
+            if customer_email:
+                logo_url = request.build_absolute_uri(static('images/logo/logo de empresa.PNG'))
+                portal_url = request.build_absolute_uri('/')
+                
+                context = {
+                    'customer_name': payment.reservation.customer.user.first_name,
+                    'reservation_id': payment.reservation.id,
+                    'service_name': payment.reservation.get_service_type_display(),
+                    'check_in': payment.reservation.check_in.strftime('%d/%m/%Y'),
+                    'check_out': payment.reservation.check_out.strftime('%d/%m/%Y'),
+                    'portal_url': portal_url,
+                    'year': date.today().year,
+                }
+                html_message = render_to_string('staff/emails/payment_verified.html', context)
+                
+                subject = 'Confirmación de Pago y Reservación'
+                text_content = f'Hola {payment.reservation.customer.user.first_name},\n\nTu pago ha sido verificado y tu reservación #{payment.reservation.id} está confirmada.\n\n¡Gracias por elegir DSPA Hotel!'
+                from_email = settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@dspahotel.com'
+                
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [customer_email])
+                msg.attach_alternative(html_message, "text/html")
+                
+                logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo', 'logo de empresa.PNG')
+                if os.path.exists(logo_path):
+                    with open(logo_path, 'rb') as img:
+                        logo_image = MIMEImage(img.read())
+                        logo_image.add_header('Content-ID', '<logo>')
+                        msg.attach(logo_image)
+                        
+                msg.send(fail_silently=False)
+
         elif action == 'reject':
             payment.verification_status = 'rejected'
             payment.save()
             payment.reservation.status = 'pending'
             payment.reservation.save()
             messages.warning(request, f'Pago rechazado para Reservación #{payment.reservation.id}.')
+            
+            # Enviar correo de rechazo
+            customer_email = payment.reservation.customer.user.email
+            if customer_email:
+                logo_url = request.build_absolute_uri(static('images/logo/logo de empresa.PNG'))
+                portal_url = request.build_absolute_uri('/')
+                
+                context = {
+                    'customer_name': payment.reservation.customer.user.first_name,
+                    'reservation_id': payment.reservation.id,
+                    'notes': notes,
+                    'portal_url': portal_url,
+                    'year': date.today().year,
+                }
+                html_message = render_to_string('staff/emails/payment_rejected.html', context)
+                
+                reason = f"Notas del personal: {notes}\n" if notes else ""
+                subject = 'Problema con tu Pago de Reservación'
+                text_content = f'Hola {payment.reservation.customer.user.first_name},\n\nLamentablemente, ha habido un problema al verificar el pago de tu reservación #{payment.reservation.id}. El comprobante ha sido rechazado.\n\n{reason}Por favor, contacta con nosotros para más información o sube un nuevo comprobante.\n\nAtentamente,\nEl equipo de DSPA Hotel.'
+                from_email = settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@dspahotel.com'
+                
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [customer_email])
+                msg.attach_alternative(html_message, "text/html")
+                
+                logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo', 'logo de empresa.PNG')
+                if os.path.exists(logo_path):
+                    with open(logo_path, 'rb') as img:
+                        logo_image = MIMEImage(img.read())
+                        logo_image.add_header('Content-ID', '<logo>')
+                        msg.attach(logo_image)
+                        
+                msg.send(fail_silently=False)
 
         return redirect('staff_reservation_detail', reservation_id=payment.reservation.id)
 

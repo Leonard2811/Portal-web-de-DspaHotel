@@ -1,0 +1,28 @@
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #faf8f2; padding: 40px 20px; color: #4a4640;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(56, 53, 46, 0.12); border-top: 5px solid #e74c3c;">
+        <div style="text-align: center; padding: 30px 20px; background-color: #f4f2e6; border-bottom: 1px solid #e0dcd3;">
+            <img src="cid:logo" alt="D'Spa Hotel Logo" style="max-height: 120px; width: auto; object-fit: contain;">
+        </div>
+        <div style="padding: 40px 30px;">
+            <h2 style="color: #38352e; margin-top: 0; font-size: 24px;">Problema con tu Comprobante de Pago</h2>
+            <p style="font-size: 16px; line-height: 1.6;">Hola <strong>{{ customer_name }}</strong>,</p>
+            <p style="font-size: 16px; line-height: 1.6;">Lamentablemente, ha habido un problema al verificar el pago de tu reservación <strong>#{{ reservation_id }}</strong>. El comprobante subido ha sido <strong>rechazado</strong>.</p>
+            
+            {% if notes %}
+            <div style="background-color: #fef2f2; border-left: 4px solid #e74c3c; padding: 15px 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+                <p style="margin: 0; font-size: 15px; color: #991b1b;"><strong>Notas del personal:</strong><br>
+                {{ notes }}</p>
+            </div>
+            {% endif %}
+
+            <p style="font-size: 16px; line-height: 1.6;">Por favor, ingresa a tu cuenta y sube un nuevo comprobante de pago válido para que podamos confirmar tu reservación lo antes posible.</p>
+            <div style="text-align: center; margin-top: 35px;">
+                <a href="{{ portal_url }}" style="background-color: #8a7f6b; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block;">Subir nuevo comprobante</a>
+            </div>
+        </div>
+        <div style="background-color: #38352e; color: #f4f2e6; text-align: center; padding: 20px; font-size: 13px;">
+            <p style="margin: 0;">&copy; {{ year }} D'Spa Hotel. Todos los derechos reservados.</p>
+            <p style="margin: 5px 0 0 0; color: #b5a68e;">AV. Intercomunal, Lechería, VE 6016</p>
+        </div>
+    </div>
+</div>

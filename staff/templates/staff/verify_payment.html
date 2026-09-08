@@ -83,12 +83,59 @@
                             <textarea class="form-control" name="staff_notes" id="staff_notes" rows="3" placeholder="Observaciones sobre el comprobante...">{{ payment.staff_notes }}</textarea>
                         </div>
                         <div class="d-flex gap-2">
-                            <button type="submit" name="action" value="verify" class="btn btn-success flex-fill" onclick="return confirm('¿Verificar este pago y confirmar la reservación?')">
+                            <button type="button" class="btn btn-success flex-fill" data-bs-toggle="modal" data-bs-target="#confirmVerifyModal">
                                 <i class="fas fa-check-circle me-2"></i>Verificar Pago
                             </button>
-                            <button type="submit" name="action" value="reject" class="btn btn-danger flex-fill" onclick="return confirm('¿Rechazar este comprobante?')">
+                            <button type="button" class="btn btn-danger flex-fill" data-bs-toggle="modal" data-bs-target="#confirmRejectModal">
                                 <i class="fas fa-times-circle me-2"></i>Rechazar
                             </button>
+                        </div>
+
+                        <!-- Modal Confirmar Verificación -->
+                        <div class="modal fade" id="confirmVerifyModal" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
+                                    <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
+                                        <h5 class="modal-title text-success">
+                                            <i class="fas fa-check-circle me-2"></i>Confirmar Verificación
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro de que deseas verificar este pago y confirmar la reservación?</p>
+                                    </div>
+                                    <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1);">
+                                        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" name="action" value="verify" class="btn btn-success">
+                                            <i class="fas fa-check-circle me-1"></i>Sí, Verificar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Confirmar Rechazo -->
+                        <div class="modal fade" id="confirmRejectModal" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
+                                    <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
+                                        <h5 class="modal-title text-danger">
+                                            <i class="fas fa-times-circle me-2"></i>Confirmar Rechazo
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro de que deseas rechazar este comprobante de pago?</p>
+                                        <p class="text-muted small mb-0"><i class="fas fa-info-circle me-1"></i>Esto enviará un correo al cliente notificándole el problema.</p>
+                                    </div>
+                                    <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1);">
+                                        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" name="action" value="reject" class="btn btn-danger">
+                                            <i class="fas fa-times-circle me-1"></i>Sí, Rechazar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
