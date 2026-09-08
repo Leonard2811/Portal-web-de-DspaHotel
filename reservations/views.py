@@ -62,7 +62,12 @@ def create_reservation(request):
                 return redirect('booking')
 
             if room:
-                total_price = room.price_per_night * nights
+                base_price = room.price_per_night
+                extra_fee_per_night = 0
+                if adults > 2:
+                    extra_fee_per_night = room.extra_guest_fee * (adults - 2)
+                
+                total_price = (base_price + extra_fee_per_night) * nights
             else:
                 total_price = 0
 

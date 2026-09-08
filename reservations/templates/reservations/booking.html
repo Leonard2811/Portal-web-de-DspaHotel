@@ -91,13 +91,9 @@
                         <label class="form-label">Check-out</label>
                         <input type="date" class="form-control" name="check_out" id="form_checkout" required>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Adultos</label>
-                        <input type="number" class="form-control" name="adults" value="1" min="1" max="4">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Niños</label>
-                        <input type="number" class="form-control" name="children" value="0" min="0" max="3">
+                    <div class="col-md-6">
+                        <label class="form-label">Adultos (Huéspedes)</label>
+                        <input type="number" class="form-control" name="adults" value="1" min="1" max="4" id="form_adults">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Precio Estimado</label>
@@ -187,7 +183,7 @@ function createBookingRoomCard(room, typeName, nights, checkIn, checkOut, count)
                         <i class="fas fa-user-friends"></i> ${room.capacity_adults} personas max.
                     </div>
                 </div>
-                <button class="btn btn-reservation w-100" onclick="selectRoom(${room.id}, '${room.price}', '${checkIn}', '${checkOut}')">
+                <button class="btn btn-reservation w-100" onclick="selectRoom(${room.id}, '${room.price}', '${room.extra_guest_fee || 0}', '${checkIn}', '${checkOut}')">
                     <i class="fas fa-check me-1"></i> Seleccionar
                 </button>
             </div>
@@ -195,21 +191,29 @@ function createBookingRoomCard(room, typeName, nights, checkIn, checkOut, count)
 }
 
 let selectedRoomPrice = 0;
+let selectedRoomExtraFee = 0;
 
 function updatePrice() {
     if (!selectedRoomPrice) return;
     const ci = document.getElementById('form_checkin').value;
     const co = document.getElementById('form_checkout').value;
+    const adults = parseInt(document.getElementById('form_adults').value) || 1;
     
     if (ci && co) {
         const d1 = new Date(ci);
         const d2 = new Date(co);
         const nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
         if (nights > 0) {
-            const total = (parseFloat(selectedRoomPrice) * nights).toFixed(2);
+            let extraFeePerNight = 0;
+            let extraText = '';
+            if (adults > 2) {
+                extraFeePerNight = parseFloat(selectedRoomExtraFee) * (adults - 2);
+                extraText = ` + $${extraFeePerNight} (Extra por personas)`;
+            }
+            const total = ((parseFloat(selectedRoomPrice) + extraFeePerNight) * nights).toFixed(2);
             document.getElementById('priceCalculator').innerHTML = `
                 <div class="price-breakdown">
-                    <span>$${selectedRoomPrice} x ${nights} noche(s) = </span>
+                    <span>($${selectedRoomPrice}${extraText}) x ${nights} noche(s) = </span>
                     <strong class="price-amount">$${total} <small>+ IVA</small></strong>
                 </div>`;
             return;
@@ -218,13 +222,14 @@ function updatePrice() {
     document.getElementById('priceCalculator').innerHTML = '<span class="calculated-price">Seleccione fechas válidas para calcular</span>';
 }
 
-function selectRoom(roomId, price, checkIn, checkOut) {
+function selectRoom(roomId, price, extraFee, checkIn, checkOut) {
     document.getElementById('form_room_id').value = roomId;
     document.getElementById('form_checkin').value = checkIn;
     document.getElementById('form_checkout').value = checkOut;
     document.getElementById('reservationFormSection').style.display = 'block';
 
     selectedRoomPrice = price;
+    selectedRoomExtraFee = extraFee;
     updatePrice();
 
     document.getElementById('reservationFormSection').scrollIntoView({behavior: 'smooth'});
@@ -233,8 +238,10 @@ function selectRoom(roomId, price, checkIn, checkOut) {
 document.addEventListener('DOMContentLoaded', function() {
     const ciInput = document.getElementById('form_checkin');
     const coInput = document.getElementById('form_checkout');
+    const adultsInput = document.getElementById('form_adults');
     if (ciInput) ciInput.addEventListener('change', updatePrice);
     if (coInput) coInput.addEventListener('change', updatePrice);
+    if (adultsInput) adultsInput.addEventListener('change', updatePrice);
 });
 </script>
 {% endblock %}
