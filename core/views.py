@@ -9,8 +9,15 @@ import json
 import os
 from google import genai
 from google.genai import types
-from .models import Service, Room, RoomImage, ContactInfo, HotelInfo
+from .models import Service, Room, RoomImage, ContactInfo, HotelInfo, PasswordResetCode
 from datetime import datetime, timedelta
+import random
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.contrib.auth.models import User
+from email.mime.image import MIMEImage
+from django.templatetags.static import static
 
 
 def home(request):
@@ -320,3 +327,126 @@ def chatbot_api(request):
     except Exception as e:
         print(f"Chatbot Error: {str(e)}")
         return JsonResponse({'reply': 'Lo siento, en este momento no puedo procesar su solicitud por problemas de conexión. Por favor intente más tarde.'})
+
+# =========================================================
+# VISTAS DE RECUPERACIÓN DE CONTRASEÑA POR CÓDIGO
+# =========================================================
+
+def password_reset_request(request):
+    """Solicita el restablecimiento de contraseña y envía un código de 6 dígitos."""
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        user = User.objects.filter(email=email, is_active=True).first()
+        
+        if user:
+            # Generar código de 6 dígitos
+            code = f"{random.randint(0, 999999):06d}"
+            
+            # Guardar el código en la base de datos (borrando códigos anteriores)
+            PasswordResetCode.objects.filter(user=user).delete()
+            PasswordResetCode.objects.create(user=user, code=code)
+            
+            # Preparar y enviar correo
+            subject = "Código de Recuperación de Contraseña - D'Spa Hotel"
+            portal_url = request.build_absolute_uri('/')
+            
+            context = {
+                'customer_name': user.first_name or user.username,
+                'reset_code': code,
+                'portal_url': portal_url,
+                'year': datetime.now().year,
+            }
+            
+            html_message = render_to_string('core/emails/password_reset_code.html', context)
+            text_content = f"Hola {user.first_name or user.username},\nTu código de recuperación es: {code}\nEste código expirará en 15 minutos."
+            from_email = settings.DEFAULT_FROM_EMAIL
+            
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [user.email])
+            msg.attach_alternative(html_message, "text/html")
+            
+            logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo', 'logo de empresa.PNG')
+            if os.path.exists(logo_path):
+                with open(logo_path, 'rb') as img:
+                    logo_image = MIMEImage(img.read())
+                    logo_image.add_header('Content-ID', '<logo>')
+                    msg.attach(logo_image)
+                    
+            try:
+                msg.send(fail_silently=False)
+                # Guardamos el ID del usuario en la sesión para el siguiente paso
+                request.session['reset_user_id'] = user.id
+                return redirect('password_reset_verify')
+            except Exception as e:
+                print(f"Error enviando correo: {e}")
+                messages.error(request, 'Hubo un error al enviar el correo. Por favor intente más tarde.')
+        else:
+            # Aunque no exista, mostramos el mismo mensaje por seguridad, o lo pasamos a la pantalla de verify
+            pass
+
+        # Si el usuario no existe, igual pasamos a verify para no revelar correos válidos
+        # Sin embargo, como el verify pide código, podríamos solo mostrar un mensaje genérico
+        # En este caso vamos a hacer redirect siempre.
+        return redirect('password_reset_verify')
+        
+    return render(request, 'core/password_reset_form.html')
+
+
+def password_reset_verify(request):
+    """Verifica el código ingresado por el usuario."""
+    # Si no hay ID en sesión, puede que el correo no existiera, pero mostramos el form igual
+    if request.method == 'POST':
+        code1 = request.POST.get('code1', '')
+        code2 = request.POST.get('code2', '')
+        code3 = request.POST.get('code3', '')
+        code4 = request.POST.get('code4', '')
+        code5 = request.POST.get('code5', '')
+        code6 = request.POST.get('code6', '')
+        
+        entered_code = f"{code1}{code2}{code3}{code4}{code5}{code6}"
+        user_id = request.session.get('reset_user_id')
+        
+        if not user_id:
+            messages.error(request, 'Código inválido o expirado.')
+            return render(request, 'core/password_reset_verify.html')
+            
+        user = User.objects.filter(id=user_id).first()
+        reset_code = PasswordResetCode.objects.filter(user=user).order_by('-created_at').first()
+        
+        if reset_code and reset_code.code == entered_code and reset_code.is_valid():
+            # Código correcto
+            request.session['reset_verified'] = True
+            return redirect('password_reset_new_password')
+        else:
+            messages.error(request, 'El código es incorrecto o ha expirado.')
+            
+    return render(request, 'core/password_reset_verify.html')
+
+
+def password_reset_new_password(request):
+    """Permite establecer una nueva contraseña tras validar el código."""
+    if not request.session.get('reset_verified') or not request.session.get('reset_user_id'):
+        return redirect('password_reset')
+        
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        
+        if len(password) < 6:
+            messages.error(request, 'La contraseña debe tener al menos 6 caracteres.')
+        elif password != password_confirm:
+            messages.error(request, 'Las contraseñas no coinciden.')
+        else:
+            user = User.objects.get(id=request.session.get('reset_user_id'))
+            user.set_password(password)
+            user.save()
+            
+            # Limpiar sesión y borrar códigos
+            PasswordResetCode.objects.filter(user=user).delete()
+            del request.session['reset_user_id']
+            del request.session['reset_verified']
+            
+            messages.success(request, 'Su contraseña ha sido actualizada exitosamente.')
+            return redirect('login')
+            
+    return render(request, 'core/password_reset_new_password.html')
+

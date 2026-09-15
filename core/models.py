@@ -1,5 +1,7 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from django.utils import timezone
+import datetime
 
 class HotelInfo(models.Model):
     name = models.CharField(max_length=200, default="D'Spa Hotel")
@@ -137,3 +139,24 @@ class ContactInfo(models.Model):
 
     def __str__(self):
         return "Información de Contacto del Hotel"
+
+
+class PasswordResetCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Usuario")
+    code = models.CharField(max_length=6, verbose_name="Código de Seguridad")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+
+    class Meta:
+        verbose_name = "Código de Recuperación"
+        verbose_name_plural = "Códigos de Recuperación"
+        ordering = ['-created_at']
+
+    def is_valid(self):
+        # El código expira en 15 minutos
+        now = timezone.now()
+        expiration_time = self.created_at + datetime.timedelta(minutes=15)
+        return now <= expiration_time
+
+    def __str__(self):
+        return f"Código para {self.user.username}"
+

@@ -16,4 +16,9 @@ urlpatterns = [
     path('complete-profile/', views.complete_profile, name='complete_profile'),
     path('login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    
+    # Password Reset URLs
+    path('password_reset/', views.password_reset_request, name='password_reset'),
+    path('password_reset/verify/', views.password_reset_verify, name='password_reset_verify'),
+    path('password_reset/new_password/', views.password_reset_new_password, name='password_reset_new_password'),
 ]
