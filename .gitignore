@@ -1,3 +1,6 @@
+# Archivos de entorno (CLAVES SECRETAS - NUNCA subir a GitHub)
+.env
+
 # Django
 *.log
 *.pot
