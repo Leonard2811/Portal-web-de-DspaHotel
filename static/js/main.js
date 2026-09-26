@@ -244,8 +244,8 @@ document.addEventListener('DOMContentLoaded', function() {
         input.min = tomorrow;
     });
 
-    // Close navbar on mobile after click
-    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    // Close navbar on mobile after click (except for dropdown toggles)
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)');
     const navCollapse = document.querySelector('.navbar-collapse');
     navLinks.forEach(link => {
         link.addEventListener('click', () => {

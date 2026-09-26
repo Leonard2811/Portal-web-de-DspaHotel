@@ -80,7 +80,7 @@
             <div class="col-lg-4 col-md-6">
                 <div class="service-card-detailed">
                     <div class="service-card-img">
-                        <div class="service-placeholder-lg"><i class="fas fa-water"></i></div>
+                        <img src="{% static 'images/jacuzzi/Imagen de hidromasaje 1.jpeg' %}" alt="Jacuzzi">
                     </div>
                     <div class="service-card-body">
                         <div class="service-icon"><i class="fas fa-water"></i></div>
@@ -92,8 +92,19 @@
             <!-- Piscina -->
             <div class="col-lg-4 col-md-6">
                 <div class="service-card-detailed">
-                    <div class="service-card-img">
-                        <div class="service-placeholder-lg"><i class="fas fa-swimming-pool"></i></div>
+                    <div class="service-gallery-mini">
+                        <div id="poolCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/piscina/Imagen de picina 1.jpeg' %}" alt="Piscina 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/piscina/Imagen de picina 2.jpeg' %}" alt="Piscina 2">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#poolCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#poolCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
                     </div>
                     <div class="service-card-body">
                         <div class="service-icon"><i class="fas fa-swimming-pool"></i></div>
@@ -229,8 +240,25 @@
             <!-- Estacionamiento -->
             <div class="col-lg-6">
                 <div class="service-card-detailed service-card-horizontal">
-                    <div class="service-card-img">
-                        <div class="service-placeholder-lg"><i class="fas fa-parking"></i></div>
+                    <div class="service-gallery-mini">
+                        <div id="parkingCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/estacionamiento/Imagen de estacionamiento 1.jpg' %}" alt="Estacionamiento 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/estacionamiento/Imagen de estacionamiento 2.jpg' %}" alt="Estacionamiento 2">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/estacionamiento/Imagen de estacionamiento 3.jpg' %}" alt="Estacionamiento 3">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/estacionamiento/Imagen de estacionamiento 4.jpg' %}" alt="Estacionamiento 4">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#parkingCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#parkingCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
                     </div>
                     <div class="service-card-body">
                         <div class="service-icon"><i class="fas fa-parking"></i></div>
