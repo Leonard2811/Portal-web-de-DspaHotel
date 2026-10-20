@@ -8,7 +8,9 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="section-title mb-0">Verificar Comprobante de Pago</h2>
-            <a href="{% url 'staff_reservation_detail' reservation.id %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Volver</a>
+            <a href="{% if is_service %}{% url 'staff_service_detail' reservation.id %}{% else %}{% url 'staff_reservation_detail' reservation.id %}{% endif %}" class="btn btn-outline-custom">
+                <i class="fas fa-arrow-left me-2"></i>Volver
+            </a>
         </div>
 
         <div class="row g-4">
@@ -24,8 +26,8 @@
                     </div>
                     {% endif %}
                     <div class="mt-3">
-                        <p><strong>Monto:</strong> ${{ payment.amount }}</p>
-                        <p><strong>Fecha:</strong> {{ payment.payment_date|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Monto del Comprobante:</strong> <span class="fw-bold text-success fs-5">${% if is_service %}{{ payment.amount|default:reservation.price }}{% else %}{{ payment.amount|default:reservation.total_price }}{% endif %}</span></p>
+                        <p><strong>Fecha de Envío:</strong> {{ payment.payment_date|date:"d/m/Y H:i" }}</p>
                         <p><strong>Estado actual:</strong>
                             <span class="badge
                                 {% if payment.verification_status == 'verified' %}bg-success
@@ -42,11 +44,11 @@
             <!-- Reservation Info & Actions -->
             <div class="col-lg-5">
                 <div class="dashboard-card mb-4">
-                    <h4><i class="fas fa-info-circle me-2"></i>Datos de la Reservación</h4>
+                    <h4><i class="fas fa-info-circle me-2"></i>{% if is_service %}Datos del Servicio{% else %}Datos de la Reservación{% endif %}</h4>
                     <div class="detail-grid compact">
                         <div class="detail-item">
-                            <span class="label">Reservación:</span>
-                            <span>#{{ reservation.id }}</span>
+                            <span class="label">{% if is_service %}Servicio #:{% else %}Reservación #:{% endif %}</span>
+                            <span><strong>#{{ reservation.id }}</strong></span>
                         </div>
                         <div class="detail-item">
                             <span class="label">Cliente:</span>
@@ -56,6 +58,32 @@
                             <span class="label">Documento:</span>
                             <span>{{ reservation.customer.id_document }}</span>
                         </div>
+                        {% if is_service %}
+                        <div class="detail-item">
+                            <span class="label">Categoría:</span>
+                            <span>
+                                <span class="badge {% if reservation.service_category == 'spa' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                    {{ reservation.get_service_category_display }}
+                                </span>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Servicio / Plan:</span>
+                            <span class="fw-bold">{{ reservation.service_name }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Fecha:</span>
+                            <span>{{ reservation.preferred_date|date:"d/m/Y" }}{% if reservation.preferred_time %} ({{ reservation.preferred_time|time:"H:i" }}){% endif %}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Personas:</span>
+                            <span>{{ reservation.people_count }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Total del Servicio:</span>
+                            <span class="fw-bold text-success">${{ reservation.price }}</span>
+                        </div>
+                        {% else %}
                         <div class="detail-item">
                             <span class="label">Servicio:</span>
                             <span>{{ reservation.get_service_type_display }}</span>
@@ -63,13 +91,22 @@
                         {% if reservation.room %}
                         <div class="detail-item">
                             <span class="label">Habitación:</span>
-                            <span>{{ reservation.room.room_number }}</span>
+                            <span>{{ reservation.room.room_number }} ({{ reservation.room.get_room_type_display }})</span>
                         </div>
                         {% endif %}
                         <div class="detail-item">
-                            <span class="label">Total:</span>
-                            <span class="fw-bold">${{ reservation.total_price }}</span>
+                            <span class="label">Check-in:</span>
+                            <span>{{ reservation.check_in|date:"d/m/Y" }}</span>
                         </div>
+                        <div class="detail-item">
+                            <span class="label">Check-out:</span>
+                            <span>{{ reservation.check_out|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Total:</span>
+                            <span class="fw-bold text-success">${{ reservation.total_price }}</span>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -102,7 +139,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>¿Estás seguro de que deseas verificar este pago y confirmar la reservación?</p>
+                                        <p>¿Estás seguro de que deseas verificar este pago y confirmar {% if is_service %}la reserva del servicio{% else %}la reservación{% endif %}?</p>
                                     </div>
                                     <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1);">
                                         <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>

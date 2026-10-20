@@ -1,0 +1,171 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}AquaSpa Wellness & Relax - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/spa/spa 1.jpg' %}" alt="AquaSpa D'Spa Hotel" class="page-hero-bg">
+    <div class="page-hero-content text-center">
+        <span class="section-tag mb-2 d-inline-block shadow" style="background: linear-gradient(135deg, #c5a059, #8a7f6b); color: #ffffff !important; letter-spacing: 2px; font-weight: 700; padding: 6px 22px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.35);">
+            SANTUARIO DE BIENESTAR
+        </span>
+        <h1 class="display-4 fw-bold mb-3">AquaSpa</h1>
+        <p class="lead mb-4" style="max-width: 650px; margin: 0 auto; color: #f0ede6;">
+            Cuidado corporal, facial y circuito de relajación hidrotermal para renovar tu cuerpo y mente.
+        </p>
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-hot-tub me-2" style="color: var(--color-gold);"></i>Sauna Seco & Húmedo
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-gem me-2" style="color: var(--color-gold);"></i>Piedras Volcánicas
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-leaf me-2" style="color: var(--color-gold);"></i>Aromaterapia Natural
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-magic me-2" style="color: var(--color-gold);"></i>Cuidado Facial Avanzado
+            </span>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+
+        <!-- 4 Servicios Principales (Resumen General) -->
+        <div class="text-center mb-5">
+            <span class="section-tag">Servicios AquaSpa</span>
+            <h2 class="section-title">Nuestras Áreas de Bienestar</h2>
+            <p class="section-subtitle">Conoce los principales servicios diseñados para tu descanso y renovación</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <!-- 1. Masajes y Terapias -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Masajes & Terapias Corporales</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Masajes relajantes antiestrés, terapia geotermal con piedras volcánicas, activación de la circulación y masajes descontracturantes en cabinas privadas climatizadas.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-tag me-1 text-warning"></i>Sesiones de 45 a 60 min • Desde $30</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Cuidado Facial y Exfoliaciones -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Faciales & Cuidado de la Piel</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Limpieza facial profunda con máscara LED y peeling ultrasónico, microdermoabrasión, exfoliaciones corporales cítricas y nutrición con manteca de cacao pura.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-tag me-1 text-warning"></i>Tratamientos completos • Desde $15</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Circuito Hidrotermal -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-hot-tub"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Circuito Hidrotermal & Sauna</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Sauna seco finlandés y jacuzzi con chorros de hidroterapia para desintoxicar los poros y relajar la musculatura.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-check-circle me-1 text-success"></i>Incluido en paquetes y sesiones de spa</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Paquetes Especiales y Day Spa -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Paquetes Especiales & Day Spa</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Experiencias completas: Chocolaterapia, Velo de Novia, sesiones Spa Dúplex para parejas, celebraciones y planes familiares con aperitivos y circuito termal.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-tag me-1 text-warning"></i>Planes individuales y en pareja • Desde $50</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mosaico Fotográfico de las Instalaciones -->
+        <div class="text-center mb-4 mt-5">
+            <span class="section-tag">Espacios de Relajación</span>
+            <h2 class="section-title">Instalaciones del Circuito Termal</h2>
+            <p class="section-subtitle">Áreas diseñadas para complementar tu tratamiento con calor seco y agua tibia</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <!-- Sauna Seco -->
+            <div class="col-lg-6 col-md-6">
+                <div class="hydro-card">
+                    <div class="hydro-card-img">
+                        <img src="{% static 'images/sauna/sauna 1.jpeg' %}" alt="Sauna Seco D'Spa">
+                        <span class="hydro-card-badge"><i class="fas fa-fire me-1"></i>Calor Seco</span>
+                    </div>
+                    <div class="hydro-card-body">
+                        <h5 class="fw-bold mb-2">Sauna Finlandés</h5>
+                        <p class="text-muted small mb-0">Cabina en madera aromática que estimula la transpiración natural, purifica la piel y alivia el estrés acumulado.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jacuzzi -->
+            <div class="col-lg-6 col-md-6">
+                <div class="hydro-card">
+                    <div class="hydro-card-img">
+                        <img src="{% static 'images/jacuzzi/Imagen de hidromasaje 1.jpeg' %}" alt="Jacuzzi Hidromasaje">
+                        <span class="hydro-card-badge"><i class="fas fa-water me-1"></i>Hidroterapia</span>
+                    </div>
+                    <div class="hydro-card-body">
+                        <h5 class="fw-bold mb-2">Jacuzzi de Hidromasaje</h5>
+                        <p class="text-muted small mb-0">Chorros a presión de agua tibia que brindan masaje relajante en espalda, hombros y piernas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ÚNICO BOTÓN PRINCIPAL AL FINAL DE TODA LA INFORMACIÓN -->
+        <div class="p-5 rounded-4 text-center text-white position-relative overflow-hidden shadow-lg mt-5" 
+             style="background: linear-gradient(135deg, var(--color-primary), var(--color-dark));">
+            <div class="position-relative" style="z-index: 2;">
+                <span class="badge px-3 py-2 rounded-pill mb-3" style="background: rgba(197, 160, 89, 0.25); color: var(--color-gold); border: 1px solid rgba(197, 160, 89, 0.4);">
+                    <i class="fas fa-calendar-alt me-1"></i> Reserva Online
+                </span>
+                <h2 class="display-6 fw-bold mb-3 text-white" style="color: #ffffff !important; text-shadow: 0 2px 6px rgba(0,0,0,0.6);">
+                    ¿Listo para desconectarte y renovar tu energía?
+                </h2>
+                <p class="lead mb-4 text-white" style="color: #f8fafc !important; max-width: 620px; margin: 0 auto; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+                    Agenda tu cita fácilmente. Podrás seleccionar tu tratamiento o paquete favorito directamente en nuestro formulario de reservas.
+                </p>
+                <a href="{% url 'spa_booking' %}" class="btn btn-reservation btn-lg shadow px-5 py-3 fs-5">
+                    <i class="fas fa-calendar-check me-2"></i>Reservar Tratamiento en AquaSpa
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

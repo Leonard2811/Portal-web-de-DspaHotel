@@ -1,0 +1,137 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Reservar Spa - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/spa/spa 1.jpg' %}" alt="Reservar Spa" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Reservar Tratamiento Spa</h1>
+        <p>Seleccione su tratamiento y agende su cita</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container" style="max-width: 800px;">
+        {% if not has_profile %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Debe <a href="{% url 'complete_profile' %}">completar su perfil</a> antes de reservar.
+        </div>
+        {% endif %}
+
+        <div class="booking-form-card">
+            <h3 class="mb-4"><i class="fas fa-spa me-2" style="color: var(--color-gold);"></i>Formulario de Reserva - AquaSpa</h3>
+            <form action="{% url 'create_service_reservation' %}" method="post" id="spaBookingForm">
+                {% csrf_token %}
+                <input type="hidden" name="service_category" value="spa">
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Tratamiento</label>
+                        <select class="form-select" name="service_name" id="spa_service" required onchange="updateSpaPrice()">
+                            <option value="">-- Seleccione un tratamiento --</option>
+                            <optgroup label="Masajes">
+                                <option value="Masaje Relajante (Antiestrés)" data-price="30">Masaje Relajante (Antiestrés) - $30</option>
+                                <option value="Masaje con Piedras Volcánicas" data-price="35">Masaje con Piedras Volcánicas - $35</option>
+                                <option value="Activación de Circulación" data-price="30">Activación de Circulación - $30</option>
+                                <option value="Masaje Deportivo (Descontracturante)" data-price="30">Masaje Deportivo - $30</option>
+                                <option value="Masajes Reductivos" data-price="30">Masajes Reductivos - $30</option>
+                            </optgroup>
+                            <optgroup label="Tratamientos Corporales">
+                                <option value="Exfoliaciones Corporales" data-price="35">Exfoliaciones Corporales - $35</option>
+                                <option value="Limpieza Profunda en la Espalda" data-price="25">Limpieza Profunda en la Espalda - $25</option>
+                                <option value="Hidratación con Cacao" data-price="15">Hidratación con Cacao - $15</option>
+                            </optgroup>
+                            <optgroup label="Tratamientos Faciales">
+                                <option value="Facial Básico Tipo Spa" data-price="15">Facial Básico Tipo Spa - $15</option>
+                                <option value="Limpieza Profunda Facial" data-price="30">Limpieza Profunda Facial - $30</option>
+                            </optgroup>
+                            <optgroup label="Paquetes Especiales">
+                                <option value="Chocolaterapia" data-price="50">Chocolaterapia - $50</option>
+                                <option value="Velo de Novia" data-price="80">Velo de Novia - $80</option>
+                                <option value="Paquete Niños" data-price="30">Paquete Niños (menores 12 años) - $30</option>
+                                <option value="Quinceañeras o Friends" data-price="55">Quinceañeras o Friends - $55</option>
+                                <option value="Paquete Embarazadas" data-price="70">Paquete Embarazadas - $70</option>
+                            </optgroup>
+                            <optgroup label="Paquetes Dúplex (Parejas)">
+                                <option value="Spa Relax (Pareja)" data-price="120">Spa Relax (Pareja) - $120</option>
+                                <option value="Spa Relax (Individual)" data-price="60">Spa Relax (Individual) - $60</option>
+                                <option value="Spa Deluxe (Pareja)" data-price="140">Spa Deluxe (Pareja) - $140</option>
+                                <option value="Spa Deluxe (Individual)" data-price="70">Spa Deluxe (Individual) - $70</option>
+                                <option value="Spa Honeymoon (Pareja)" data-price="160">Spa Honeymoon (Pareja) - $160</option>
+                                <option value="Spa Honeymoon (Individual)" data-price="80">Spa Honeymoon (Individual) - $80</option>
+                            </optgroup>
+                            <optgroup label="Day Spa y Celebraciones">
+                                <option value="Full Day: Madres Felices" data-price="140">Full Day: Madres Felices - $140</option>
+                                <option value="Spa Family (4 personas)" data-price="180">Spa Family (4 personas) - $180</option>
+                                <option value="Spa Full Day: Años Dorados" data-price="50">Años Dorados - $50</option>
+                                <option value="Spa Súper Papá" data-price="85">Súper Papá - $85</option>
+                            </optgroup>
+                            <optgroup label="Postoperatorios">
+                                <option value="Drenaje Linfático + Aparatología (5 sesiones)" data-price="90">Drenaje + Aparatología (5 sesiones) - $90</option>
+                                <option value="Drenaje Linfático + Aparatología (10 sesiones)" data-price="180">Drenaje + Aparatología (10 sesiones) - $180</option>
+                                <option value="Solo Aparatología (5 sesiones)" data-price="70">Solo Aparatología (5 sesiones) - $70</option>
+                                <option value="Solo Aparatología (10 sesiones)" data-price="140">Solo Aparatología (10 sesiones) - $140</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <input type="hidden" name="price" id="spa_price" value="0">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Fecha Preferida</label>
+                        <input type="date" class="form-control" name="preferred_date" min="{{ today }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Hora Preferida</label>
+                        <input type="time" class="form-control" name="preferred_time">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Cantidad de Personas</label>
+                        <input type="number" class="form-control" name="people_count" value="1" min="1" max="10">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Precio</label>
+                        <div class="price-calculator" id="spaPriceDisplay">
+                            <span class="calculated-price">Seleccione un tratamiento</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Notas / Peticiones Especiales</label>
+                        <textarea class="form-control" name="notes" rows="3" placeholder="Indique cualquier requerimiento especial..."></textarea>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">
+                                Acepto los términos y condiciones del servicio AquaSpa de D'Spa Hotel.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-reservation btn-lg" {% if not has_profile %}disabled{% endif %}>
+                            <i class="fas fa-calendar-check me-2"></i>Confirmar Reserva
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateSpaPrice() {
+    const select = document.getElementById('spa_service');
+    const option = select.options[select.selectedIndex];
+    const price = option.getAttribute('data-price') || '0';
+    document.getElementById('spa_price').value = price;
+    document.getElementById('spaPriceDisplay').innerHTML = price > 0
+        ? `<strong class="price-amount" style="font-size: 1.3rem;">$${price}</strong>`
+        : '<span class="calculated-price">Seleccione un tratamiento</span>';
+}
+</script>
+{% endblock %}

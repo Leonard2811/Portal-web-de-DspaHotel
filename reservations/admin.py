@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, Reservation, PaymentProof, RoomAvailability
+from .models import Customer, Reservation, PaymentProof, RoomAvailability, ServiceReservation, ServicePaymentProof, EventInquiry
 
 
 @admin.register(Customer)
@@ -120,3 +120,39 @@ class RoomAvailabilityAdmin(admin.ModelAdmin):
         if request.user.groups.filter(name='Super Administradores').exists():
             return True
         return False
+
+
+class ServicePaymentProofInline(admin.TabularInline):
+    model = ServicePaymentProof
+    extra = 0
+    readonly_fields = ('payment_date',)
+
+
+@admin.register(ServiceReservation)
+class ServiceReservationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'service_category', 'service_name', 'price', 'preferred_date', 'status')
+    list_filter = ('status', 'service_category', 'preferred_date')
+    search_fields = ('customer__user__first_name', 'customer__user__last_name', 'service_name')
+    ordering = ('-created_at',)
+    inlines = [ServicePaymentProofInline]
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if request.user.groups.filter(name='Super Administradores').exists():
+            return True
+        return False
+
+
+@admin.register(ServicePaymentProof)
+class ServicePaymentProofAdmin(admin.ModelAdmin):
+    list_display = ('service_reservation', 'amount', 'verification_status', 'payment_date')
+    list_filter = ('verification_status',)
+
+
+@admin.register(EventInquiry)
+class EventInquiryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'event_type', 'salon_preference', 'estimated_guests', 'preferred_date', 'is_read', 'is_responded')
+    list_filter = ('event_type', 'salon_preference', 'is_read', 'is_responded')
+    search_fields = ('name', 'email', 'message')
+    ordering = ('-created_at',)

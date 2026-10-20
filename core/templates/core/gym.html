@@ -1,0 +1,440 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gimnasio & Centro Fitness - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/gym/gym 1.jpg' %}" alt="Gimnasio D'Spa Hotel" class="page-hero-bg">
+    <div class="page-hero-content text-center">
+        <div class="mb-3">
+            <img src="{% static 'images/gym/logo gym.jpeg' %}" alt="Logo Deco Gym" class="shadow-lg" style="height: 85px; width: auto; border-radius: 18px; border: 2px solid rgba(255,255,255,0.35);">
+        </div>
+        <span class="section-tag mb-2 d-inline-block shadow" style="background: linear-gradient(135deg, #c5a059, #8a7f6b); color: #ffffff !important; letter-spacing: 2px; font-weight: 700; padding: 6px 22px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.35);">
+            ENTRENAMIENTO & VITALIDAD
+        </span>
+        <h1 class="display-4 fw-bold mb-3">Deco Gym & Fitness</h1>
+        <p class="lead mb-4" style="max-width: 650px; margin: 0 auto; color: #f0ede6;">
+            Equipamiento integral de fuerza, clases de spinning climatizadas, circuito cardiovascular y sauna relajante en D'Spa Hotel.
+        </p>
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-dumbbell me-2" style="color: var(--color-gold);"></i>Peso Libre & Máquinas
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-bicycle me-2" style="color: var(--color-gold);"></i>Spinning Climatizado
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-fist-raised me-2" style="color: var(--color-gold);"></i>Boxeo Incluido
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-hot-tub me-2" style="color: var(--color-gold);"></i>Sauna & Duchas
+            </span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2); font-weight: 500;">
+                <i class="fas fa-parking me-2" style="color: var(--color-gold);"></i>Estacionamiento Privado
+            </span>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+
+        <!-- 4 Áreas Principales (Resumen General) -->
+        <div class="text-center mb-5">
+            <span class="section-tag">Servicios Fitness</span>
+            <h2 class="section-title">Nuestras Áreas de Entrenamiento</h2>
+            <p class="section-subtitle">Espacios diseñados para tu acondicionamiento físico, salud y rendimiento</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <!-- 1. Musculación y Peso Libre -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Peso Libre & Musculación</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Mancuernas de todos los pesos, barras olímpicas, estaciones multifuncionales de poleas y bancos graduables para entrenamiento de fuerza y definición.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-check-circle me-1 text-success"></i>Equipamiento profesional de alto rendimiento</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Sala de Spinning -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-biking"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Sala de Spinning Climatizada</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Bicicletas estáticas profesionales en sala acondicionada con música y ritmo motivador. Clases grupales guiadas en turnos de mañana y tarde.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-fire me-1 text-warning"></i>Sesiones de alta quema calórica y resistencia</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Clases de Boxeo -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px; background: linear-gradient(135deg, #c5a059, #b02a37);">
+                        <i class="fas fa-fist-raised text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Clases de Boxeo</h4>
+                        <p class="luxury-highlight-desc mb-0">
+                            Entrenamiento dinámico de boxeo para potenciar tu agilidad, reflejos, técnica y resistencia cardiovascular. ¡Incluido sin costo adicional!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Cardio & Rendimiento -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Zona de Cardio</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Caminadoras electrónicas y elípticas para optimizar tu acondicionamiento físico, calentamiento activo y resistencia.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-running me-1 text-danger"></i>Calentamiento activo y resistencia física</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Recuperación & Sauna -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-hot-tub"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Sauna & Recuperación</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Acceso libre a sauna seco y húmedo y duchas calientes para desintoxicar el cuerpo y aliviar la fatiga muscular post-entreno.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-check-circle me-1 text-success"></i>Incluido sin costo en todas las mensualidades</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Asesoría de Instructores -->
+            <div class="col-lg-6">
+                <div class="luxury-highlight-card h-100 text-start p-4 d-flex gap-3 align-items-start">
+                    <div class="luxury-highlight-icon flex-shrink-0 mb-0" style="width: 55px; height: 55px;">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <h4 class="luxury-highlight-title mb-2">Asesoría de Instructores</h4>
+                        <p class="luxury-highlight-desc mb-2">
+                            Entrenadores calificados en sala para orientar tus rutinas de fuerza, corregir técnicas y acompañar tu progreso de forma personalizada.
+                        </p>
+                        <small class="text-muted"><i class="fas fa-medal me-1 text-gold"></i>Deco Gym Team a tu disposición</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Galería Fotográfica de Instalaciones Reales -->
+        <div class="text-center mb-4 mt-5">
+            <span class="section-tag">Espacios Reales</span>
+            <h2 class="section-title">Instalaciones del Gimnasio</h2>
+            <p class="section-subtitle">Conoce los ambientes modernos y equipados de nuestro centro fitness</p>
+        </div>
+
+        <div class="row g-3 mb-5">
+            <div class="col-lg-4 col-md-6">
+                <div class="gym-gallery-card" data-bs-toggle="modal" data-bs-target="#gymGalleryModal" data-img="{% static 'images/gym/zona de fuerza.jpeg' %}" data-title="Zona de Fuerza & Máquinas">
+                    <img src="{% static 'images/gym/zona de fuerza.jpeg' %}" alt="Zona de Fuerza y Máquinas" class="gym-img-focus-center">
+                    <div class="gym-gallery-overlay">
+                        <p class="gym-gallery-title"><i class="fas fa-dumbbell me-2" style="color: var(--color-gold);"></i>Zona de Fuerza & Máquinas</p>
+                        <span class="gym-gallery-zoom" title="Ver imagen completa"><i class="fas fa-expand"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gym-gallery-card" data-bs-toggle="modal" data-bs-target="#gymGalleryModal" data-img="{% static 'images/gym/sala de spinning.jpg' %}" data-title="Sala de Spinning Climatizada">
+                    <img src="{% static 'images/gym/sala de spinning.jpg' %}" alt="Sala de Spinning">
+                    <div class="gym-gallery-overlay">
+                        <p class="gym-gallery-title"><i class="fas fa-bicycle me-2" style="color: var(--color-gold);"></i>Sala de Spinning Climatizada</p>
+                        <span class="gym-gallery-zoom" title="Ver imagen completa"><i class="fas fa-expand"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gym-gallery-card" data-bs-toggle="modal" data-bs-target="#gymGalleryModal" data-img="{% static 'images/gym/gym 3.jpg' %}" data-title="Circuito Cardiovascular">
+                    <img src="{% static 'images/gym/gym 3.jpg' %}" alt="Circuito Cardiovascular">
+                    <div class="gym-gallery-overlay">
+                        <p class="gym-gallery-title"><i class="fas fa-heartbeat me-2" style="color: var(--color-gold);"></i>Circuito Cardiovascular</p>
+                        <span class="gym-gallery-zoom" title="Ver imagen completa"><i class="fas fa-expand"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gym-gallery-card" data-bs-toggle="modal" data-bs-target="#gymGalleryModal" data-img="{% static 'images/gym/estaciones de poleas.jpeg' %}" data-title="Estaciones de Poleas & Musculación">
+                    <img src="{% static 'images/gym/estaciones de poleas.jpeg' %}" alt="Estaciones de Poleas" class="gym-img-focus-top">
+                    <div class="gym-gallery-overlay">
+                        <p class="gym-gallery-title"><i class="fas fa-cogs me-2" style="color: var(--color-gold);"></i>Estaciones de Poleas & Musculación</p>
+                        <span class="gym-gallery-zoom" title="Ver imagen completa"><i class="fas fa-expand"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gym-gallery-card" data-bs-toggle="modal" data-bs-target="#gymGalleryModal" data-img="{% static 'images/gym/area de peso libre.jpeg' %}" data-title="Área de Peso Libre & Movilidad">
+                    <img src="{% static 'images/gym/area de peso libre.jpeg' %}" alt="Área de Peso Libre" class="gym-img-focus-center">
+                    <div class="gym-gallery-overlay">
+                        <p class="gym-gallery-title"><i class="fas fa-compress-arrows-alt me-2" style="color: var(--color-gold);"></i>Área de Peso Libre & Movilidad</p>
+                        <span class="gym-gallery-zoom" title="Ver imagen completa"><i class="fas fa-expand"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gym-gallery-card" data-bs-toggle="modal" data-bs-target="#gymGalleryModal" data-img="{% static 'images/gym/boxeo.jpeg' %}" data-title="Clases de Boxeo">
+                    <img src="{% static 'images/gym/boxeo.jpeg' %}" alt="Clases de Boxeo" class="gym-img-focus-center">
+                    <div class="gym-gallery-overlay">
+                        <p class="gym-gallery-title"><i class="fas fa-fist-raised me-2" style="color: var(--color-gold);"></i>Clases de Boxeo</p>
+                        <span class="gym-gallery-zoom" title="Ver imagen completa"><i class="fas fa-expand"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección: Equipo de Instructores Deco Gym -->
+        <div class="p-4 p-md-5 rounded-4 shadow-sm mb-5" style="background: #fdfcfa; border: 1px solid rgba(138, 127, 107, 0.18);">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <div class="rounded-4 overflow-hidden shadow position-relative" style="max-height: 420px;">
+                        <img src="{% static 'images/gym/instructores.jpg' %}" alt="Instructores Deco Gym" class="w-100 h-100" style="object-fit: cover;">
+                        <span class="badge rounded-pill position-absolute bottom-0 start-0 m-3 px-3 py-2" style="background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); color: #ffffff; border: 1px solid rgba(255,255,255,0.25); font-size: 0.85rem;">
+                            <i class="fas fa-medal me-2" style="color: var(--color-gold);"></i>Instructores Deco Gym
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="ps-lg-3">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <img src="{% static 'images/gym/logo gym.jpeg' %}" alt="Logo Deco Gym" style="height: 52px; width: auto; border-radius: 12px; border: 1px solid rgba(0,0,0,0.12); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                            <div>
+                                <span class="section-tag mb-0">Staff Profesional</span>
+                                <h4 class="fw-bold mb-0 mt-1" style="color: var(--color-dark);">Deco Gym Team</h4>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold mb-3" style="color: var(--color-dark);">Entrena con Expertos en Cada Sesión</h3>
+                        <p class="text-muted mb-3" style="line-height: 1.7;">
+                            Nuestro equipo de entrenadores profesionales está permanentemente en sala para guiarte, corregir posturas, diseñar rutinas personalizadas y motivarte en cada entrenamiento.
+                        </p>
+                        <ul class="list-unstyled text-muted small mb-0">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Acompañamiento en sala de musculación y peso libre</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Entrenadores certificados en acondicionamiento y fuerza</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i>Atención cercana tanto para principiantes como atletas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Horarios y Resumen de Membresías (General y Limpio) -->
+        <div class="row g-4 mb-5">
+            <!-- Horarios -->
+            <div class="col-lg-6">
+                <div class="dashboard-card h-100 p-4">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(197, 160, 89, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-gold); font-size: 1.4rem;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 fw-bold">Horarios de Atención del Gimnasio</h4>
+                            <p class="text-muted small mb-0">Abierto todos los días de la semana</p>
+                        </div>
+                    </div>
+
+                    <div class="schedule-item-modern">
+                        <span class="schedule-day-badge"><i class="fas fa-calendar-day text-muted"></i>Lunes a Viernes</span>
+                        <span class="schedule-time-pill">5:00 a.m. – 9:45 p.m.</span>
+                    </div>
+                    <div class="schedule-item-modern">
+                        <span class="schedule-day-badge"><i class="fas fa-calendar-day text-muted"></i>Sábados</span>
+                        <span class="schedule-time-pill">7:00 a.m. – 5:00 p.m.</span>
+                    </div>
+                    <div class="schedule-item-modern">
+                        <span class="schedule-day-badge"><i class="fas fa-calendar-day text-muted"></i>Domingos</span>
+                        <span class="schedule-time-pill">7:00 a.m. – 1:00 p.m.</span>
+                    </div>
+
+                    <!-- Clases de Spinning -->
+                    <div class="p-3 rounded-3 mb-2" style="background: rgba(197, 160, 89, 0.08); border: 1px solid rgba(197, 160, 89, 0.25);">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="fw-bold" style="color: var(--color-primary); font-size: 0.92rem;">
+                                <i class="fas fa-biking text-warning me-2"></i>Clases de Spinning
+                            </span>
+                            <span class="badge rounded-pill" style="background: rgba(197, 160, 89, 0.2); color: var(--color-primary); font-size: 0.75rem;">Sala Climatizada</span>
+                        </div>
+                        <div class="d-flex flex-column gap-1 small text-muted">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="fas fa-angle-right me-1 text-gold"></i>Lunes a Jueves:</span>
+                                <span class="fw-semibold text-dark">8:00 a.m. y 5:30 p.m.</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="fas fa-angle-right me-1 text-gold"></i>Viernes:</span>
+                                <span class="fw-semibold text-dark">8:00 a.m. y 9:00 a.m.</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="fas fa-angle-right me-1 text-gold"></i>Sábados:</span>
+                                <span class="fw-semibold text-dark">9:00 a.m.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clases de Boxeo -->
+                    <div class="p-3 rounded-3" style="background: rgba(220, 53, 69, 0.05); border: 1px solid rgba(220, 53, 69, 0.25);">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="fw-bold text-dark" style="font-size: 0.92rem;">
+                                <i class="fas fa-fist-raised text-danger me-2"></i>Clases de Boxeo
+                            </span>
+                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle" style="font-size: 0.75rem;">
+                                <i class="fas fa-check-circle me-1"></i>Incluido en el Gym
+                            </span>
+                        </div>
+                        <div class="d-flex flex-column gap-1 small text-muted">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="fas fa-angle-right me-1 text-danger"></i>Viernes:</span>
+                                <span class="fw-semibold text-dark">5:00 p.m. y 6:00 p.m.</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="fas fa-angle-right me-1 text-danger"></i>Sábados:</span>
+                                <span class="fw-semibold text-dark">10:00 a.m.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membresías Resumidas -->
+            <div class="col-lg-6">
+                <div class="dashboard-card h-100 p-4">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(197, 160, 89, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-gold); font-size: 1.4rem;">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 fw-bold">Planes de Mensualidad</h4>
+                            <p class="text-muted small mb-0">Selecciona tu opción al inscribirte</p>
+                        </div>
+                    </div>
+
+                    <div class="schedule-item-modern">
+                        <span class="schedule-day-badge">
+                            <i class="fas fa-user text-muted"></i>
+                            <div>
+                                <strong>Plan Individual</strong>
+                                <small class="text-muted d-block" style="font-size: 0.78rem;">Máquinas, pesas, duchas y sauna</small>
+                            </div>
+                        </span>
+                        <span class="schedule-time-pill fs-6">$65 / mes</span>
+                    </div>
+
+                    <div class="schedule-item-modern" style="border-color: var(--color-gold); background: rgba(197, 160, 89, 0.05);">
+                        <span class="schedule-day-badge">
+                            <i class="fas fa-star text-warning"></i>
+                            <div>
+                                <strong>Individual + Spinning</strong>
+                                <small class="text-muted d-block" style="font-size: 0.78rem;">Todo lo anterior + clases de spinning</small>
+                            </div>
+                        </span>
+                        <span class="schedule-time-pill fs-6" style="background: var(--color-gold); color: white;">$90 / mes</span>
+                    </div>
+
+                    <div class="schedule-item-modern">
+                        <span class="schedule-day-badge">
+                            <i class="fas fa-users text-muted"></i>
+                            <div>
+                                <strong>Planes Familiares & Dúo</strong>
+                                <small class="text-muted d-block" style="font-size: 0.78rem;">Para 2, 3 o 4 personas con acceso total</small>
+                            </div>
+                        </span>
+                        <span class="schedule-time-pill fs-6">Desde $60 / pers</span>
+                    </div>
+
+                    <div class="text-center pt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt text-success me-1"></i>Todas las membresías incluyen toallas limpias y estacionamiento vigilado.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÚNICO BOTÓN PRINCIPAL AL FINAL DE TODA LA INFORMACIÓN -->
+        <div class="p-5 rounded-4 text-center text-white position-relative overflow-hidden shadow-lg mt-5" 
+             style="background: linear-gradient(135deg, #1b263b, #0d1b2a); border: 1px solid rgba(197, 160, 89, 0.35);">
+            <div class="position-relative" style="z-index: 2;">
+                <span class="badge px-3 py-2 rounded-pill mb-3" style="background: rgba(197, 160, 89, 0.25); color: #f0d59e; border: 1px solid rgba(197, 160, 89, 0.5); font-weight: 600;">
+                    <i class="fas fa-trophy me-1"></i> Tu Salud y Rendimiento
+                </span>
+                <h2 class="display-6 fw-bold mb-3 text-white" style="color: #ffffff !important; text-shadow: 0 2px 6px rgba(0,0,0,0.6);">
+                    Comienza Tu Entrenamiento en D'Spa Hotel
+                </h2>
+                <p class="lead mb-4 text-white" style="color: #f8fafc !important; max-width: 650px; margin: 0 auto; font-weight: 400; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+                    Inscríbete online de forma rápida, elige tu plan favorito y comienza a entrenar con nosotros.
+                </p>
+                <a href="{% url 'gym_booking' %}" class="btn btn-reservation btn-lg shadow px-5 py-3 fs-5">
+                    <i class="fas fa-dumbbell me-2"></i>Inscribirme en el Gimnasio
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Lightbox para fotos de Instalaciones del Gimnasio -->
+<div class="modal fade" id="gymGalleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body p-0 text-center position-relative">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3 shadow" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="p-2 rounded-4" style="background: rgba(13, 27, 42, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(197, 160, 89, 0.5); box-shadow: 0 10px 40px rgba(0,0,0,0.7);">
+                    <img id="gymGalleryModalImg" src="" alt="Instalaciones Gimnasio" class="img-fluid rounded-3" style="max-height: 80vh; width: auto; object-fit: contain;">
+                    <div class="py-2 px-3 d-flex justify-content-between align-items-center">
+                        <p id="gymGalleryModalTitle" class="text-white mb-0 fw-semibold fs-6"></p>
+                        <span class="badge rounded-pill px-3 py-2" style="background: rgba(197, 160, 89, 0.25); color: #f0d59e; border: 1px solid rgba(197, 160, 89, 0.5);">
+                            <i class="fas fa-camera me-1"></i> Foto Real D'Spa
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const gymGalleryModal = document.getElementById('gymGalleryModal');
+    if (gymGalleryModal) {
+        gymGalleryModal.addEventListener('show.bs.modal', function (event) {
+            const trigger = event.relatedTarget;
+            if (trigger) {
+                const imgUrl = trigger.getAttribute('data-img');
+                const title = trigger.getAttribute('data-title');
+                const modalImg = document.getElementById('gymGalleryModalImg');
+                const modalTitle = document.getElementById('gymGalleryModalTitle');
+                if (modalImg) modalImg.src = imgUrl || '';
+                if (modalTitle) modalTitle.textContent = title || '';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% endblock %}

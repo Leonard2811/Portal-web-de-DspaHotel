@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Count, Sum, Q
-from reservations.models import Reservation, PaymentProof, Customer
+from reservations.models import Reservation, PaymentProof, Customer, ServiceReservation, ServicePaymentProof, EventInquiry
 from core.models import Room
 from .models import StaffProfile
 from datetime import datetime, date
@@ -39,6 +40,13 @@ def _is_recepcionista(user):
     return not user.is_superuser
 
 
+def _is_operador_aqua(user):
+    """Retorna True si el usuario es Operador Aqua Spa Gym"""
+    if user.is_superuser:
+        return False
+    return user.groups.filter(name='Operadores Aqua Spa Gym').exists()
+
+
 def can_edit_required(view_func):
     """Decorador: bloquea a recepcionistas de hacer cambios"""
     def wrapper(request, *args, **kwargs):
@@ -52,12 +60,24 @@ def can_edit_required(view_func):
 
 
 def superuser_required(view_func):
-    """Decorador: solo superusuarios pueden acceder"""
+    """Decorador: solo superusuarios o miembros de Super Administradores pueden acceder"""
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
-        if not request.user.is_superuser:
-            messages.error(request, 'Solo el administrador principal puede gestionar usuarios.')
+        if not (request.user.is_superuser or request.user.groups.filter(name='Super Administradores').exists()):
+            messages.error(request, 'Solo el administrador principal puede realizar esta acción.')
+            return redirect('staff_dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+def can_edit_services_required(view_func):
+    """Decorador: permite a operadores Aqua y superiores editar servicios"""
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if _is_recepcionista(request.user):
+            messages.error(request, 'No tienes permisos para realizar esta acción.')
             return redirect('staff_dashboard')
         return view_func(request, *args, **kwargs)
     return wrapper
@@ -67,8 +87,13 @@ def superuser_required(view_func):
 def dashboard(request):
     """Dashboard principal del staff"""
     today = date.today()
+    mode = request.GET.get('mode', 'rooms')
 
-    # Estadísticas generales
+    # Si es operador Aqua, forzar modo spa_gym
+    if _is_operador_aqua(request.user):
+        mode = 'spa_gym'
+
+    # Estadísticas generales de HABITACIONES
     total_reservations = Reservation.objects.count()
     pending_reservations = Reservation.objects.filter(status='pending').count()
     payment_uploaded = Reservation.objects.filter(status='payment_uploaded').count()
@@ -76,7 +101,7 @@ def dashboard(request):
     cancelled_reservations = Reservation.objects.filter(status='cancelled').count()
     completed_reservations = Reservation.objects.filter(status='completed').count()
 
-    # Ingresos
+    # Ingresos habitaciones
     total_income = Reservation.objects.filter(
         status__in=['confirmed', 'completed']
     ).aggregate(total=Sum('total_price'))['total'] or 0
@@ -103,13 +128,13 @@ def dashboard(request):
         status='confirmed'
     )
 
-    # Comprobantes pendientes
+    # Comprobantes pendientes (habitaciones)
     pending_payments = PaymentProof.objects.filter(verification_status='pending').order_by('-payment_date')
 
-    # Todas las reservaciones
+    # Todas las reservaciones de habitaciones
     all_reservations = Reservation.objects.select_related('customer__user', 'room').all().order_by('-created_at')
 
-    # Filtros
+    # Filtros para habitaciones
     status_filter = request.GET.get('status', '')
     service_filter = request.GET.get('service', '')
     if status_filter:
@@ -117,7 +142,52 @@ def dashboard(request):
     if service_filter:
         all_reservations = all_reservations.filter(service_type=service_filter)
 
+    # ========== ESTADÍSTICAS SPA/GYM ==========
+    spa_total = ServiceReservation.objects.filter(service_category='spa').count()
+    spa_pending = ServiceReservation.objects.filter(service_category='spa', status='pending').count()
+    spa_uploaded = ServiceReservation.objects.filter(service_category='spa', status='payment_uploaded').count()
+    spa_confirmed = ServiceReservation.objects.filter(service_category='spa', status='confirmed').count()
+    spa_cancelled = ServiceReservation.objects.filter(service_category='spa', status='cancelled').count()
+    
+    gym_total = ServiceReservation.objects.filter(service_category='gym').count()
+    gym_pending = ServiceReservation.objects.filter(service_category='gym', status='pending').count()
+    gym_uploaded = ServiceReservation.objects.filter(service_category='gym', status='payment_uploaded').count()
+    gym_confirmed = ServiceReservation.objects.filter(service_category='gym', status='confirmed').count()
+    gym_cancelled = ServiceReservation.objects.filter(service_category='gym', status='cancelled').count()
+    
+    service_total = spa_total + gym_total
+    service_pending = spa_pending + gym_pending
+    service_uploaded = spa_uploaded + gym_uploaded
+    service_confirmed = spa_confirmed + gym_confirmed
+    service_cancelled = spa_cancelled + gym_cancelled
+    
+    service_income = ServiceReservation.objects.filter(
+        status__in=['confirmed', 'completed']
+    ).aggregate(total=Sum('price'))['total'] or 0
+
+    # Comprobantes pendientes de servicios
+    pending_service_payments = ServicePaymentProof.objects.filter(verification_status='pending').order_by('-payment_date')
+
+    # Todas las reservaciones de servicios
+    all_service_reservations = ServiceReservation.objects.select_related('customer__user').all().order_by('-created_at')
+
+    # Filtros para servicios
+    svc_status_filter = request.GET.get('svc_status', '')
+    svc_cat_filter = request.GET.get('svc_cat', '')
+    if svc_status_filter:
+        all_service_reservations = all_service_reservations.filter(status=svc_status_filter)
+    if svc_cat_filter:
+        all_service_reservations = all_service_reservations.filter(service_category=svc_cat_filter)
+
+    # Consultas de eventos
+    event_inquiries = EventInquiry.objects.all().order_by('-created_at')
+    total_event_inquiries = event_inquiries.count()
+    unread_events = event_inquiries.filter(is_read=False).count()
+
     context = {
+        'mode': mode,
+        'is_operador_aqua': _is_operador_aqua(request.user),
+        # Habitaciones
         'total_reservations': total_reservations,
         'pending_reservations': pending_reservations,
         'payment_uploaded': payment_uploaded,
@@ -141,6 +211,35 @@ def dashboard(request):
         'service_filter': service_filter,
         'status_choices': Reservation.STATUS_CHOICES,
         'service_choices': Reservation.SERVICE_CHOICES,
+        # Spa/Gym
+        'spa_total': spa_total,
+        'spa_pending': spa_pending,
+        'spa_uploaded': spa_uploaded,
+        'spa_confirmed': spa_confirmed,
+        'spa_cancelled': spa_cancelled,
+        'gym_total': gym_total,
+        'gym_pending': gym_pending,
+        'gym_uploaded': gym_uploaded,
+        'gym_confirmed': gym_confirmed,
+        'gym_cancelled': gym_cancelled,
+        'service_total': service_total,
+        'service_pending': service_pending,
+        'service_uploaded': service_uploaded,
+        'service_confirmed': service_confirmed,
+        'service_cancelled': service_cancelled,
+        'service_income': service_income,
+        'pending_service_payments': pending_service_payments,
+        'all_service_reservations': all_service_reservations,
+        'svc_status_filter': svc_status_filter,
+        'svc_cat_filter': svc_cat_filter,
+        'svc_status_choices': ServiceReservation.STATUS_CHOICES,
+        'svc_cat_choices': ServiceReservation.CATEGORY_CHOICES,
+        # Eventos
+        'event_inquiries': event_inquiries,
+        'total_event_inquiries': total_event_inquiries,
+        'unread_events': unread_events,
+        'event_type_choices': EventInquiry.EVENT_TYPE_CHOICES,
+        'salon_choices': EventInquiry.SALON_CHOICES,
         'is_readonly': _is_recepcionista(request.user),
     }
     return render(request, 'staff/dashboard.html', context)
@@ -152,12 +251,222 @@ def reservation_detail(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
     payments = reservation.payments.all().order_by('-payment_date')
 
+    can_delete = request.user.is_superuser or request.user.groups.filter(name='Super Administradores').exists()
     context = {
         'reservation': reservation,
         'payments': payments,
         'is_readonly': _is_recepcionista(request.user),
+        'can_delete': can_delete,
     }
     return render(request, 'staff/reservation_details.html', context)
+
+
+@staff_required
+def service_reservation_detail(request, reservation_id):
+    """Detalle completo de una reservación de servicio Spa/Gym"""
+    reservation = get_object_or_404(ServiceReservation, id=reservation_id)
+    payments = reservation.payments.all().order_by('-payment_date')
+
+    can_delete = request.user.is_superuser or request.user.groups.filter(name='Super Administradores').exists()
+    context = {
+        'reservation': reservation,
+        'payments': payments,
+        'is_readonly': _is_recepcionista(request.user),
+        'is_service': True,
+        'can_delete': can_delete,
+    }
+    return render(request, 'staff/reservation_details.html', context)
+
+
+def _send_service_email(request, reservation, payment, action, notes=''):
+    """Enviar correo de confirmación/rechazo para servicios Spa/Gym"""
+    customer_email = reservation.customer.user.email
+    if not customer_email:
+        return
+
+    portal_url = request.build_absolute_uri('/')
+
+    if action == 'verify':
+        context = {
+            'customer_name': reservation.customer.user.first_name,
+            'reservation_id': reservation.id,
+            'service_name': reservation.service_name,
+            'service_category': reservation.get_service_category_display(),
+            'preferred_date': reservation.preferred_date.strftime('%d/%m/%Y'),
+            'portal_url': portal_url,
+            'year': date.today().year,
+        }
+        html_message = render_to_string('staff/emails/spa_gym_verified.html', context)
+        subject = f'Confirmación de Reserva - {reservation.get_service_category_display()}'
+        text_content = f'Hola {reservation.customer.user.first_name},\n\nTu pago ha sido verificado y tu reserva de {reservation.get_service_category_display()} está confirmada.\n\n¡Gracias por elegir D\'Spa Hotel!'
+    else:
+        context = {
+            'customer_name': reservation.customer.user.first_name,
+            'reservation_id': reservation.id,
+            'notes': notes,
+            'portal_url': portal_url,
+            'year': date.today().year,
+        }
+        html_message = render_to_string('staff/emails/spa_gym_rejected.html', context)
+        subject = 'Problema con tu Pago de Servicio'
+        text_content = f'Hola {reservation.customer.user.first_name},\n\nHemos detectado un problema con tu comprobante de pago. Por favor, sube un nuevo comprobante.'
+
+    from_email = settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@dspahotel.com'
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [customer_email])
+    msg.attach_alternative(html_message, "text/html")
+
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo', 'logo de empresa.PNG')
+    if os.path.exists(logo_path):
+        with open(logo_path, 'rb') as img:
+            logo_image = MIMEImage(img.read())
+            logo_image.add_header('Content-ID', '<logo>')
+            msg.attach(logo_image)
+
+    msg.send(fail_silently=False)
+
+
+@can_edit_services_required
+def verify_service_payment(request, payment_id):
+    """Verificar o rechazar un comprobante de pago de servicio"""
+    payment = get_object_or_404(ServicePaymentProof, id=payment_id)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        notes = request.POST.get('staff_notes', '')
+        payment.staff_notes = notes
+
+        if action == 'verify':
+            payment.verification_status = 'verified'
+            payment.save()
+            payment.service_reservation.status = 'confirmed'
+            payment.service_reservation.save()
+            messages.success(request, f'Pago verificado. Reserva de servicio #{payment.service_reservation.id} confirmada.')
+            _send_service_email(request, payment.service_reservation, payment, 'verify')
+
+        elif action == 'reject':
+            payment.verification_status = 'rejected'
+            payment.save()
+            payment.service_reservation.status = 'pending'
+            payment.service_reservation.save()
+            messages.warning(request, f'Pago rechazado para Reserva de servicio #{payment.service_reservation.id}.')
+            _send_service_email(request, payment.service_reservation, payment, 'reject', notes)
+
+        return redirect('staff_service_detail', reservation_id=payment.service_reservation.id)
+
+    context = {
+        'payment': payment,
+        'reservation': payment.service_reservation,
+        'is_service': True,
+    }
+    return render(request, 'staff/verify_payment.html', context)
+
+
+@can_edit_services_required
+def update_service_status(request, reservation_id):
+    """Actualizar estado de una reservación de servicio"""
+    reservation = get_object_or_404(ServiceReservation, id=reservation_id)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in dict(ServiceReservation.STATUS_CHOICES):
+            old_status = reservation.status
+            reservation.status = new_status
+            reservation.save()
+
+            status_labels = dict(ServiceReservation.STATUS_CHOICES)
+            messages.success(
+                request,
+                f'Servicio #{reservation.id} actualizado de "{status_labels.get(old_status, old_status)}" a "{status_labels.get(new_status, new_status)}".'
+            )
+
+    return redirect('staff_service_detail', reservation_id=reservation.id)
+
+
+@superuser_required
+def delete_service_reservation(request, reservation_id):
+    """Eliminar una reservación de servicio Spa/Gym (solo superusuario)"""
+    reservation = get_object_or_404(ServiceReservation, id=reservation_id)
+
+    if request.method == 'POST':
+        res_id = reservation.id
+        category_name = reservation.get_service_category_display()
+        reservation.delete()
+        messages.success(request, f'Reservación de {category_name} #{res_id} eliminada exitosamente del sistema.')
+        return redirect(f"{reverse('staff_dashboard')}?mode=spa_gym")
+
+    return redirect('staff_service_detail', reservation_id=reservation.id)
+
+
+@staff_required
+def mark_event_read(request, inquiry_id):
+    """Marcar una consulta de evento como leída o respondida"""
+    inquiry = get_object_or_404(EventInquiry, id=inquiry_id)
+    if request.method == 'POST':
+        action = request.POST.get('action', 'read')
+        if action == 'respond':
+            inquiry.is_responded = True
+            inquiry.is_read = True
+            messages.success(request, f'Consulta #{inquiry.id} de {inquiry.name} marcada como respondida.')
+        elif action == 'unread':
+            inquiry.is_read = False
+            inquiry.is_responded = False
+            messages.info(request, f'Consulta #{inquiry.id} marcada como no leída.')
+        else:
+            inquiry.is_read = True
+            messages.success(request, f'Consulta #{inquiry.id} de {inquiry.name} marcada como leída.')
+        inquiry.save()
+    return redirect('staff_dashboard')
+
+
+@staff_required
+def create_event_inquiry_staff(request):
+    """Permitir al personal registrar una consulta de salón presencial o telefónica"""
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        event_type = request.POST.get('event_type', '')
+        salon_preference = request.POST.get('salon_preference', '')
+        estimated_guests = request.POST.get('estimated_guests', 1)
+        preferred_date = request.POST.get('preferred_date', '')
+        message = request.POST.get('message', '').strip()
+
+        if name and event_type and salon_preference and preferred_date:
+            from datetime import datetime
+            try:
+                date_obj = datetime.strptime(preferred_date, '%Y-%m-%d').date()
+            except ValueError:
+                date_obj = None
+
+            if date_obj:
+                inquiry = EventInquiry.objects.create(
+                    name=name,
+                    email=email or 'N/A',
+                    phone=phone or 'N/A',
+                    event_type=event_type,
+                    salon_preference=salon_preference,
+                    estimated_guests=int(estimated_guests or 1),
+                    preferred_date=date_obj,
+                    message=message or 'Consulta registrada directamente por recepción.',
+                    is_read=True,
+                )
+                messages.success(request, f'Consulta de salón #{inquiry.id} para "{inquiry.name}" registrada exitosamente.')
+            else:
+                messages.error(request, 'La fecha del evento no es válida.')
+        else:
+            messages.error(request, 'Por favor complete todos los campos obligatorios.')
+
+    return redirect('staff_dashboard')
+
+
+@can_edit_required
+def delete_event_inquiry(request, inquiry_id):
+    """Eliminar consulta de salón"""
+    inquiry = get_object_or_404(EventInquiry, id=inquiry_id)
+    if request.method == 'POST':
+        inquiry.delete()
+        messages.success(request, f'Consulta #{inquiry_id} eliminada.')
+    return redirect('staff_dashboard')
 
 
 @can_edit_required
@@ -364,18 +673,21 @@ ROLE_CHOICES = [
     ('super_admin', 'Super Administrador'),
     ('encargado_reservas', 'Encargado de Reservaciones'),
     ('recepcionista', 'Recepcionista de Datos'),
+    ('operador_aqua', 'Operador Aqua Spa Gym'),
 ]
 
 ROLE_DESCRIPTIONS = {
     'super_admin': 'Acceso total al sistema. Puede crear, editar, eliminar y gestionar usuarios.',
     'encargado_reservas': 'Puede ver, crear y editar reservaciones y planillas. No puede eliminar ni gestionar usuarios.',
     'recepcionista': 'Solo lectura. Puede ver información pero no crear, editar ni eliminar nada.',
+    'operador_aqua': 'Gestiona solo las reservaciones de Spa y Gimnasio. No tiene acceso a habitaciones ni gestión de usuarios.',
 }
 
 ROLE_TO_GROUP = {
     'super_admin': 'Super Administradores',
     'encargado_reservas': 'Encargados de Reservaciones',
     'recepcionista': 'Recepcionistas de Datos',
+    'operador_aqua': 'Operadores Aqua Spa Gym',
 }
 
 
@@ -385,6 +697,8 @@ def _get_user_role(user):
         return 'super_admin'
     if user.groups.filter(name='Encargados de Reservaciones').exists():
         return 'encargado_reservas'
+    if user.groups.filter(name='Operadores Aqua Spa Gym').exists():
+        return 'operador_aqua'
     if user.groups.filter(name='Recepcionistas de Datos').exists():
         return 'recepcionista'
     return 'sin_rol'
@@ -548,4 +862,3 @@ def delete_user(request, user_id):
         messages.success(request, f'Usuario "{username}" eliminado exitosamente.')
 
     return redirect('user_management')
-

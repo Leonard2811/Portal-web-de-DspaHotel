@@ -1,0 +1,153 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Salones de Eventos - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/events/salon.jpg' %}" alt="Salones de Eventos D'Spa Hotel" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Salones de Eventos</h1>
+        <p>El espacio perfecto para celebrar tus momentos más importantes</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <!-- Intro -->
+        <div class="text-center mb-5">
+            <span class="section-tag">Eventos</span>
+            <h2 class="section-title">Celebra con Nosotros</h2>
+            <p class="section-subtitle">Desde cumpleaños íntimos hasta grandes bodas y graduaciones, nuestros salones se adaptan a cada tipo de celebración con elegancia y confort.</p>
+        </div>
+
+        <!-- Event Types -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4 col-6">
+                <div class="event-type-card text-center">
+                    <i class="fas fa-birthday-cake"></i>
+                    <h5>Cumpleaños</h5>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="event-type-card text-center">
+                    <i class="fas fa-ring"></i>
+                    <h5>Bodas</h5>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="event-type-card text-center">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h5>Graduaciones</h5>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="event-type-card text-center">
+                    <i class="fas fa-glass-cheers"></i>
+                    <h5>Fin de Año</h5>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="event-type-card text-center">
+                    <i class="fas fa-briefcase"></i>
+                    <h5>Corporativos</h5>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="event-type-card text-center">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h5>Conferencias</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salones -->
+        <div class="text-center mb-4">
+            <span class="section-tag">Nuestros Salones</span>
+            <h2 class="section-title">Espacios Disponibles</h2>
+        </div>
+        <div class="row g-4 mb-5">
+            <!-- VIP -->
+            <div class="col-lg-6">
+                <div class="salon-card">
+                    <div class="salon-gallery">
+                        <div id="vipSalonCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/events/salon vip 1.jpeg' %}" alt="Salón VIP - Foto 1" style="height: 320px; object-fit: cover; width: 100%;">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/events/salon vip 2.jpeg' %}" alt="Salón VIP - Foto 2" style="height: 320px; object-fit: cover; width: 100%;">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#vipSalonCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#vipSalonCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
+                    </div>
+                    <div class="salon-body">
+                        <div class="salon-badge">VIP</div>
+                        <h3>Salón VIP</h3>
+                        <div class="salon-info">
+                            <span><i class="fas fa-map-marker-alt me-1"></i> Área del Lobby</span>
+                            <span><i class="fas fa-users me-1"></i> Hasta 80 personas</span>
+                        </div>
+                        <p>Nuestro salón principal ubicado en el área del lobby. Perfecto para bodas, graduaciones, fiestas de fin de año y grandes celebraciones. Equipado con tecnología audiovisual, iluminación adaptable y servicio de catering.</p>
+                        <a href="{% url 'event_inquiry' %}" class="btn btn-reservation">
+                            <i class="fas fa-envelope me-2"></i>Consultar Disponibilidad
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Verdi Salón -->
+            <div class="col-lg-6">
+                <div class="salon-card">
+                    <div class="salon-gallery">
+                        <div id="verdiSalonCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/events/salon.jpg' %}" alt="Verdi Salón" style="height: 320px; object-fit: cover; width: 100%;">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/events/sala de reuniones 1.jpg' %}" alt="Verdi Salón 2" style="height: 320px; object-fit: cover; width: 100%;">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/events/sala de reuniones 2.jpg' %}" alt="Verdi Salón 3" style="height: 320px; object-fit: cover; width: 100%;">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#verdiSalonCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#verdiSalonCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
+                    </div>
+                    <div class="salon-body">
+                        <div class="salon-badge">Verdi</div>
+                        <h3>Verdi Salón</h3>
+                        <div class="salon-info">
+                            <span><i class="fas fa-map-marker-alt me-1"></i> Primer Piso</span>
+                            <span><i class="fas fa-users me-1"></i> Hasta 30 personas</span>
+                        </div>
+                        <p>Salón íntimo con terraza y espacio para coffee break. Ideal para reuniones corporativas, cumpleaños, celebraciones privadas y eventos ejecutivos de escala reducida.</p>
+                        <div class="d-flex gap-2 flex-wrap mt-2">
+                            <span class="badge bg-light text-dark"><i class="fas fa-tree me-1"></i>Terraza</span>
+                            <span class="badge bg-light text-dark"><i class="fas fa-coffee me-1"></i>Coffee Break</span>
+                        </div>
+                        <a href="{% url 'event_inquiry' %}" class="btn btn-reservation mt-3">
+                            <i class="fas fa-envelope me-2"></i>Consultar Disponibilidad
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center py-4">
+            <h3 style="color: var(--color-primary);">¿Tienes un evento en mente?</h3>
+            <p class="text-muted mb-3">Envíanos un mensaje con los detalles de tu evento y nuestro equipo se pondrá en contacto contigo para darte toda la información y asesoría que necesitas.</p>
+            <a href="{% url 'event_inquiry' %}" class="btn btn-reservation btn-lg">
+                <i class="fas fa-paper-plane me-2"></i>Enviar Consulta
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

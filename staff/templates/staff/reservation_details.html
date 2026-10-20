@@ -1,53 +1,48 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Reservación #{{ reservation.id }} - Staff - D'Spa Hotel{% endblock %}
+{% block title %}{% if is_service %}Servicio{% else %}Reservación{% endif %} #{{ reservation.id }} - Staff - D'Spa Hotel{% endblock %}
 
 {% block content %}
 <section class="section-padding" style="margin-top: 80px;">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <h2 class="section-title mb-0">Reservación #{{ reservation.id }}</h2>
+            <h2 class="section-title mb-0">
+                {% if is_service %}
+                <i class="fas fa-water me-2" style="color: var(--color-gold);"></i>Servicio #{{ reservation.id }}
+                {% else %}
+                Reservación #{{ reservation.id }}
+                {% endif %}
+            </h2>
             <div class="d-flex gap-2">
-                {% if request.user.is_superuser %}
+                {% if can_delete %}
                 <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteReservationModal">
                     <i class="fas fa-trash me-2"></i>Eliminar
                 </button>
                 {% endif %}
-                <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Volver al Dashboard</a>
+                <a href="{% url 'staff_dashboard' %}{% if is_service %}?mode=spa_gym{% endif %}" class="btn btn-outline-custom"><i class="fas fa-arrow-left me-2"></i>Volver al Dashboard</a>
             </div>
         </div>
 
-        <!-- Delete Reservation Modal -->
-        {% if request.user.is_superuser %}
+        {% if can_delete %}
         <div class="modal fade" id="deleteReservationModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
                     <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
                         <h5 class="modal-title" style="color: var(--color-dark);">
-                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>Eliminar Reservación
+                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>Eliminar {% if is_service %}Reserva de Servicio{% else %}Reservación{% endif %}
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body" style="color: var(--color-text);">
-                        <p>¿Estás seguro de que deseas eliminar la <strong>Reservación #{{ reservation.id }}</strong>?</p>
-                        <div style="background: var(--color-light); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
-                            <small>
-                                <strong>Cliente:</strong> {{ reservation.customer.user.get_full_name }}<br>
-                                <strong>Servicio:</strong> {{ reservation.get_service_type_display }}<br>
-                                {% if reservation.room %}<strong>Habitación:</strong> {{ reservation.room.room_number }}<br>{% endif %}
-                                <strong>Total:</strong> ${{ reservation.total_price }}
-                            </small>
-                        </div>
-                        <p class="text-danger mb-0"><small><i class="fas fa-exclamation-circle me-1"></i>Esta acción eliminará la reservación y todos sus comprobantes de pago. No se puede deshacer.</small></p>
+                        <p>¿Estás seguro de que deseas eliminar {% if is_service %}la reserva de <strong>{{ reservation.get_service_category_display }} #{{ reservation.id }} ({{ reservation.service_name }})</strong>{% else %}la <strong>Reservación #{{ reservation.id }}</strong>{% endif %}?</p>
+                        <p class="text-danger mb-0"><small><i class="fas fa-exclamation-circle me-1"></i>Esta acción no se puede deshacer.</small></p>
                     </div>
                     <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1);">
                         <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
-                        <form method="post" action="{% url 'delete_reservation' reservation.id %}" style="display: inline;">
+                        <form method="post" action="{% if is_service %}{% url 'delete_service_reservation' reservation.id %}{% else %}{% url 'delete_reservation' reservation.id %}{% endif %}" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash me-1"></i>Sí, Eliminar
-                            </button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-1"></i>Sí, Eliminar</button>
                         </form>
                     </div>
                 </div>
@@ -56,105 +51,66 @@
         {% endif %}
 
         <div class="row g-4">
-            <!-- Customer Info -->
             <div class="col-lg-6">
                 <div class="dashboard-card">
                     <h4><i class="fas fa-user me-2"></i>Datos del Cliente</h4>
                     <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="label">Nombre Completo:</span>
-                            <span>{{ reservation.customer.user.get_full_name }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Usuario:</span>
-                            <span>{{ reservation.customer.user.username }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Documento:</span>
-                            <span>{{ reservation.customer.id_document }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Teléfono:</span>
-                            <span>{{ reservation.customer.phone }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Email:</span>
-                            <span>{{ reservation.customer.user.email }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Dirección:</span>
-                            <span>{{ reservation.customer.address }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Fecha de Nacimiento:</span>
-                            <span>{{ reservation.customer.birth_date|date:"d/m/Y" }}</span>
-                        </div>
+                        <div class="detail-item"><span class="label">Nombre Completo:</span><span>{{ reservation.customer.user.get_full_name }}</span></div>
+                        <div class="detail-item"><span class="label">Usuario:</span><span>{{ reservation.customer.user.username }}</span></div>
+                        <div class="detail-item"><span class="label">Documento:</span><span>{{ reservation.customer.id_document }}</span></div>
+                        <div class="detail-item"><span class="label">Teléfono:</span><span>{{ reservation.customer.phone }}</span></div>
+                        <div class="detail-item"><span class="label">Email:</span><span>{{ reservation.customer.user.email }}</span></div>
+                        <div class="detail-item"><span class="label">Dirección:</span><span>{{ reservation.customer.address }}</span></div>
+                        <div class="detail-item"><span class="label">Fecha de Nacimiento:</span><span>{{ reservation.customer.birth_date|date:"d/m/Y" }}</span></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Reservation Info -->
             <div class="col-lg-6">
                 <div class="dashboard-card">
-                    <h4><i class="fas fa-calendar-check me-2"></i>Datos de la Reservación</h4>
+                    <h4>
+                        {% if is_service %}<i class="fas fa-water me-2" style="color: var(--color-gold);"></i>Datos del Servicio
+                        {% else %}<i class="fas fa-calendar-check me-2"></i>Datos de la Reservación{% endif %}
+                    </h4>
                     <div class="detail-grid">
+                        {% if is_service %}
                         <div class="detail-item">
-                            <span class="label">Servicio:</span>
-                            <span>{{ reservation.get_service_type_display }}</span>
+                            <span class="label">Categoría:</span>
+                            <span class="badge {% if reservation.service_category == 'spa' %}bg-primary{% else %}bg-secondary{% endif %} fs-6">{{ reservation.get_service_category_display }}</span>
                         </div>
-                        {% if reservation.room %}
-                        <div class="detail-item">
-                            <span class="label">Habitación:</span>
-                            <span>{{ reservation.room }} ({{ reservation.room.room_number }})</span>
-                        </div>
+                        <div class="detail-item"><span class="label">Servicio:</span><span>{{ reservation.service_name }}</span></div>
+                        <div class="detail-item"><span class="label">Fecha Preferida:</span><span>{{ reservation.preferred_date|date:"d/m/Y" }}</span></div>
+                        {% if reservation.preferred_time %}
+                        <div class="detail-item"><span class="label">Hora Preferida:</span><span>{{ reservation.preferred_time|time:"H:i" }}</span></div>
                         {% endif %}
-                        <div class="detail-item">
-                            <span class="label">Check-in:</span>
-                            <span>{{ reservation.check_in|date:"d/m/Y" }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Check-out:</span>
-                            <span>{{ reservation.check_out|date:"d/m/Y" }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Noches:</span>
-                            <span>{{ reservation.nights }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Huéspedes:</span>
-                            <span>{{ reservation.adults_count }} adultos, {{ reservation.children_count }} niños</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Precio Total:</span>
-                            <span class="fw-bold">${{ reservation.total_price }}</span>
-                        </div>
+                        <div class="detail-item"><span class="label">Personas:</span><span>{{ reservation.people_count }}</span></div>
+                        <div class="detail-item"><span class="label">Precio:</span><span class="fw-bold">${{ reservation.price }}</span></div>
+                        {% if reservation.notes %}
+                        <div class="detail-item"><span class="label">Notas:</span><span>{{ reservation.notes }}</span></div>
+                        {% endif %}
+                        {% else %}
+                        <div class="detail-item"><span class="label">Servicio:</span><span>{{ reservation.get_service_type_display }}</span></div>
+                        {% if reservation.room %}
+                        <div class="detail-item"><span class="label">Habitación:</span><span>{{ reservation.room }} ({{ reservation.room.room_number }})</span></div>
+                        {% endif %}
+                        <div class="detail-item"><span class="label">Check-in:</span><span>{{ reservation.check_in|date:"d/m/Y" }}</span></div>
+                        <div class="detail-item"><span class="label">Check-out:</span><span>{{ reservation.check_out|date:"d/m/Y" }}</span></div>
+                        <div class="detail-item"><span class="label">Noches:</span><span>{{ reservation.nights }}</span></div>
+                        <div class="detail-item"><span class="label">Huéspedes:</span><span>{{ reservation.adults_count }} adultos, {{ reservation.children_count }} niños</span></div>
+                        <div class="detail-item"><span class="label">Precio Total:</span><span class="fw-bold">${{ reservation.total_price }}</span></div>
+                        {% if reservation.special_requests %}
+                        <div class="detail-item"><span class="label">Peticiones Especiales:</span><span>{{ reservation.special_requests }}</span></div>
+                        {% endif %}
+                        {% endif %}
                         <div class="detail-item">
                             <span class="label">Estado:</span>
-                            <span class="badge
-                                {% if reservation.status == 'confirmed' %}bg-success
-                                {% elif reservation.status == 'pending' %}bg-warning text-dark
-                                {% elif reservation.status == 'payment_uploaded' %}bg-info
-                                {% elif reservation.status == 'cancelled' %}bg-danger
-                                {% elif reservation.status == 'completed' %}bg-secondary
-                                {% endif %} fs-6">
-                                {{ reservation.get_status_display }}
-                            </span>
+                            <span class="badge {% if reservation.status == 'confirmed' %}bg-success{% elif reservation.status == 'pending' %}bg-warning text-dark{% elif reservation.status == 'payment_uploaded' %}bg-info{% elif reservation.status == 'cancelled' %}bg-danger{% elif reservation.status == 'completed' %}bg-secondary{% endif %} fs-6">{{ reservation.get_status_display }}</span>
                         </div>
-                        {% if reservation.special_requests %}
-                        <div class="detail-item">
-                            <span class="label">Peticiones Especiales:</span>
-                            <span>{{ reservation.special_requests }}</span>
-                        </div>
-                        {% endif %}
-                        <div class="detail-item">
-                            <span class="label">Creada:</span>
-                            <span>{{ reservation.created_at|date:"d/m/Y H:i" }}</span>
-                        </div>
+                        <div class="detail-item"><span class="label">Creada:</span><span>{{ reservation.created_at|date:"d/m/Y H:i" }}</span></div>
                     </div>
 
                     {% if not is_readonly %}
-                    <!-- Update Status -->
-                    <form method="post" action="{% url 'update_reservation_status' reservation.id %}" class="mt-3" id="statusForm">
+                    <form method="post" action="{% if is_service %}{% url 'update_service_status' reservation.id %}{% else %}{% url 'update_reservation_status' reservation.id %}{% endif %}" class="mt-3" id="statusForm">
                         {% csrf_token %}
                         <div class="d-flex gap-2">
                             <select name="status" class="form-select" id="statusSelect">
@@ -169,26 +125,14 @@
                             </button>
                         </div>
                     </form>
-
-                    <!-- Confirm Status Modal -->
                     <div class="modal fade" id="confirmStatusModal" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered modal-sm">
-                            <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid rgba(138,127,107,0.15);">
-                                <div class="modal-header" style="border-bottom: 1px solid rgba(138,127,107,0.1);">
-                                    <h5 class="modal-title" style="color: var(--color-dark); font-size: 1rem;">
-                                        <i class="fas fa-exchange-alt me-2" style="color: var(--color-gold);"></i>Confirmar Cambio
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body text-center" style="color: var(--color-text);">
-                                    <p>¿Cambiar el estado de esta reservación?</p>
-                                    <p class="fw-bold" id="newStatusLabel" style="color: var(--color-dark);"></p>
-                                </div>
-                                <div class="modal-footer" style="border-top: 1px solid rgba(138,127,107,0.1); justify-content: center;">
+                            <div class="modal-content" style="border-radius: var(--radius-lg);">
+                                <div class="modal-header"><h5 class="modal-title" style="font-size: 1rem;"><i class="fas fa-exchange-alt me-2" style="color: var(--color-gold);"></i>Confirmar Cambio</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                                <div class="modal-body text-center"><p>¿Cambiar el estado?</p><p class="fw-bold" id="newStatusLabel"></p></div>
+                                <div class="modal-footer" style="justify-content: center;">
                                     <button type="button" class="btn btn-outline-custom btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="button" class="btn btn-reservation btn-sm" onclick="document.getElementById('statusForm').submit();">
-                                        <i class="fas fa-check me-1"></i>Sí, Cambiar
-                                    </button>
+                                    <button type="button" class="btn btn-reservation btn-sm" onclick="document.getElementById('statusForm').submit();"><i class="fas fa-check me-1"></i>Sí, Cambiar</button>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +142,6 @@
             </div>
         </div>
 
-        <!-- Payment History -->
         <div class="dashboard-card mt-4">
             <h4><i class="fas fa-receipt me-2"></i>Historial de Pagos</h4>
             {% if payments %}
@@ -207,33 +150,16 @@
                 <div class="col-lg-6">
                     <div class="payment-detail-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h5>Pago - ${{ payment.amount }}</h5>
-                                <small class="text-muted">{{ payment.payment_date|date:"d/m/Y H:i" }}</small>
-                            </div>
-                            <span class="badge
-                                {% if payment.verification_status == 'verified' %}bg-success
-                                {% elif payment.verification_status == 'rejected' %}bg-danger
-                                {% else %}bg-warning text-dark
-                                {% endif %} fs-6">
-                                {{ payment.get_verification_status_display }}
-                            </span>
+                            <div><h5>Pago - ${{ payment.amount }}</h5><small class="text-muted">{{ payment.payment_date|date:"d/m/Y H:i" }}</small></div>
+                            <span class="badge {% if payment.verification_status == 'verified' %}bg-success{% elif payment.verification_status == 'rejected' %}bg-danger{% else %}bg-warning text-dark{% endif %} fs-6">{{ payment.get_verification_status_display }}</span>
                         </div>
                         {% if payment.proof_image %}
-                        <div class="payment-proof-image">
-                            <a href="{{ payment.proof_image.url }}" target="_blank">
-                                <img src="{{ payment.proof_image.url }}" alt="Comprobante" class="img-fluid rounded">
-                            </a>
-                        </div>
+                        <div class="payment-proof-image"><a href="{{ payment.proof_image.url }}" target="_blank"><img src="{{ payment.proof_image.url }}" alt="Comprobante" class="img-fluid rounded"></a></div>
                         {% endif %}
-                        {% if payment.staff_notes %}
-                        <div class="mt-2">
-                            <strong>Notas:</strong> {{ payment.staff_notes }}
-                        </div>
-                        {% endif %}
+                        {% if payment.staff_notes %}<div class="mt-2"><strong>Notas:</strong> {{ payment.staff_notes }}</div>{% endif %}
                         {% if payment.verification_status == 'pending' and not is_readonly %}
                         <div class="mt-3">
-                            <a href="{% url 'verify_payment' payment.id %}" class="btn btn-reservation">
+                            <a href="{% if is_service %}{% url 'verify_service_payment' payment.id %}{% else %}{% url 'verify_payment' payment.id %}{% endif %}" class="btn btn-reservation">
                                 <i class="fas fa-check-double me-1"></i>Verificar Pago
                             </a>
                         </div>
@@ -243,7 +169,7 @@
                 {% endfor %}
             </div>
             {% else %}
-            <p class="text-muted text-center py-3">No hay pagos registrados para esta reservación</p>
+            <p class="text-muted text-center py-3">No hay pagos registrados</p>
             {% endif %}
         </div>
     </div>
@@ -251,7 +177,6 @@
 
 {% if not is_readonly %}
 <script>
-// Update modal with selected status label
 document.getElementById('confirmStatusModal').addEventListener('show.bs.modal', function() {
     var select = document.getElementById('statusSelect');
     var label = select.options[select.selectedIndex].text;

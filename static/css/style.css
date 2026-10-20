@@ -49,6 +49,12 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.3;
 }
 
+.text-white,
+.text-white h1, .text-white h2, .text-white h3,
+.text-white h4, .text-white h5, .text-white h6 {
+    color: #ffffff !important;
+}
+
 a { color: var(--color-primary); text-decoration: none; transition: var(--transition); }
 a:hover { color: var(--color-dark); }
 
@@ -139,6 +145,63 @@ img { max-width: 100%; height: auto; }
     background: linear-gradient(135deg, #d4b478, var(--color-primary));
     color: var(--color-white) !important;
 }
+
+.btn-reservation.btn-sm {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+}
+
+/* Experience Cards in Services */
+.experience-card-btn-outline {
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-radius: 50px;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.experience-card-btn-outline:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #ffffff;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.experience-card-btn-action {
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-radius: 50px;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, var(--color-gold), var(--color-primary));
+    border: none;
+    box-shadow: 0 4px 14px rgba(201, 169, 110, 0.35);
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.experience-card-btn-action:hover {
+    background: linear-gradient(135deg, #d4b478, var(--color-primary));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201, 169, 110, 0.5);
+    color: #ffffff !important;
+}
+
 
 .btn-outline-custom {
     border: 2px solid var(--color-primary);
@@ -314,7 +377,7 @@ img { max-width: 100%; height: auto; }
 
 .service-card-img {
     position: relative;
-    height: 220px;
+    height: 240px;
     overflow: hidden;
 }
 
@@ -417,13 +480,13 @@ img { max-width: 100%; height: auto; }
 }
 
 .service-gallery-mini {
-    height: 250px;
+    height: 240px;
     overflow: hidden;
 }
 
 .service-gallery-mini .carousel-item img {
     width: 100%;
-    height: 250px;
+    height: 240px;
     object-fit: cover;
 }
 
@@ -1691,3 +1754,663 @@ img { max-width: 100%; height: auto; }
 ::-webkit-scrollbar-track { background: var(--color-light); }
 ::-webkit-scrollbar-thumb { background: var(--color-accent); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
+
+/* ====================================
+   Spa & Gym Services Styles
+   ==================================== */
+
+/* --- Mode Toggle --- */
+/* --- Mode Toggle Switch --- */
+.mode-toggle-container {
+    display: inline-flex;
+    align-items: center;
+    background: #f1ece4;
+    border: 2px solid rgba(138, 127, 107, 0.3);
+    border-radius: 50px;
+    padding: 4px;
+    gap: 6px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.06);
+}
+.mode-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 22px;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #4a453e;
+    background: #ffffff;
+    border: 1px solid rgba(138, 127, 107, 0.28);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+.mode-toggle-btn:hover {
+    color: var(--color-primary);
+    background: #faf7f2;
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.mode-toggle-btn.mode-active-rooms,
+.mode-toggle-btn.mode-active-spa {
+    background: linear-gradient(135deg, var(--color-primary), #6e6454);
+    color: #ffffff !important;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(138, 127, 107, 0.45);
+    transform: none;
+}
+.mode-toggle-btn.mode-active-rooms:hover,
+.mode-toggle-btn.mode-active-spa:hover {
+    background: linear-gradient(135deg, #7c705e, var(--color-primary));
+    color: #ffffff !important;
+}
+
+/* --- Service Info Card (Gym/Spa detail pages) --- */
+.service-info-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0,0,0,0.06);
+    height: 100%;
+}
+.service-info-header {
+    background: linear-gradient(135deg, var(--color-dark), #4a4640);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.service-info-header i { font-size: 1.4rem; color: var(--color-gold); }
+.service-info-header h3 { margin: 0; color: white; font-size: 1.2rem; }
+.service-info-body { padding: 20px 24px; }
+
+.schedule-list { list-style: none; padding: 0; margin: 0; }
+.schedule-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ede6;
+}
+.schedule-list li:last-child { border-bottom: none; }
+.schedule-day { font-weight: 600; color: var(--color-dark); }
+.schedule-time { color: var(--color-primary); font-weight: 500; }
+
+/* --- Pricing Card --- */
+.pricing-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 30px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: var(--transition);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.pricing-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.pricing-featured {
+    border: 2px solid var(--color-gold);
+    position: relative;
+}
+.pricing-featured::before {
+    content: '★ Popular';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--color-gold), #d4a84b);
+    color: white;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.pricing-badge {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-dark);
+    margin-bottom: 8px;
+}
+.pricing-price {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1;
+}
+.pricing-period {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    text-align: left;
+    flex-grow: 1;
+}
+.pricing-features li {
+    padding: 6px 0;
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+.pricing-features li i { color: var(--color-success); margin-right: 8px; }
+
+/* --- Spa Treatment Card --- */
+.spa-treatment-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: var(--transition);
+    height: 100%;
+}
+.spa-treatment-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.spa-treatment-card h5 { font-size: 1rem; margin-bottom: 8px; color: var(--color-dark); }
+.spa-price {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 4px;
+}
+.spa-duration { font-size: 0.85rem; color: var(--color-text-light); }
+
+/* --- Spa Section --- */
+.spa-section {
+    background: var(--color-light);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+.spa-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.spa-section-header i { font-size: 1.3rem; color: var(--color-gold); }
+.spa-section-header h3 { margin: 0; font-size: 1.3rem; }
+.spa-badge {
+    background: linear-gradient(135deg, var(--color-gold), #d4a84b);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* --- Spa Package Card --- */
+.spa-package-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 30px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: var(--transition);
+    height: 100%;
+}
+.spa-package-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.spa-package-featured { border: 2px solid var(--color-gold); }
+.spa-package-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-light), var(--color-secondary));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+}
+
+/* --- Salon Card (Events) --- */
+.salon-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: var(--transition);
+    height: 100%;
+}
+.salon-card:hover { box-shadow: var(--shadow-lg); }
+.salon-body { padding: 24px; }
+.salon-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--color-gold), #d4a84b);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+.salon-info {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+}
+
+/* --- Event Type Card --- */
+.event-type-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 24px 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: var(--transition);
+}
+.event-type-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-gold);
+}
+.event-type-card i {
+    font-size: 2rem;
+    color: var(--color-gold);
+    margin-bottom: 10px;
+    display: block;
+}
+.event-type-card h5 { font-size: 0.95rem; margin: 0; }
+
+/* --- Color Cream utility --- */
+.color-cream { background-color: var(--color-cream, #faf8f2); }
+
+/* ============================================================
+   DECORATIVE STYLES FOR SPA & GYM
+   ============================================================ */
+
+/* --- Feature Highlight Cards --- */
+.luxury-highlight-card {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(138, 127, 107, 0.15);
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.luxury-highlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-gold), var(--color-primary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.luxury-highlight-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    border-color: rgba(197, 160, 89, 0.4);
+}
+.luxury-highlight-card:hover::before {
+    opacity: 1;
+}
+.luxury-highlight-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(197, 160, 89, 0.15), rgba(138, 127, 107, 0.08));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: var(--color-gold);
+    margin-bottom: 16px;
+    transition: transform 0.3s ease;
+}
+.luxury-highlight-card:hover .luxury-highlight-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+.luxury-highlight-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-dark);
+    margin-bottom: 6px;
+}
+.luxury-highlight-desc {
+    font-size: 0.88rem;
+    color: var(--color-text-light);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* --- Spa Treatment Cards Enhanced --- */
+.spa-treatment-card {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-left: 4px solid var(--color-gold);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.spa-treatment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    border-left-color: var(--color-primary);
+}
+.spa-treatment-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.spa-treatment-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(197, 160, 89, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gold);
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+.spa-treatment-badge-sm {
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 50px;
+    background: var(--color-cream);
+    color: var(--color-primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.spa-treatment-card h5 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-dark);
+    margin-bottom: 6px;
+}
+.spa-price-tag {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+.spa-price-tag small {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-light);
+    margin-left: 4px;
+}
+.spa-quick-reserve-btn {
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    background: var(--color-cream);
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    border: 1px solid rgba(138, 127, 107, 0.2);
+}
+.spa-quick-reserve-btn:hover {
+    background: linear-gradient(135deg, var(--color-gold), var(--color-primary));
+    color: white;
+    border-color: transparent;
+}
+
+/* --- Visual Split Banner --- */
+.luxury-split-banner {
+    background: #ffffff;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.luxury-split-img {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.luxury-split-banner:hover .luxury-split-img {
+    transform: scale(1.03);
+}
+.luxury-split-content {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- Hydro Photo Cards --- */
+.hydro-card {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+.hydro-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+.hydro-card-img {
+    height: 220px;
+    overflow: hidden;
+    position: relative;
+}
+.hydro-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.hydro-card:hover .hydro-card-img img {
+    transform: scale(1.08);
+}
+.hydro-card-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(18, 18, 18, 0.7);
+    backdrop-filter: blur(8px);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+.hydro-card-body {
+    padding: 22px;
+}
+
+/* --- Gym Gallery Showcase --- */
+.gym-gallery-card {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 310px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+.gym-gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.gym-gallery-card:hover img {
+    transform: scale(1.08);
+}
+.gym-gallery-card-tall {
+    height: 440px;
+}
+@media (max-width: 768px) {
+    .gym-gallery-card {
+        height: 260px;
+    }
+}
+.gym-img-focus-top {
+    object-position: center 25% !important;
+}
+.gym-img-focus-center {
+    object-position: center 35% !important;
+}
+@media (max-width: 991px) {
+    .gym-gallery-card-tall {
+        height: 360px;
+    }
+}
+@media (max-width: 576px) {
+    .gym-gallery-card-tall {
+        height: 310px;
+    }
+}
+.gym-gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 65%, transparent 100%);
+    padding: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.gym-gallery-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+.gym-gallery-zoom {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 0.8rem;
+    transition: var(--transition);
+}
+.gym-gallery-card:hover .gym-gallery-zoom {
+    background: var(--color-gold);
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* --- Schedule Enhanced --- */
+.schedule-item-modern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: #fdfcfa;
+    border: 1px solid rgba(138, 127, 107, 0.12);
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+.schedule-item-modern:hover {
+    background: #fff;
+    border-color: var(--color-gold);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.schedule-day-badge {
+    font-weight: 600;
+    color: var(--color-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.schedule-time-pill {
+    background: rgba(197, 160, 89, 0.12);
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+
+/* --- Pricing Card Enhanced --- */
+.pricing-card-modern {
+    background: #ffffff;
+    border-radius: var(--radius-xl);
+    padding: 36px 28px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+.pricing-card-modern:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+.pricing-card-modern.featured {
+    border: 2px solid var(--color-gold);
+    box-shadow: 0 10px 35px rgba(197, 160, 89, 0.2);
+}
+.pricing-popular-ribbon {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--color-gold), var(--color-primary));
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(138, 127, 107, 0.4);
+}
+.pricing-check-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(46, 125, 50, 0.12);
+    color: #2e7d32;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    margin-right: 8px;
+    flex-shrink: 0;
+}

@@ -1,7 +1,57 @@
 {% extends 'core/base.html' %}
 {% load static %}
-
 {% block title %}Dashboard Staff - D'Spa Hotel{% endblock %}
+
+{% block extra_css %}
+<style>
+.mode-toggle-container {
+    display: inline-flex;
+    align-items: center;
+    background: #f1ece4;
+    border: 2px solid rgba(138, 127, 107, 0.3);
+    border-radius: 50px;
+    padding: 4px;
+    gap: 6px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.06);
+}
+.mode-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 22px;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #4a453e;
+    background: #ffffff;
+    border: 1px solid rgba(138, 127, 107, 0.28);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+.mode-toggle-btn:hover {
+    color: var(--color-primary);
+    background: #faf7f2;
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.mode-toggle-btn.mode-active-rooms,
+.mode-toggle-btn.mode-active-spa {
+    background: linear-gradient(135deg, var(--color-primary), #6e6454);
+    color: #ffffff !important;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(138, 127, 107, 0.45);
+    transform: none;
+}
+.mode-toggle-btn.mode-active-rooms:hover,
+.mode-toggle-btn.mode-active-spa:hover {
+    background: linear-gradient(135deg, #7c705e, var(--color-primary));
+    color: #ffffff !important;
+}
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="section-padding" style="margin-top: 80px;">
@@ -11,31 +61,48 @@
                 <h2 class="section-title mb-1"><i class="fas fa-tachometer-alt me-2"></i>Dashboard del Staff</h2>
                 <div class="d-flex align-items-center gap-2">
                     <div style="width: 30px; height: 30px; border-radius: 50%;
-                        background: {% if request.user.is_superuser %}linear-gradient(135deg, var(--color-gold), var(--color-primary)){% elif request.user.groups.all.0.name == 'Encargados de Reservaciones' %}linear-gradient(135deg, var(--color-info), #1976d2){% else %}linear-gradient(135deg, #6c757d, #5a636b){% endif %};
+                        background: {% if request.user.is_superuser %}linear-gradient(135deg, var(--color-gold), var(--color-primary)){% elif request.user.groups.all.0.name == 'Encargados de Reservaciones' %}linear-gradient(135deg, var(--color-info), #1976d2){% elif request.user.groups.all.0.name == 'Operadores Aqua Spa Gym' %}linear-gradient(135deg, #1a365d, #3182ce){% else %}linear-gradient(135deg, #6c757d, #5a636b){% endif %};
                         display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">
                         {% if request.user.is_superuser %}<i class="fas fa-crown"></i>
                         {% elif request.user.groups.all.0.name == 'Encargados de Reservaciones' %}<i class="fas fa-clipboard-list"></i>
+                        {% elif request.user.groups.all.0.name == 'Operadores Aqua Spa Gym' %}<i class="fas fa-water"></i>
                         {% else %}<i class="fas fa-eye"></i>{% endif %}
                     </div>
                     <span style="color: var(--color-text-light); font-size: 0.9rem;">
                         {{ request.user.get_full_name|default:request.user.username }} —
-                        <strong style="color: {% if request.user.is_superuser %}var(--color-gold){% elif request.user.groups.all.0.name == 'Encargados de Reservaciones' %}var(--color-info){% else %}#6c757d{% endif %};">
+                        <strong style="color: {% if request.user.is_superuser %}var(--color-gold){% elif request.user.groups.all.0.name == 'Encargados de Reservaciones' %}var(--color-info){% elif request.user.groups.all.0.name == 'Operadores Aqua Spa Gym' %}#3182ce{% else %}#6c757d{% endif %};">
                             {% if request.user.is_superuser %}Super Administrador
                             {% elif request.user.groups.all.0.name == 'Encargados de Reservaciones' %}Encargado de Reservaciones
+                            {% elif request.user.groups.all.0.name == 'Operadores Aqua Spa Gym' %}Operador Aqua Spa Gym
                             {% elif request.user.groups.all.0.name == 'Recepcionistas de Datos' %}Recepcionista de Datos
                             {% else %}Staff{% endif %}
                         </strong>
                     </span>
                 </div>
             </div>
-            <div class="d-flex gap-2 flex-wrap">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
+                <!-- Mode Toggle -->
+                {% if not is_operador_aqua %}
+                <div class="mode-toggle-container" role="group" aria-label="Selector de módulo staff">
+                    <a href="?mode=rooms" class="mode-toggle-btn {% if mode == 'rooms' %}mode-active-rooms{% endif %}">
+                        <i class="fas fa-bed me-2"></i>Habitaciones
+                    </a>
+                    <a href="?mode=spa_gym" class="mode-toggle-btn {% if mode == 'spa_gym' %}mode-active-spa{% endif %}">
+                        <i class="fas fa-spa me-2"></i>Spa & Gym
+                    </a>
+                </div>
+                {% endif %}
                 {% if request.user.is_superuser %}
                 <a href="{% url 'user_management' %}" class="btn btn-outline-custom"><i class="fas fa-users-cog me-2"></i>Gestionar Usuarios</a>
                 {% endif %}
+                {% if mode == 'rooms' %}
                 <a href="{% url 'room_management' %}" class="btn btn-outline-custom"><i class="fas fa-door-open me-2"></i>Gestionar Habitaciones</a>
+                {% endif %}
             </div>
         </div>
 
+        {% if mode == 'rooms' %}
+        <!-- ===== MODO HABITACIONES ===== -->
         <!-- Stats Cards -->
         <div class="row g-3 mb-4">
             <div class="col-xl-2 col-md-4 col-6">
@@ -219,12 +286,119 @@
         </div>
         {% endif %}
 
+        <!-- Consultas de Salones de Eventos (Permanente) -->
+        <div class="dashboard-card mb-4" id="consultas-salones">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h4 class="mb-0"><i class="fas fa-glass-cheers me-2 text-warning"></i>Consultas de Salones de Eventos</h4>
+                    <span class="badge bg-secondary rounded-pill">{{ total_event_inquiries }} en total</span>
+                    {% if unread_events > 0 %}
+                    <span class="badge bg-warning text-dark rounded-pill"><i class="fas fa-bell me-1"></i>{{ unread_events }} sin leer</span>
+                    {% endif %}
+                </div>
+                <div class="d-flex gap-2">
+                    {% if not is_readonly %}
+                    <button class="btn btn-sm btn-reservation" data-bs-toggle="modal" data-bs-target="#createEventInquiryModal">
+                        <i class="fas fa-plus me-1"></i>Registrar Consulta
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha Recibida</th>
+                            <th>Cliente</th>
+                            <th>Contacto</th>
+                            <th>Tipo de Evento</th>
+                            <th>Salón Solicitado</th>
+                            <th>Invitados</th>
+                            <th>Fecha Prevista</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for eq in event_inquiries %}
+                        <tr class="{% if not eq.is_read %}table-warning{% endif %}">
+                            <td><strong>#{{ eq.id }}</strong></td>
+                            <td>{{ eq.created_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <strong>{{ eq.name }}</strong>
+                            </td>
+                            <td>
+                                <div class="small">
+                                    {% if eq.phone and eq.phone != 'N/A' %}
+                                    <a href="https://wa.me/{{ eq.phone|cut:'+'|cut:' '|cut:'-' }}" target="_blank" class="text-success text-decoration-none me-1" title="Abrir WhatsApp">
+                                        <i class="fab fa-whatsapp me-1"></i>{{ eq.phone }}
+                                    </a>
+                                    {% endif %}
+                                    {% if eq.email and eq.email != 'N/A' %}
+                                    <span class="text-muted d-block"><i class="fas fa-envelope me-1"></i>{{ eq.email }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {{ eq.get_event_type_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: rgba(197, 160, 89, 0.15); color: var(--color-primary); border: 1px solid rgba(197, 160, 89, 0.3);">
+                                    {{ eq.get_salon_preference_display }}
+                                </span>
+                            </td>
+                            <td><strong>{{ eq.estimated_guests }}</strong> pers.</td>
+                            <td><strong>{{ eq.preferred_date|date:"d/m/Y" }}</strong></td>
+                            <td>
+                                {% if eq.is_responded %}
+                                <span class="badge bg-success"><i class="fas fa-check-double me-1"></i>Respondida</span>
+                                {% elif eq.is_read %}
+                                <span class="badge bg-info text-dark"><i class="fas fa-check me-1"></i>Leída</span>
+                                {% else %}
+                                <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-circle me-1"></i>Nueva</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-sm btn-outline-custom" data-bs-toggle="modal" data-bs-target="#eventModal{{ eq.id }}" title="Ver Detalle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    {% if not eq.is_read %}
+                                    <form action="{% url 'mark_event_read' eq.id %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="read">
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Marcar como Leída">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">
+                                <i class="fas fa-inbox fa-2x mb-2 d-block text-muted"></i>
+                                No hay consultas de salones de eventos registradas aún.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- All Reservations Table -->
         <div class="dashboard-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4><i class="fas fa-list me-2"></i>Todas las Reservaciones</h4>
                 <!-- Filters -->
                 <form method="get" class="d-flex gap-2">
+                    <input type="hidden" name="mode" value="rooms">
                     <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
                         <option value="">Todos los estados</option>
                         {% for value, label in status_choices %}
@@ -304,6 +478,427 @@
                 </table>
             </div>
         </div>
+
+        {% else %}
+        <!-- ===== MODO SPA & GYM ===== -->
+        <!-- Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon"><i class="fas fa-concierge-bell"></i></div>
+                    <div class="stat-value">{{ service_total }}</div>
+                    <div class="stat-label">Total Servicios</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                    <div class="stat-value">{{ service_pending }}</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-uploaded">
+                    <div class="stat-icon"><i class="fas fa-file-upload"></i></div>
+                    <div class="stat-value">{{ service_uploaded }}</div>
+                    <div class="stat-label">Comprobantes</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-confirmed">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-value">{{ service_confirmed }}</div>
+                    <div class="stat-label">Confirmados</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-income">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-value">${{ service_income }}</div>
+                    <div class="stat-label">Ingresos</div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4 col-6">
+                <div class="stat-card stat-cancelled">
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-value">{{ service_cancelled }}</div>
+                    <div class="stat-label">Cancelados</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spa vs Gym breakdown -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-spa me-2" style="color: var(--color-gold);"></i>AquaSpa</h4>
+                    <div class="row g-2 text-center mt-2">
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: var(--color-cream);">
+                                <small class="text-muted d-block">Total</small>
+                                <strong>{{ spa_total }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: #fff8e1;">
+                                <small class="text-warning d-block">Pendientes</small>
+                                <strong>{{ spa_pending }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: #e1f5fe;">
+                                <small class="text-info d-block">Comprobantes</small>
+                                <strong>{{ spa_uploaded }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: #e8f5e9;">
+                                <small class="text-success d-block">Confirmados</small>
+                                <strong>{{ spa_confirmed }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-dumbbell me-2" style="color: var(--color-gold);"></i>Gimnasio</h4>
+                    <div class="row g-2 text-center mt-2">
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: var(--color-cream);">
+                                <small class="text-muted d-block">Total</small>
+                                <strong>{{ gym_total }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: #fff8e1;">
+                                <small class="text-warning d-block">Pendientes</small>
+                                <strong>{{ gym_pending }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: #e1f5fe;">
+                                <small class="text-info d-block">Comprobantes</small>
+                                <strong>{{ gym_uploaded }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 rounded" style="background: #e8f5e9;">
+                                <small class="text-success d-block">Confirmados</small>
+                                <strong>{{ gym_confirmed }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Service Payments -->
+        {% if pending_service_payments %}
+        <div class="alert alert-warning mb-4">
+            <h5><i class="fas fa-exclamation-triangle me-2"></i>Comprobantes de Servicio Pendientes de Verificación ({{ pending_service_payments.count }})</h5>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>#</th><th>Cliente</th><th>Categoría</th><th>Servicio / Plan</th><th>Monto</th><th>Fecha</th><th>Acción</th></tr></thead>
+                    <tbody>
+                        {% for p in pending_service_payments %}
+                        <tr>
+                            <td>#{{ p.service_reservation.id }}</td>
+                            <td>{{ p.service_reservation.customer.user.get_full_name }}</td>
+                            <td>
+                                <span class="badge {% if p.service_reservation.service_category == 'spa' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                    {{ p.service_reservation.get_service_category_display }}
+                                </span>
+                            </td>
+                            <td><strong>{{ p.service_reservation.service_name }}</strong></td>
+                            <td><strong>${{ p.amount|default:p.service_reservation.price }}</strong></td>
+                            <td>{{ p.payment_date|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if not is_readonly %}
+                                <a href="{% url 'verify_service_payment' p.id %}" class="btn btn-sm btn-reservation">
+                                    <i class="fas fa-check-double me-1"></i>Verificar
+                                </a>
+                                {% else %}
+                                <span style="color: var(--color-text-light); font-size: 0.8rem;"><i class="fas fa-lock me-1"></i>Solo lectura</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- All Service Reservations Table -->
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4><i class="fas fa-list me-2"></i>Reservaciones de Servicios</h4>
+                <form method="get" class="d-flex gap-2">
+                    <input type="hidden" name="mode" value="spa_gym">
+                    <select name="svc_status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">Todos los estados</option>
+                        {% for value, label in svc_status_choices %}
+                        <option value="{{ value }}" {% if svc_status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="svc_cat" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">Todas las categorías</option>
+                        {% for value, label in svc_cat_choices %}
+                        <option value="{{ value }}" {% if svc_cat_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Categoría</th>
+                            <th>Servicio</th>
+                            <th>Fecha</th>
+                            <th>Personas</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Comprobante</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sr in all_service_reservations %}
+                        <tr>
+                            <td><strong>{{ sr.id }}</strong></td>
+                            <td>{{ sr.customer.user.get_full_name }}</td>
+                            <td>
+                                <span class="badge {% if sr.service_category == 'spa' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                    {{ sr.get_service_category_display }}
+                                </span>
+                            </td>
+                            <td>{{ sr.service_name }}</td>
+                            <td>{{ sr.preferred_date|date:"d/m/Y" }}</td>
+                            <td>{{ sr.people_count }}</td>
+                            <td><strong>${{ sr.price }}</strong></td>
+                            <td>
+                                <span class="badge
+                                    {% if sr.status == 'confirmed' %}bg-success
+                                    {% elif sr.status == 'pending' %}bg-warning text-dark
+                                    {% elif sr.status == 'payment_uploaded' %}bg-info
+                                    {% elif sr.status == 'cancelled' %}bg-danger
+                                    {% elif sr.status == 'completed' %}bg-secondary
+                                    {% endif %}">
+                                    {{ sr.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if sr.payments.first %}
+                                    {% if sr.payments.first.proof_image %}
+                                    <a href="{{ sr.payments.first.proof_image.url }}" target="_blank" class="btn btn-sm btn-outline-custom"><i class="fas fa-image"></i></a>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'staff_service_detail' sr.id %}" class="btn btn-sm btn-outline-custom" title="Ver Detalle"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-3">No hay reservaciones de servicios registradas</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
+
+<!-- Event Inquiry Modals -->
+{% for eq in event_inquiries %}
+<div class="modal fade" id="eventModal{{ eq.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--color-primary), var(--color-dark)); color: white;">
+                <h5 class="modal-title"><i class="fas fa-glass-cheers me-2"></i>Consulta de Salón #{{ eq.id }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Cliente:</small>
+                        <strong>{{ eq.name }}</strong>
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Fecha Recibida:</small>
+                        <span>{{ eq.created_at|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Teléfono:</small>
+                        {% if eq.phone and eq.phone != 'N/A' %}
+                        <a href="https://wa.me/{{ eq.phone|cut:'+'|cut:' '|cut:'-' }}" target="_blank" class="text-success fw-bold">
+                            <i class="fab fa-whatsapp me-1"></i>{{ eq.phone }}
+                        </a>
+                        {% else %}
+                        <span class="text-muted">No especificado</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Correo:</small>
+                        {% if eq.email and eq.email != 'N/A' %}
+                        <a href="mailto:{{ eq.email }}" class="text-primary">{{ eq.email }}</a>
+                        {% else %}
+                        <span class="text-muted">No especificado</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Tipo de Evento:</small>
+                        <span class="badge bg-light text-dark border">{{ eq.get_event_type_display }}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Salón Solicitado:</small>
+                        <span class="badge bg-primary">{{ eq.get_salon_preference_display }}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Invitados Estimados:</small>
+                        <strong>{{ eq.estimated_guests }} personas</strong>
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-muted d-block">Fecha Prevista:</small>
+                        <strong>{{ eq.preferred_date|date:"d/m/Y" }}</strong>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted d-block mb-1">Mensaje / Requerimientos:</small>
+                    <div style="background: #f7fafc; padding: 12px; border-radius: 8px; border-left: 3px solid var(--color-gold); font-size: 0.92rem;">
+                        {{ eq.message|linebreaks }}
+                    </div>
+                </div>
+
+                <div class="p-2 rounded bg-light border d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">Estado actual:</span>
+                    <div>
+                        {% if eq.is_responded %}
+                        <span class="badge bg-success"><i class="fas fa-check-double me-1"></i>Respondida</span>
+                        {% elif eq.is_read %}
+                        <span class="badge bg-info text-dark"><i class="fas fa-check me-1"></i>Leída</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-circle me-1"></i>Nueva</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer flex-wrap gap-2">
+                {% if eq.phone and eq.phone != 'N/A' %}
+                <a href="https://wa.me/{{ eq.phone|cut:'+'|cut:' '|cut:'-' }}?text=Hola%20{{ eq.name|urlencode }},%20le%20escribimos%20de%20D'Spa%20Hotel%20respecto%20a%20su%20consulta%20para%20el%20Sal%C3%B3n%20de%20Eventos." target="_blank" class="btn btn-sm btn-success">
+                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                </a>
+                {% endif %}
+
+                {% if not eq.is_responded %}
+                <form action="{% url 'mark_event_read' eq.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="respond">
+                    <button type="submit" class="btn btn-sm btn-reservation">
+                        <i class="fas fa-check-double me-1"></i>Marcar Respondida
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if not eq.is_read %}
+                <form action="{% url 'mark_event_read' eq.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="read">
+                    <button type="submit" class="btn btn-sm btn-outline-custom">
+                        <i class="fas fa-check me-1"></i>Marcar Leída
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if not is_readonly %}
+                <form action="{% url 'delete_event_inquiry' eq.id %}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar esta consulta?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+                {% endif %}
+
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Modal para Registrar Consulta Manualmente (Recepción) -->
+<div class="modal fade" id="createEventInquiryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{% url 'create_event_inquiry_staff' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-header" style="background: linear-gradient(135deg, var(--color-primary), var(--color-dark)); color: white;">
+                    <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Registrar Consulta de Salón</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Nombre del Cliente *</label>
+                        <input type="text" name="name" class="form-control" required placeholder="Nombre completo del solicitante">
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Teléfono</label>
+                            <input type="text" name="phone" class="form-control" placeholder="+58 414-0000000">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Correo Electrónico</label>
+                            <input type="email" name="email" class="form-control" placeholder="cliente@correo.com">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Tipo de Evento *</label>
+                            <select name="event_type" class="form-select" required>
+                                {% for val, label in event_type_choices %}
+                                <option value="{{ val }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Salón de Preferencia *</label>
+                            <select name="salon_preference" class="form-select" required>
+                                {% for val, label in salon_choices %}
+                                <option value="{{ val }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Fecha del Evento *</label>
+                            <input type="date" name="preferred_date" class="form-control" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Invitados Estimados</label>
+                            <input type="number" name="estimated_guests" class="form-control" min="1" value="30">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Notas / Requerimientos</label>
+                        <textarea name="message" class="form-control" rows="3" placeholder="Detalles de sonido, catering, horario, etc."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-reservation"><i class="fas fa-save me-1"></i>Guardar Consulta</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

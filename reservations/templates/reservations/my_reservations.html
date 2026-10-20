@@ -6,73 +6,183 @@
 {% block content %}
 <section class="section-padding" style="margin-top: 80px;">
     <div class="container">
-        <h2 class="section-title mb-4"><i class="fas fa-calendar-check me-2"></i>Mis Reservaciones</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="section-title mb-0"><i class="fas fa-calendar-check me-2"></i>Mis Reservaciones</h2>
+            <div class="d-flex gap-2">
+                <a href="{% url 'booking' %}" class="btn btn-outline-custom btn-sm">
+                    <i class="fas fa-bed me-1"></i>Reservar Habitación
+                </a>
+                <a href="{% url 'spa_booking' %}" class="btn btn-outline-custom btn-sm">
+                    <i class="fas fa-spa me-1"></i>Reservar Spa
+                </a>
+                <a href="{% url 'gym_booking' %}" class="btn btn-outline-custom btn-sm">
+                    <i class="fas fa-dumbbell me-1"></i>Inscribirse Gym
+                </a>
+            </div>
+        </div>
 
-        {% if reservations %}
-        <div class="table-responsive">
-            <table class="table table-custom">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Servicio</th>
-                        <th>Habitación</th>
-                        <th>Check-in</th>
-                        <th>Check-out</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for reservation in reservations %}
-                    <tr>
-                        <td><strong>{{ reservation.id }}</strong></td>
-                        <td>{{ reservation.get_service_type_display }}</td>
-                        <td>{% if reservation.room %}{{ reservation.room.room_number }}{% else %}-{% endif %}</td>
-                        <td>{{ reservation.check_in|date:"d/m/Y" }}</td>
-                        <td>{{ reservation.check_out|date:"d/m/Y" }}</td>
-                        <td><strong>${{ reservation.total_price }}</strong></td>
-                        <td>
-                            <span class="badge
-                                {% if reservation.status == 'confirmed' %}bg-success
-                                {% elif reservation.status == 'pending' %}bg-warning text-dark
-                                {% elif reservation.status == 'payment_uploaded' %}bg-info
-                                {% elif reservation.status == 'cancelled' %}bg-danger
-                                {% elif reservation.status == 'completed' %}bg-secondary
-                                {% endif %}">
-                                {{ reservation.get_status_display }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <a href="{% url 'reservation_confirmation' reservation.id %}" class="btn btn-outline-custom btn-sm" title="Ver">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                {% if reservation.status == 'pending' %}
-                                <a href="{% url 'upload_payment' reservation.id %}" class="btn btn-reservation btn-sm" title="Pagar">
-                                    <i class="fas fa-upload"></i>
-                                </a>
-                                {% endif %}
-                                {% if reservation.status in 'pending,payment_uploaded' %}
-                                <a href="{% url 'cancel_reservation' reservation.id %}" class="btn btn-outline-danger btn-sm" title="Cancelar" onclick="return confirm('¿Está seguro de cancelar esta reservación?')">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Nav Tabs -->
+        <ul class="nav nav-pills mb-4" id="reservationsTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="rooms-tab" data-bs-toggle="pill" data-bs-target="#rooms-pane" type="button" role="tab">
+                    <i class="fas fa-hotel me-2"></i>Habitaciones <span class="badge bg-secondary ms-1">{{ reservations|length }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="services-tab" data-bs-toggle="pill" data-bs-target="#services-pane" type="button" role="tab">
+                    <i class="fas fa-spa me-2"></i>AquaSpa & Gym <span class="badge bg-secondary ms-1">{{ service_reservations|length }}</span>
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="reservationsTabContent">
+            <!-- PANE 1: HABITACIONES -->
+            <div class="tab-pane fade show active" id="rooms-pane" role="tabpanel">
+                {% if reservations %}
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Servicio</th>
+                                <th>Habitación</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                            <tr>
+                                <td><strong>#{{ reservation.id }}</strong></td>
+                                <td>{{ reservation.get_service_type_display }}</td>
+                                <td>{% if reservation.room %}{{ reservation.room.room_number }} ({{ reservation.room.get_room_type_display }}){% else %}-{% endif %}</td>
+                                <td>{{ reservation.check_in|date:"d/m/Y" }}</td>
+                                <td>{{ reservation.check_out|date:"d/m/Y" }}</td>
+                                <td><strong>${{ reservation.total_price }}</strong></td>
+                                <td>
+                                    <span class="badge
+                                        {% if reservation.status == 'confirmed' %}bg-success
+                                        {% elif reservation.status == 'pending' %}bg-warning text-dark
+                                        {% elif reservation.status == 'payment_uploaded' %}bg-info
+                                        {% elif reservation.status == 'cancelled' %}bg-danger
+                                        {% elif reservation.status == 'completed' %}bg-secondary
+                                        {% endif %}">
+                                        {{ reservation.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'reservation_confirmation' reservation.id %}" class="btn btn-outline-custom btn-sm" title="Ver Detalle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        {% if reservation.status == 'pending' %}
+                                        <a href="{% url 'upload_payment' reservation.id %}" class="btn btn-reservation btn-sm" title="Subir Comprobante">
+                                            <i class="fas fa-upload"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if reservation.status in 'pending,payment_uploaded' %}
+                                        <a href="{% url 'cancel_reservation' reservation.id %}" class="btn btn-outline-danger btn-sm" title="Cancelar" onclick="return confirm('¿Está seguro de cancelar esta reservación?')">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state text-center py-5">
+                    <i class="fas fa-bed fa-3x mb-3 text-muted"></i>
+                    <h4>No tiene reservaciones de habitaciones</h4>
+                    <p class="text-muted">Explore nuestras habitaciones y reserve su estancia.</p>
+                    <a href="{% url 'booking' %}" class="btn btn-reservation"><i class="fas fa-plus me-2"></i>Hacer Reservación</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- PANE 2: SPAGYM -->
+            <div class="tab-pane fade" id="services-pane" role="tabpanel">
+                {% if service_reservations %}
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Categoría</th>
+                                <th>Servicio / Plan</th>
+                                <th>Fecha</th>
+                                <th>Personas</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for svc in service_reservations %}
+                            <tr>
+                                <td><strong>#{{ svc.id }}</strong></td>
+                                <td>
+                                    {% if svc.service_category == 'spa' %}
+                                    <span class="badge" style="background: linear-gradient(135deg, #102a45, #0077b6);"><i class="fas fa-spa me-1"></i>AquaSpa</span>
+                                    {% else %}
+                                    <span class="badge" style="background: linear-gradient(135deg, #0d1b2a, #1b263b);"><i class="fas fa-dumbbell me-1"></i>Gym</span>
+                                    {% endif %}
+                                </td>
+                                <td><strong>{{ svc.service_name }}</strong></td>
+                                <td>{{ svc.preferred_date|date:"d/m/Y" }}{% if svc.preferred_time %} <small class="text-muted">({{ svc.preferred_time|time:"H:i" }})</small>{% endif %}</td>
+                                <td>{{ svc.people_count }}</td>
+                                <td><strong>${{ svc.price }}</strong></td>
+                                <td>
+                                    <span class="badge
+                                        {% if svc.status == 'confirmed' %}bg-success
+                                        {% elif svc.status == 'pending' %}bg-warning text-dark
+                                        {% elif svc.status == 'payment_uploaded' %}bg-info
+                                        {% elif svc.status == 'cancelled' %}bg-danger
+                                        {% elif svc.status == 'completed' %}bg-secondary
+                                        {% endif %}">
+                                        {{ svc.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'service_reservation_confirmation' svc.id %}" class="btn btn-outline-custom btn-sm" title="Ver Detalle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        {% if svc.status == 'pending' %}
+                                        <a href="{% url 'upload_service_payment' svc.id %}" class="btn btn-reservation btn-sm" title="Subir Comprobante">
+                                            <i class="fas fa-upload"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if svc.status in 'pending,payment_uploaded' %}
+                                        <a href="{% url 'cancel_service_reservation' svc.id %}" class="btn btn-outline-danger btn-sm" title="Cancelar" onclick="return confirm('¿Está seguro de cancelar esta solicitud de servicio?')">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state text-center py-5">
+                    <i class="fas fa-spa fa-3x mb-3 text-muted"></i>
+                    <h4>No tiene solicitudes de Spa o Gimnasio</h4>
+                    <p class="text-muted">Disfrute de nuestros tratamientos de relajación o inscríbase en nuestro gimnasio.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'spa_booking' %}" class="btn btn-reservation"><i class="fas fa-spa me-2"></i>Reservar Spa</a>
+                        <a href="{% url 'gym_booking' %}" class="btn btn-outline-custom"><i class="fas fa-dumbbell me-2"></i>Inscribirse en Gym</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
         </div>
-        {% else %}
-        <div class="empty-state text-center py-5">
-            <i class="fas fa-calendar-times fa-4x mb-3 text-muted"></i>
-            <h4>No tiene reservaciones</h4>
-            <p class="text-muted">Aún no ha realizado ninguna reservación.</p>
-            <a href="{% url 'booking' %}" class="btn btn-reservation"><i class="fas fa-plus me-2"></i>Hacer una Reservación</a>
-        </div>
-        {% endif %}
     </div>
 </section>
 {% endblock %}

@@ -131,6 +131,18 @@ def services_view(request):
     return render(request, 'core/services.html', context)
 
 
+def gym_view(request):
+    return render(request, 'core/gym.html')
+
+
+def spa_view(request):
+    return render(request, 'core/spa.html')
+
+
+def events_view(request):
+    return render(request, 'core/events.html')
+
+
 def rooms_view(request):
     deluxe_rooms = Room.objects.filter(room_type='deluxe', is_active=True, sales_channel='web')
     doble_rooms = Room.objects.filter(room_type='doble', is_active=True, sales_channel='web')
@@ -163,13 +175,19 @@ def location(request):
 
 
 def register(request):
+    first_name = ''
+    last_name = ''
+    email = ''
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
+        first_name = request.POST.get('first_name', '')
+        last_name = request.POST.get('last_name', '')
+        email = request.POST.get('email', '')
         if form.is_valid():
             user = form.save(commit=False)
-            user.first_name = request.POST.get('first_name', '')
-            user.last_name = request.POST.get('last_name', '')
-            user.email = request.POST.get('email', '')
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
             user.save()
             login(request, user)
             messages.success(request, 'Registro exitoso. Complete sus datos para continuar.')
@@ -178,7 +196,12 @@ def register(request):
             messages.error(request, 'Por favor corrija los errores del formulario.')
     else:
         form = UserCreationForm()
-    return render(request, 'core/register.html', {'form': form})
+    return render(request, 'core/register.html', {
+        'form': form,
+        'first_name': first_name,
+        'last_name': last_name,
+        'email': email,
+    })
 
 
 @login_required

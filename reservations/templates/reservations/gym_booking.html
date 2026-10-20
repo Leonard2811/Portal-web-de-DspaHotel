@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Inscripción Gimnasio - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/gym/gym 2.jpg' %}" alt="Inscripción Gimnasio" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Inscripción al Gimnasio</h1>
+        <p>Elige tu plan y comienza a entrenar</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container" style="max-width: 800px;">
+        {% if not has_profile %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Debe <a href="{% url 'complete_profile' %}">completar su perfil</a> antes de inscribirse.
+        </div>
+        {% endif %}
+
+        <div class="booking-form-card">
+            <h3 class="mb-4"><i class="fas fa-dumbbell me-2" style="color: var(--color-gold);"></i>Formulario de Inscripción - Gimnasio</h3>
+            <form action="{% url 'create_service_reservation' %}" method="post" id="gymBookingForm">
+                {% csrf_token %}
+                <input type="hidden" name="service_category" value="gym">
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Plan de Mensualidad</label>
+                        <select class="form-select" name="service_name" id="gym_plan" required onchange="updateGymPrice()">
+                            <option value="">-- Seleccione un plan --</option>
+                            <option value="Mensualidad Individual" data-price="65">Individual - $65/mes</option>
+                            <option value="Mensualidad Individual con Spinning" data-price="90">Individual con Spinning - $90/mes</option>
+                            <option value="Mensualidad Familiar (2 personas)" data-price="120">Familiar 2 personas - $120/mes</option>
+                            <option value="Mensualidad Familiar (3 personas)" data-price="170">Familiar 3 personas - $170/mes</option>
+                            <option value="Mensualidad Familiar (4 personas)" data-price="230">Familiar 4 personas - $230/mes</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="price" id="gym_price" value="0">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Fecha de Inicio</label>
+                        <input type="date" class="form-control" name="preferred_date" min="{{ today }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Cantidad de Personas</label>
+                        <input type="number" class="form-control" name="people_count" value="1" min="1" max="4" id="gym_people">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Precio</label>
+                        <div class="price-calculator" id="gymPriceDisplay">
+                            <span class="calculated-price">Seleccione un plan</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Notas / Peticiones Especiales</label>
+                        <textarea class="form-control" name="notes" rows="3" placeholder="Indique si tiene alguna condición física o requerimiento especial..."></textarea>
+                    </div>
+
+                    <!-- Beneficios -->
+                    <div class="col-12">
+                        <div style="background: var(--color-cream); border-radius: 12px; padding: 20px; border-left: 4px solid var(--color-gold);">
+                            <h6 style="color: var(--color-primary); margin-bottom: 10px;"><i class="fas fa-gift me-2"></i>Todos los planes incluyen:</h6>
+                            <div class="row">
+                                <div class="col-6"><small><i class="fas fa-check text-success me-1"></i> Duchas y sauna</small></div>
+                                <div class="col-6"><small><i class="fas fa-check text-success me-1"></i> Clases de boxeo incluidas</small></div>
+                                <div class="col-6"><small><i class="fas fa-check text-success me-1"></i> Instructores en sala</small></div>
+                                <div class="col-6"><small><i class="fas fa-check text-success me-1"></i> Estacionamiento privado</small></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">
+                                Acepto los términos y condiciones del Gimnasio de D'Spa Hotel.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-reservation btn-lg" {% if not has_profile %}disabled{% endif %}>
+                            <i class="fas fa-calendar-check me-2"></i>Confirmar Inscripción
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateGymPrice() {
+    const select = document.getElementById('gym_plan');
+    const option = select.options[select.selectedIndex];
+    const price = option.getAttribute('data-price') || '0';
+    document.getElementById('gym_price').value = price;
+    document.getElementById('gymPriceDisplay').innerHTML = price > 0
+        ? `<strong class="price-amount" style="font-size: 1.3rem;">$${price}<small class="text-muted">/mes</small></strong>`
+        : '<span class="calculated-price">Seleccione un plan</span>';
+}
+</script>
+{% endblock %}

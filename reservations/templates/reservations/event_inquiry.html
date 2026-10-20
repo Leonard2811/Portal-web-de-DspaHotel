@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Consultar Salón de Eventos - D'Spa Hotel{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-overlay"></div>
+    <img src="{% static 'images/events/salon.jpg' %}" alt="Consultar Eventos" class="page-hero-bg">
+    <div class="page-hero-content">
+        <h1>Consultar Disponibilidad</h1>
+        <p>Envíenos los detalles de su evento</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container" style="max-width: 800px;">
+        <div class="booking-form-card">
+            <h3 class="mb-4"><i class="fas fa-glass-cheers me-2" style="color: var(--color-gold);"></i>Formulario de Consulta - Salones de Eventos</h3>
+            <p class="text-muted mb-4">Complete el formulario y nuestro equipo se pondrá en contacto con usted para coordinar todos los detalles de su evento.</p>
+            <form action="{% url 'event_inquiry' %}" method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nombre Completo *</label>
+                        <input type="text" class="form-control" name="name" required placeholder="Su nombre completo">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Correo Electrónico *</label>
+                        <input type="email" class="form-control" name="email" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" name="phone" placeholder="+58 424-0000000">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Tipo de Evento *</label>
+                        <select class="form-select" name="event_type" required>
+                            <option value="">-- Seleccione --</option>
+                            {% for value, label in event_types %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Salón de Preferencia *</label>
+                        <select class="form-select" name="salon_preference" required>
+                            <option value="">-- Seleccione --</option>
+                            {% for value, label in salon_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Invitados Estimados *</label>
+                        <input type="number" class="form-control" name="estimated_guests" min="1" max="100" required value="10">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha del Evento *</label>
+                        <input type="date" class="form-control" name="preferred_date" min="{{ today }}" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Mensaje / Detalles del Evento *</label>
+                        <textarea class="form-control" name="message" rows="4" required placeholder="Describa los detalles de su evento: tipo de celebración, servicios requeridos, horario, decoración, catering, etc."></textarea>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-reservation btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar Consulta
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

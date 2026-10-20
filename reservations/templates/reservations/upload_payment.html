@@ -16,8 +16,30 @@
 
                     <!-- Reservation Summary -->
                     <div class="reservation-summary mb-4">
-                        <h4>Resumen de Reservación</h4>
+                        <h4>Resumen {% if is_service %}del Servicio{% else %}de Reservación{% endif %}</h4>
                         <div class="summary-grid">
+                            {% if is_service %}
+                            <div class="summary-item">
+                                <span class="label">Categoría:</span>
+                                <span class="value">{{ reservation.get_service_category_display }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Servicio:</span>
+                                <span class="value">{{ reservation.service_name }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Fecha:</span>
+                                <span class="value">{{ reservation.preferred_date|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Personas:</span>
+                                <span class="value">{{ reservation.people_count }}</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span class="label">Total a Pagar:</span>
+                                <span class="value">${{ reservation.price }}</span>
+                            </div>
+                            {% else %}
                             <div class="summary-item">
                                 <span class="label">Servicio:</span>
                                 <span class="value">{{ reservation.get_service_type_display }}</span>
@@ -48,6 +70,7 @@
                                 <span class="label">Total a Pagar:</span>
                                 <span class="value">${{ reservation.total_price }}</span>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -71,7 +94,7 @@
                                 <label for="amount" class="form-label">Monto Pagado</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input type="number" step="0.01" class="form-control" name="amount" id="amount" value="{{ reservation.total_price }}" required>
+                                    <input type="number" step="0.01" class="form-control" name="amount" id="amount" value="{% if is_service %}{{ reservation.price }}{% else %}{{ reservation.total_price }}{% endif %}" required>
                                 </div>
                             </div>
                             <div class="col-12">

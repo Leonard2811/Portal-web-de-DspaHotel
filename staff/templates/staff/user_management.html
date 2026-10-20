@@ -72,6 +72,19 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-3 col-md-6">
+                <div style="background: var(--color-white); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border-left: 4px solid #1a365d;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, #1a365d, #3182ce); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-water text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0" style="color: var(--color-dark);">Operador Aqua Spa Gym</h6>
+                            <small style="color: var(--color-text-light);">{{ role_descriptions.operador_aqua }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Users Table -->
@@ -95,7 +108,7 @@
                             <td>
                                 <div class="d-flex align-items-center gap-2">
                                     <div style="width: 36px; height: 36px; border-radius: 50%; 
-                                        background: {% if item.role == 'super_admin' %}linear-gradient(135deg, var(--color-gold), var(--color-primary)){% elif item.role == 'encargado_reservas' %}linear-gradient(135deg, var(--color-info), #1976d2){% else %}linear-gradient(135deg, #6c757d, #5a636b){% endif %};
+                                        background: {% if item.role == 'super_admin' %}linear-gradient(135deg, var(--color-gold), var(--color-primary)){% elif item.role == 'encargado_reservas' %}linear-gradient(135deg, var(--color-info), #1976d2){% elif item.role == 'operador_aqua' %}linear-gradient(135deg, #1a365d, #3182ce){% else %}linear-gradient(135deg, #6c757d, #5a636b){% endif %};
                                         display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px;">
                                         {{ item.user.username|first|upper }}
                                     </div>
@@ -109,9 +122,10 @@
                             <td style="color: var(--color-text-light);">{{ item.user.email|default:"-" }}</td>
                             <td>
                                 <span class="badge text-white"
-                                    style="{% if item.role == 'super_admin' %}background: linear-gradient(135deg, var(--color-gold), var(--color-primary));{% elif item.role == 'encargado_reservas' %}background: linear-gradient(135deg, var(--color-info), #1976d2);{% else %}background: #6c757d;{% endif %} padding: 6px 12px; font-size: 12px; border-radius: 50px;">
+                                    style="{% if item.role == 'super_admin' %}background: linear-gradient(135deg, var(--color-gold), var(--color-primary));{% elif item.role == 'encargado_reservas' %}background: linear-gradient(135deg, var(--color-info), #1976d2);{% elif item.role == 'operador_aqua' %}background: linear-gradient(135deg, #1a365d, #3182ce);{% else %}background: #6c757d;{% endif %} padding: 6px 12px; font-size: 12px; border-radius: 50px;">
                                     {% if item.role == 'super_admin' %}<i class="fas fa-crown me-1"></i>
                                     {% elif item.role == 'encargado_reservas' %}<i class="fas fa-clipboard-list me-1"></i>
+                                    {% elif item.role == 'operador_aqua' %}<i class="fas fa-water me-1"></i>
                                     {% else %}<i class="fas fa-eye me-1"></i>{% endif %}
                                     {{ item.role_display }}
                                 </span>

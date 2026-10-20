@@ -102,3 +102,97 @@ class RoomAvailability(models.Model):
 
     def __str__(self):
         return f"{self.room} - {self.date}"
+
+
+class ServiceReservation(models.Model):
+    """Reservaciones de servicios Spa y Gym"""
+    CATEGORY_CHOICES = [
+        ('spa', 'Spa'),
+        ('gym', 'Gimnasio'),
+    ]
+    STATUS_CHOICES = [
+        ('pending', 'Pendiente de Pago'),
+        ('payment_uploaded', 'Comprobante Subido'),
+        ('confirmed', 'Confirmada'),
+        ('cancelled', 'Cancelada'),
+        ('completed', 'Completada'),
+    ]
+
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name="Cliente", related_name='service_reservations')
+    service_category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, verbose_name="Categoría")
+    service_name = models.CharField(max_length=200, verbose_name="Servicio Seleccionado")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
+    preferred_date = models.DateField(verbose_name="Fecha Preferida")
+    preferred_time = models.TimeField(verbose_name="Hora Preferida", null=True, blank=True)
+    people_count = models.IntegerField(default=1, verbose_name="Cantidad de Personas")
+    notes = models.TextField(blank=True, verbose_name="Notas / Peticiones Especiales")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="Estado")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Reservación de Servicio"
+        verbose_name_plural = "Reservaciones de Servicios"
+
+    def __str__(self):
+        return f"Servicio #{self.id} - {self.get_service_category_display()} - {self.customer}"
+
+
+class ServicePaymentProof(models.Model):
+    """Comprobantes de pago para servicios Spa/Gym"""
+    VERIFICATION_CHOICES = [
+        ('pending', 'Pendiente'),
+        ('verified', 'Verificado'),
+        ('rejected', 'Rechazado'),
+    ]
+
+    service_reservation = models.ForeignKey(ServiceReservation, on_delete=models.CASCADE, related_name='payments', verbose_name="Reservación de Servicio")
+    payment_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Pago")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Monto")
+    proof_image = models.ImageField(upload_to='service_payment_proofs/', verbose_name="Comprobante")
+    verification_status = models.CharField(max_length=20, choices=VERIFICATION_CHOICES, default='pending', verbose_name="Estado de Verificación")
+    staff_notes = models.TextField(blank=True, verbose_name="Notas del Staff")
+
+    class Meta:
+        verbose_name = "Comprobante de Pago (Servicio)"
+        verbose_name_plural = "Comprobantes de Pago (Servicios)"
+
+    def __str__(self):
+        return f"Pago de Servicio #{self.service_reservation.id}"
+
+
+class EventInquiry(models.Model):
+    """Consultas para Salón de Eventos"""
+    EVENT_TYPE_CHOICES = [
+        ('birthday', 'Cumpleaños'),
+        ('wedding', 'Boda'),
+        ('graduation', 'Graduación'),
+        ('corporate', 'Evento Corporativo'),
+        ('new_year', 'Fin de Año'),
+        ('conference', 'Conferencia'),
+        ('other', 'Otro'),
+    ]
+    SALON_CHOICES = [
+        ('vip', 'Salón VIP (Lobby - 80 personas)'),
+        ('verdi', 'Verdi Salón (Primer piso - 30 personas)'),
+    ]
+
+    name = models.CharField(max_length=200, verbose_name="Nombre Completo")
+    email = models.EmailField(verbose_name="Correo Electrónico")
+    phone = models.CharField(max_length=20, verbose_name="Teléfono")
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES, verbose_name="Tipo de Evento")
+    salon_preference = models.CharField(max_length=20, choices=SALON_CHOICES, verbose_name="Salón de Preferencia")
+    estimated_guests = models.IntegerField(verbose_name="Invitados Estimados")
+    preferred_date = models.DateField(verbose_name="Fecha del Evento")
+    message = models.TextField(verbose_name="Mensaje / Detalles")
+    is_read = models.BooleanField(default=False, verbose_name="Leído")
+    is_responded = models.BooleanField(default=False, verbose_name="Respondido")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Consulta")
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Consulta de Evento"
+        verbose_name_plural = "Consultas de Eventos"
+
+    def __str__(self):
+        return f"Consulta #{self.id} - {self.name} ({self.get_event_type_display()})"

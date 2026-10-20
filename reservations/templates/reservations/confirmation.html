@@ -39,6 +39,28 @@
 
                     <!-- Details -->
                     <div class="confirmation-details text-start mt-4">
+                        {% if is_service %}
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-water me-2"></i>Categoría:</span>
+                            <span>{{ reservation.get_service_category_display }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-concierge-bell me-2"></i>Servicio:</span>
+                            <span>{{ reservation.service_name }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-calendar-check me-2"></i>Fecha:</span>
+                            <span>{{ reservation.preferred_date|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label"><i class="fas fa-users me-2"></i>Personas:</span>
+                            <span>{{ reservation.people_count }}</span>
+                        </div>
+                        <div class="detail-row total">
+                            <span class="label"><i class="fas fa-dollar-sign me-2"></i>Total:</span>
+                            <span>${{ reservation.price }}</span>
+                        </div>
+                        {% else %}
                         <div class="detail-row">
                             <span class="label"><i class="fas fa-concierge-bell me-2"></i>Servicio:</span>
                             <span>{{ reservation.get_service_type_display }}</span>
@@ -65,6 +87,7 @@
                             <span class="label"><i class="fas fa-dollar-sign me-2"></i>Total:</span>
                             <span>${{ reservation.total_price }}</span>
                         </div>
+                        {% endif %}
                     </div>
 
                     <!-- Payment History -->
@@ -95,7 +118,7 @@
 
                     <div class="mt-4">
                         {% if reservation.status == 'pending' %}
-                        <a href="{% url 'upload_payment' reservation.id %}" class="btn btn-reservation"><i class="fas fa-upload me-2"></i>Subir Comprobante</a>
+                        <a href="{% if is_service %}{% url 'upload_service_payment' reservation.id %}{% else %}{% url 'upload_payment' reservation.id %}{% endif %}" class="btn btn-reservation"><i class="fas fa-upload me-2"></i>Subir Comprobante</a>
                         {% endif %}
                         <a href="{% url 'my_reservations' %}" class="btn btn-outline-custom ms-2"><i class="fas fa-list me-2"></i>Mis Reservaciones</a>
                     </div>

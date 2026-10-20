@@ -66,8 +66,19 @@
             <!-- Sauna -->
             <div class="col-lg-4 col-md-6">
                 <div class="service-card-detailed">
-                    <div class="service-card-img">
-                        <div class="service-placeholder-lg"><i class="fas fa-hot-tub"></i></div>
+                    <div class="service-gallery-mini">
+                        <div id="saunaCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{% static 'images/sauna/sauna 1.jpeg' %}" alt="Sauna 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{% static 'images/sauna/sauna 2.jpeg' %}" alt="Sauna 2">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#saunaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#saunaCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                        </div>
                     </div>
                     <div class="service-card-body">
                         <div class="service-icon"><i class="fas fa-hot-tub"></i></div>
@@ -264,6 +275,115 @@
                         <div class="service-icon"><i class="fas fa-parking"></i></div>
                         <h4>Estacionamiento Privado</h4>
                         <p>Estacionamiento privado con capacidad para 60 vehículos, seguridad 24/7 y acceso directo al hotel.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Marco de Acción: Selector de Experiencias y Reservas -->
+<section class="section-padding pt-0">
+    <div class="container">
+        <div class="p-4 p-md-5 rounded-4 shadow-lg position-relative overflow-hidden" 
+             style="background: linear-gradient(135deg, #1b263b, #0d1b2a); border: 1px solid rgba(197, 160, 89, 0.35);">
+            <div class="text-center mb-4">
+                <span class="badge px-3 py-2 rounded-pill mb-2" style="background: rgba(197, 160, 89, 0.25); color: #f0d59e; border: 1px solid rgba(197, 160, 89, 0.5); font-weight: 600;">
+                    <i class="fas fa-concierge-bell me-1"></i> Experiencias Principales
+                </span>
+                <h2 class="display-6 fw-bold text-white mb-2" style="color: #ffffff !important; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">
+                    ¿Qué experiencia deseas disfrutar hoy?
+                </h2>
+                <p class="text-white mb-0" style="color: #e2e8f0 !important; max-width: 650px; margin: 0 auto; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+                    Elige la opción que buscas para conocer todos los detalles o realizar tu reserva directa.
+                </p>
+            </div>
+
+            <div class="row g-4 mt-2">
+                <!-- 1. Spa -->
+                <div class="col-lg-4">
+                    <div class="card h-100 border-0 rounded-4 overflow-hidden shadow-sm d-flex flex-column" 
+                         style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(10px);">
+                        <div style="height: 180px; overflow: hidden; position: relative;">
+                            <img src="{% static 'images/spa/spa 1.jpg' %}" alt="AquaSpa" style="width: 100%; height: 100%; object-fit: cover;">
+                            <span class="badge rounded-pill position-absolute top-0 end-0 m-3 px-3 py-2" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); color: var(--color-gold); font-size: 0.78rem; border: 1px solid rgba(197, 160, 89, 0.4);">
+                                <i class="fas fa-spa me-1"></i> Bienestar
+                            </span>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                            <div style="min-height: 110px;">
+                                <h4 class="fw-bold mb-2 text-white" style="color: #ffffff !important;">AquaSpa</h4>
+                                <p class="small mb-0" style="color: #e2e8f0; line-height: 1.6;">
+                                    Masajes relajantes, exfoliaciones, cuidado facial profundo, sauna seco, húmedo y jacuzzi con hidroterapia.
+                                </p>
+                            </div>
+                            <div class="d-flex gap-2 mt-auto pt-3">
+                                <a href="{% url 'spa' %}" class="btn experience-card-btn-outline flex-fill">
+                                    <i class="fas fa-info-circle me-1"></i>Ver más
+                                </a>
+                                <a href="{% url 'spa_booking' %}" class="btn experience-card-btn-action flex-fill">
+                                    <i class="fas fa-calendar-check me-1"></i>Reservar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Gym -->
+                <div class="col-lg-4">
+                    <div class="card h-100 border-0 rounded-4 overflow-hidden shadow-sm d-flex flex-column" 
+                         style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(10px);">
+                        <div style="height: 180px; overflow: hidden; position: relative;">
+                            <img src="{% static 'images/gym/gym 1.jpg' %}" alt="Gimnasio" style="width: 100%; height: 100%; object-fit: cover;">
+                            <span class="badge rounded-pill position-absolute top-0 end-0 m-3 px-3 py-2" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); color: var(--color-gold); font-size: 0.78rem; border: 1px solid rgba(197, 160, 89, 0.4);">
+                                <i class="fas fa-dumbbell me-1"></i> Fitness
+                            </span>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                            <div style="min-height: 110px;">
+                                <h4 class="fw-bold mb-2 text-white" style="color: #ffffff !important;">Gimnasio & Fitness</h4>
+                                <p class="small mb-0" style="color: #e2e8f0; line-height: 1.6;">
+                                    Área de peso libre, máquinas de fuerza, clases de spinning climatizadas y duchas con sauna de recuperación.
+                                </p>
+                            </div>
+                            <div class="d-flex gap-2 mt-auto pt-3">
+                                <a href="{% url 'gym' %}" class="btn experience-card-btn-outline flex-fill">
+                                    <i class="fas fa-info-circle me-1"></i>Ver más
+                                </a>
+                                <a href="{% url 'gym_booking' %}" class="btn experience-card-btn-action flex-fill">
+                                    <i class="fas fa-dumbbell me-1"></i>Inscribirme
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Salón de Eventos -->
+                <div class="col-lg-4">
+                    <div class="card h-100 border-0 rounded-4 overflow-hidden shadow-sm d-flex flex-column" 
+                         style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(10px);">
+                        <div style="height: 180px; overflow: hidden; position: relative;">
+                            <img src="{% static 'images/events/salon.jpg' %}" alt="Salón de Eventos" style="width: 100%; height: 100%; object-fit: cover;">
+                            <span class="badge rounded-pill position-absolute top-0 end-0 m-3 px-3 py-2" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); color: var(--color-gold); font-size: 0.78rem; border: 1px solid rgba(197, 160, 89, 0.4);">
+                                <i class="fas fa-glass-cheers me-1"></i> Corporativo
+                            </span>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                            <div style="min-height: 110px;">
+                                <h4 class="fw-bold mb-2 text-white" style="color: #ffffff !important;">Salón de Eventos</h4>
+                                <p class="small mb-0" style="color: #e2e8f0; line-height: 1.6;">
+                                    Espacios versátiles climatizados con soporte audiovisual para conferencias, reuniones y recepciones privadas.
+                                </p>
+                            </div>
+                            <div class="d-flex gap-2 mt-auto pt-3">
+                                <a href="{% url 'events' %}" class="btn experience-card-btn-outline flex-fill">
+                                    <i class="fas fa-info-circle me-1"></i>Ver más
+                                </a>
+                                <a href="{% url 'event_inquiry' %}" class="btn experience-card-btn-action flex-fill">
+                                    <i class="fas fa-envelope me-1"></i>Consultar
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

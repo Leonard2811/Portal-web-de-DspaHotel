@@ -1,0 +1,34 @@
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f0f4f8; padding: 40px 20px; color: #2d3748;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0, 40, 80, 0.15); border-top: 5px solid #e53e3e;">
+        <div style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #1a365d, #2a4a7f);">
+            <img src="cid:logo" alt="D'Spa Hotel Logo" style="max-height: 100px; width: auto; object-fit: contain;">
+            <div style="margin-top: 12px; display: inline-block; background: rgba(255,255,255,0.15); padding: 4px 16px; border-radius: 20px;">
+                <span style="color: #90cdf4; font-size: 12px; font-weight: bold; letter-spacing: 1px;">AQUA SPA &amp; GYM</span>
+            </div>
+        </div>
+        <div style="padding: 40px 30px;">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="display: inline-block; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #fc8181, #e53e3e); line-height: 60px; font-size: 28px; color: white;">!</div>
+            </div>
+            <h2 style="color: #1a365d; margin-top: 0; font-size: 24px; text-align: center;">Problema con tu Comprobante</h2>
+            <p style="font-size: 16px; line-height: 1.6;">Hola <strong>{{ customer_name }}</strong>,</p>
+            <p style="font-size: 16px; line-height: 1.6;">Hemos detectado un problema al verificar el pago de tu reserva de servicio. El comprobante subido ha sido <strong>rechazado</strong>.</p>
+            
+            {% if notes %}
+            <div style="background-color: #fff5f5; border-left: 4px solid #e53e3e; padding: 15px 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+                <p style="margin: 0; font-size: 15px; color: #9b2c2c;"><strong>Notas del personal:</strong><br>
+                {{ notes }}</p>
+            </div>
+            {% endif %}
+
+            <p style="font-size: 16px; line-height: 1.6;">Por favor, ingresa a tu cuenta y sube un nuevo comprobante de pago válido para que podamos confirmar tu reserva lo antes posible.</p>
+            <div style="text-align: center; margin-top: 35px;">
+                <a href="{{ portal_url }}" style="background: linear-gradient(135deg, #1a365d, #2a4a7f); color: #ffffff; padding: 14px 30px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block; font-size: 15px;">Subir nuevo comprobante</a>
+            </div>
+        </div>
+        <div style="background: linear-gradient(135deg, #1a365d, #2a4a7f); color: #e2e8f0; text-align: center; padding: 20px; font-size: 13px;">
+            <p style="margin: 0;">&copy; {{ year }} D'Spa Hotel &mdash; AquaSpa &amp; Gym</p>
+            <p style="margin: 5px 0 0 0; color: #90cdf4;">AV. Intercomunal, Lechería, VE 6016</p>
+        </div>
+    </div>
+</div>

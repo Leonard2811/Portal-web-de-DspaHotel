@@ -23,10 +23,17 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <style>
+                                #id_password { border-right: none; }
+                                .password-toggle-addon { border-left: none; }
+                            </style>
                             <label for="id_password" class="form-label">Contraseña</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                 <input type="password" name="password" class="form-control" id="id_password" placeholder="Ingrese su contraseña" required>
+                                <span class="input-group-text text-muted password-toggle-addon" style="cursor: pointer; background: white;" onclick="togglePassword('id_password', this)" title="Mostrar / Ocultar contraseña">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
                             <div class="text-end mt-2">
                                 <a href="{% url 'password_reset' %}" class="text-decoration-none small text-muted">¿Olvidaste tu contraseña?</a>
@@ -50,4 +57,20 @@
         </div>
     </div>
 </section>
+
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
 {% endblock %}
