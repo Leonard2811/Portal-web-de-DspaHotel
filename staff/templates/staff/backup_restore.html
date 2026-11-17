@@ -1,0 +1,365 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Respaldo y Restauración - D'Spa Hotel{% endblock %}
+
+{% block extra_css %}
+<style>
+.backup-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.backup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.backup-header h2 {
+    color: var(--color-dark, #2c2c2c);
+    font-weight: 700;
+    margin: 0;
+}
+.backup-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(138, 127, 107, 0.15);
+}
+.backup-card h5 {
+    font-weight: 700;
+    color: var(--color-dark, #2c2c2c);
+    margin-bottom: 1rem;
+}
+.backup-table {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(138, 127, 107, 0.15);
+    margin-bottom: 1.5rem;
+}
+.backup-table table {
+    margin: 0;
+}
+.backup-table thead th {
+    background: var(--color-dark, #2c2c2c);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.9rem 1rem;
+    border: none;
+}
+.backup-table tbody td {
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(138, 127, 107, 0.1);
+}
+.backup-table tbody tr:hover {
+    background: rgba(138, 127, 107, 0.04);
+}
+.btn-outline-custom {
+    border: 2px solid var(--color-gold, #c9a96e);
+    color: var(--color-gold, #c9a96e);
+    font-weight: 600;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s;
+}
+.btn-outline-custom:hover {
+    background: var(--color-gold, #c9a96e);
+    color: #fff;
+}
+.btn-create-backup {
+    background: linear-gradient(135deg, #1e8449, #27ae60);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    padding: 0.6rem 1.8rem;
+    transition: all 0.3s;
+    box-shadow: 0 3px 10px rgba(30, 132, 73, 0.3);
+}
+.btn-create-backup:hover {
+    background: linear-gradient(135deg, #196f3d, #1e8449);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(30, 132, 73, 0.4);
+}
+.warning-box {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.warning-box i { color: #856404; }
+.warning-box p { margin: 0; color: #856404; font-size: 0.9rem; }
+.empty-state {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    color: #999;
+}
+.empty-state i {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    color: #ccc;
+}
+.safety-section h5 {
+    color: #856404;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container backup-container">
+        <div class="backup-header">
+            <h2><i class="fas fa-database me-2"></i>Respaldo y Restauración</h2>
+        <div class="d-flex gap-2 flex-wrap">
+            <form method="POST" action="{% url 'backup_restore' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-create-backup">
+                    <i class="fas fa-plus-circle me-2"></i>Crear Nuevo Respaldo
+                </button>
+            </form>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="warning-box">
+        <p>
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Importante:</strong> Al restaurar un respaldo, se reemplazará toda la base de datos actual. 
+            Se creará automáticamente un respaldo de seguridad antes de restaurar.
+        </p>
+    </div>
+
+    <!-- Respaldos manuales -->
+    <div class="backup-card">
+        <h5><i class="fas fa-save me-2"></i>Respaldos Disponibles</h5>
+        {% if backups %}
+        <div class="backup-table">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-file me-1"></i>Archivo</th>
+                            <th><i class="fas fa-calendar me-1"></i>Fecha de Creación</th>
+                            <th><i class="fas fa-weight me-1"></i>Tamaño</th>
+                            <th class="text-center"><i class="fas fa-cogs me-1"></i>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for backup in backups %}
+                        <tr>
+                            <td><code>{{ backup.name }}</code></td>
+                            <td>{{ backup.date|date:"d/m/Y H:i:s" }}</td>
+                            <td>{{ backup.size }}</td>
+                            <td class="text-center">
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a href="{% url 'download_backup' backup.name %}" class="btn btn-sm btn-outline-primary" title="Descargar">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-success" title="Restaurar"
+                                            data-bs-toggle="modal" data-bs-target="#restoreModal{{ forloop.counter }}">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar"
+                                            data-bs-toggle="modal" data-bs-target="#deleteModal{{ forloop.counter }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Modal de confirmación de eliminación -->
+                        <div class="modal fade" id="deleteModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="border-radius: 16px; border: 1px solid rgba(138, 127, 107, 0.2); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                                    <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #c0392b, #e74c3c); color: #fff;">
+                                        <h5 class="modal-title fs-5 d-flex align-items-center">
+                                            <i class="fas fa-trash-alt me-2"></i>Eliminar Respaldo
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <p class="mb-3 text-secondary">¿Está seguro de que desea eliminar este archivo de respaldo permanentemente?</p>
+                                        <div class="p-3 mb-3" style="background: #fdf2e9; border-radius: 10px; border-left: 4px solid #e74c3c;">
+                                            <div class="text-truncate mb-1">
+                                                <strong>Archivo:</strong> <code class="text-dark">{{ backup.name }}</code>
+                                            </div>
+                                            <div class="text-muted small d-flex gap-3 mt-2">
+                                                <span><i class="fas fa-calendar-alt me-1 text-danger"></i>{{ backup.date|date:"d/m/Y H:i:s" }}</span>
+                                                <span><i class="fas fa-weight-hanging me-1 text-danger"></i>{{ backup.size }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger py-2 px-3 mb-0 d-flex align-items-center" style="font-size: 0.85rem; border-radius: 8px;">
+                                            <i class="fas fa-exclamation-triangle me-2 fs-6"></i>
+                                            <span><strong>Atención:</strong> Esta acción no se puede deshacer y el archivo se borrará del servidor.</span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light px-4 py-3">
+                                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-1"></i>Cancelar
+                                        </button>
+                                        <form method="POST" action="{% url 'delete_backup' backup.name %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger rounded-pill px-4" style="box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);">
+                                                <i class="fas fa-trash-alt me-1"></i>Sí, Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal de confirmación de restauración -->
+                        <div class="modal fade" id="restoreModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="border-radius: 16px; border: 1px solid rgba(138, 127, 107, 0.2); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                                    <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #d35400, #f39c12); color: #fff;">
+                                        <h5 class="modal-title fs-5 d-flex align-items-center">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Restauración
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <p class="mb-3 text-secondary">¿Está seguro de restaurar la base de datos a este punto?</p>
+                                        <div class="p-3 mb-3" style="background: #fef9e7; border-radius: 10px; border-left: 4px solid #f39c12;">
+                                            <div class="text-truncate mb-1">
+                                                <strong>Archivo a restaurar:</strong> <code class="text-dark">{{ backup.name }}</code>
+                                            </div>
+                                            <div class="text-muted small d-flex gap-3 mt-2">
+                                                <span><i class="fas fa-calendar-alt me-1 text-warning"></i>{{ backup.date|date:"d/m/Y H:i:s" }}</span>
+                                                <span><i class="fas fa-weight-hanging me-1 text-warning"></i>{{ backup.size }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger py-2 px-3 mb-0" style="font-size: 0.85rem; border-radius: 8px;">
+                                            <i class="fas fa-shield-alt me-1"></i>
+                                            <strong>Seguridad:</strong> Esta acción reemplazará la información actual. Se creará automáticamente un respaldo de seguridad previo.
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light px-4 py-3">
+                                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-1"></i>Cancelar
+                                        </button>
+                                        <form method="POST" action="{% url 'restore_database' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="filename" value="{{ backup.name }}">
+                                            <button type="submit" class="btn btn-warning text-dark rounded-pill px-4 fw-bold" style="box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);">
+                                                <i class="fas fa-undo me-1"></i>Sí, Restaurar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-database d-block"></i>
+            <h5>No hay respaldos</h5>
+            <p>Presione "Crear Nuevo Respaldo" para generar su primer respaldo.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Respaldos de seguridad -->
+    {% if safety_backups %}
+    <div class="backup-card safety-section">
+        <h5><i class="fas fa-shield-alt me-2"></i>Respaldos de Seguridad (Pre-Restauración)</h5>
+        <p class="text-muted" style="font-size: 0.85rem;">
+            Estos respaldos se crean automáticamente antes de cada restauración para proteger sus datos.
+        </p>
+        <div class="backup-table">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Archivo</th>
+                            <th>Fecha</th>
+                            <th>Tamaño</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for backup in safety_backups %}
+                        <tr>
+                            <td><code>{{ backup.name }}</code></td>
+                            <td>{{ backup.date|date:"d/m/Y H:i:s" }}</td>
+                            <td>{{ backup.size }}</td>
+                            <td class="text-center">
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a href="{% url 'download_backup' backup.name %}" class="btn btn-sm btn-outline-primary" title="Descargar">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar"
+                                            data-bs-toggle="modal" data-bs-target="#deleteSafetyModal{{ forloop.counter }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Modal de confirmación de eliminación (seguridad) -->
+                        <div class="modal fade" id="deleteSafetyModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="border-radius: 16px; border: 1px solid rgba(138, 127, 107, 0.2); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                                    <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #c0392b, #e74c3c); color: #fff;">
+                                        <h5 class="modal-title fs-5 d-flex align-items-center">
+                                            <i class="fas fa-trash-alt me-2"></i>Eliminar Respaldo de Seguridad
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <p class="mb-3 text-secondary">¿Está seguro de que desea eliminar este respaldo de seguridad previo?</p>
+                                        <div class="p-3 mb-3" style="background: #fdf2e9; border-radius: 10px; border-left: 4px solid #e74c3c;">
+                                            <div class="text-truncate mb-1">
+                                                <strong>Archivo:</strong> <code class="text-dark">{{ backup.name }}</code>
+                                            </div>
+                                            <div class="text-muted small d-flex gap-3 mt-2">
+                                                <span><i class="fas fa-calendar-alt me-1 text-danger"></i>{{ backup.date|date:"d/m/Y H:i:s" }}</span>
+                                                <span><i class="fas fa-weight-hanging me-1 text-danger"></i>{{ backup.size }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger py-2 px-3 mb-0 d-flex align-items-center" style="font-size: 0.85rem; border-radius: 8px;">
+                                            <i class="fas fa-exclamation-triangle me-2 fs-6"></i>
+                                            <span><strong>Atención:</strong> Esta acción no se puede deshacer y el archivo se borrará permanentemente.</span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light px-4 py-3">
+                                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-1"></i>Cancelar
+                                        </button>
+                                        <form method="POST" action="{% url 'delete_backup' backup.name %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger rounded-pill px-4" style="box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);">
+                                                <i class="fas fa-trash-alt me-1"></i>Sí, Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    </div>
+</section>
+{% endblock %}
+

@@ -24,4 +24,16 @@ urlpatterns = [
     path('users/create/', views.create_user, name='create_user'),
     path('users/<int:user_id>/edit/', views.edit_user, name='edit_user'),
     path('users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
+
+    # Auditoría (solo superusuario)
+    path('audit/', views.audit_log_view, name='audit_log'),
+
+    # Respaldo y Restauración (solo superusuario)
+    path('backup/', views.backup_database, name='backup_restore'),
+    path('backup/download/<str:filename>/', views.download_backup, name='download_backup'),
+    path('backup/delete/<str:filename>/', views.delete_backup, name='delete_backup'),
+    path('backup/restore/', views.restore_database, name='restore_database'),
+
+    # Manual de uso (todo el staff)
+    path('manual/', views.user_manual, name='user_manual'),
 ]

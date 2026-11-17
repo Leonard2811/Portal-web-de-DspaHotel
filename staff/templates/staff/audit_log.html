@@ -1,0 +1,222 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Historial de Auditoría - D'Spa Hotel{% endblock %}
+
+{% block extra_css %}
+<style>
+.audit-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.audit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.audit-header h2 {
+    color: var(--color-dark, #2c2c2c);
+    font-weight: 700;
+    margin: 0;
+}
+.filter-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(138, 127, 107, 0.15);
+}
+.filter-card label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-dark, #2c2c2c);
+    margin-bottom: 0.3rem;
+}
+.filter-card .form-control,
+.filter-card .form-select {
+    border-radius: 8px;
+    border: 1px solid rgba(138, 127, 107, 0.3);
+    font-size: 0.9rem;
+}
+.audit-table {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(138, 127, 107, 0.15);
+}
+.audit-table table {
+    margin: 0;
+}
+.audit-table thead th {
+    background: var(--color-dark, #2c2c2c);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.9rem 1rem;
+    border: none;
+    white-space: nowrap;
+}
+.audit-table tbody td {
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(138, 127, 107, 0.1);
+}
+.audit-table tbody tr:hover {
+    background: rgba(138, 127, 107, 0.04);
+}
+.badge-action {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.badge-login { background: #d1ecf1; color: #0c5460; }
+.badge-logout { background: #e2e3e5; color: #383d41; }
+.badge-verify_payment, .badge-service_verify { background: #d4edda; color: #155724; }
+.badge-reject_payment, .badge-service_reject { background: #f8d7da; color: #721c24; }
+.badge-update_status, .badge-service_status { background: #fff3cd; color: #856404; }
+.badge-delete_reservation, .badge-service_delete, .badge-delete_user, .badge-event_deleted, .badge-backup_deleted { background: #f8d7da; color: #721c24; }
+.badge-create_user, .badge-event_created { background: #d4edda; color: #155724; }
+.badge-edit_user, .badge-event_read { background: #cce5ff; color: #004085; }
+.badge-room_update { background: #e8daef; color: #4a235a; }
+.badge-backup_created, .badge-backup_restored { background: #d5f5e3; color: #1e8449; }
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #999;
+}
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ccc;
+}
+.btn-outline-custom {
+    border: 2px solid var(--color-gold, #c9a96e);
+    color: var(--color-gold, #c9a96e);
+    font-weight: 600;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s;
+}
+.btn-outline-custom:hover {
+    background: var(--color-gold, #c9a96e);
+    color: #fff;
+}
+.results-count {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container audit-container">
+        <div class="audit-header">
+            <h2><i class="fas fa-history me-2"></i>Historial de Auditoría</h2>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+            </a>
+        </div>
+
+    <!-- Filtros -->
+    <div class="filter-card">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="action">Tipo de Acción</label>
+                <select name="action" id="action" class="form-select">
+                    <option value="">Todas las acciones</option>
+                    {% for value, label in action_choices %}
+                    <option value="{{ value }}" {% if action_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="user">Usuario</label>
+                <select name="user" id="user" class="form-select">
+                    <option value="">Todos los usuarios</option>
+                    {% for staff_user in staff_users %}
+                    <option value="{{ staff_user.id }}" {% if user_filter == staff_user.id|stringformat:"d" %}selected{% endif %}>
+                        {{ staff_user.get_full_name|default:staff_user.username }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="date_from">Desde</label>
+                <input type="date" name="date_from" id="date_from" class="form-control" value="{{ date_from }}">
+            </div>
+            <div class="col-md-2">
+                <label for="date_to">Hasta</label>
+                <input type="date" name="date_to" id="date_to" class="form-control" value="{{ date_to }}">
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-outline-custom flex-grow-1">
+                    <i class="fas fa-search me-1"></i>Filtrar
+                </button>
+                <a href="{% url 'audit_log' %}" class="btn btn-outline-secondary" title="Limpiar filtros">
+                    <i class="fas fa-times"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Resultados -->
+    <p class="results-count">
+        <i class="fas fa-list me-1"></i>Mostrando {{ logs|length }} registro{{ logs|length|pluralize:"s" }}
+    </p>
+
+    <div class="audit-table">
+        {% if logs %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-clock me-1"></i>Fecha / Hora</th>
+                        <th><i class="fas fa-user me-1"></i>Usuario</th>
+                        <th><i class="fas fa-tag me-1"></i>Acción</th>
+                        <th><i class="fas fa-align-left me-1"></i>Descripción</th>
+                        <th><i class="fas fa-network-wired me-1"></i>IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ log.timestamp|date:"d/m/Y H:i:s" }}</td>
+                        <td>
+                            {% if log.user %}
+                                {{ log.user.get_full_name|default:log.user.username }}
+                            {% else %}
+                                <span class="text-muted">Sistema</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge badge-action badge-{{ log.action }}">
+                                {{ log.get_action_display }}
+                            </span>
+                        </td>
+                        <td>{{ log.description }}</td>
+                        <td><code>{{ log.ip_address|default:"—" }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-clipboard-list d-block"></i>
+            <h5>No hay registros de auditoría</h5>
+            <p>Los registros aparecerán aquí cuando se realicen acciones en el sistema.</p>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+</section>
+{% endblock %}
+

@@ -1,0 +1,581 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Manual de Uso - D'Spa Hotel{% endblock %}
+
+{% block extra_css %}
+<style>
+.manual-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.manual-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.manual-header h2 {
+    color: var(--color-dark, #2c2c2c);
+    font-weight: 700;
+    margin: 0;
+}
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    white-space: nowrap;
+    overflow: visible;
+    max-width: 100%;
+    letter-spacing: 0.02em;
+}
+.role-super_admin { background: linear-gradient(135deg, #2c3e50, #34495e); color: #fff; }
+.role-encargado_reservas { background: linear-gradient(135deg, #1e8449, #27ae60); color: #fff; }
+.role-recepcionista { background: linear-gradient(135deg, #2874a6, #3498db); color: #fff; }
+.role-operador_aqua { background: linear-gradient(135deg, #6c3483, #8e44ad); color: #fff; }
+.manual-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(138, 127, 107, 0.15);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+.btn-outline-custom {
+    border: 2px solid var(--color-gold, #c9a96e);
+    color: var(--color-gold, #c9a96e);
+    font-weight: 600;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s;
+}
+.btn-outline-custom:hover {
+    background: var(--color-gold, #c9a96e);
+    color: #fff;
+}
+.accordion-button {
+    font-weight: 600;
+    color: var(--color-dark, #2c2c2c);
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+}
+.accordion-button:not(.collapsed) {
+    background: rgba(138, 127, 107, 0.08);
+    color: var(--color-dark, #2c2c2c);
+    box-shadow: none;
+}
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(138, 127, 107, 0.3);
+}
+.accordion-body {
+    padding: 1.5rem;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: #444;
+}
+.accordion-body h6 {
+    font-weight: 700;
+    color: var(--color-dark, #2c2c2c);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+.accordion-body ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+.accordion-body li {
+    margin-bottom: 0.4rem;
+}
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: var(--color-gold, #c9a96e);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+.tip-box {
+    background: #f0f7f4;
+    border-left: 4px solid #27ae60;
+    padding: 0.8rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+}
+.warning-tip {
+    background: #fef9e7;
+    border-left: 4px solid #f39c12;
+}
+.info-tip {
+    background: #eaf2f8;
+    border-left: 4px solid #3498db;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="margin-top: 80px;">
+    <div class="container manual-container">
+        <div class="manual-header">
+            <h2><i class="fas fa-book me-2"></i>Manual de Uso del Sistema</h2>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-custom">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+            </a>
+        </div>
+
+    <div class="role-badge role-{{ user_role }}">
+        <i class="fas fa-user-tag"></i>
+        Tu rol: {{ role_display }}
+    </div>
+
+    <div class="manual-card">
+        <div class="accordion" id="manualAccordion">
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 1: ACCESO AL SISTEMA (Todos) -->
+            <!-- ============================================ -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#secAcceso" aria-expanded="true">
+                        <i class="fas fa-sign-in-alt me-2 text-primary"></i>Acceso al Sistema
+                    </button>
+                </h2>
+                <div id="secAcceso" class="accordion-collapse collapse show" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <h6>Iniciar Sesión</h6>
+                        <ul>
+                            <li><span class="step-number">1</span>Ingrese a la página principal del portal web D'Spa Hotel.</li>
+                            <li><span class="step-number">2</span>Haga clic en <strong>"Iniciar Sesión"</strong> en el menú superior.</li>
+                            <li><span class="step-number">3</span>Ingrese su nombre de usuario y contraseña proporcionados por el administrador.</li>
+                            <li><span class="step-number">4</span>Presione el botón <strong>"Ingresar"</strong>.</li>
+                        </ul>
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            <strong>Consejo:</strong> Si olvidó su contraseña, contacte al Super Administrador para que la restablezca.
+                        </div>
+
+                        <h6>Cerrar Sesión</h6>
+                        <ul>
+                            <li>Haga clic en su nombre de usuario en la esquina superior derecha y seleccione <strong>"Cerrar Sesión"</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 2: DASHBOARD (Todos menos operador) -->
+            <!-- ============================================ -->
+            {% if is_super_admin or is_encargado or is_recepcionista %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secDashboard">
+                        <i class="fas fa-tachometer-alt me-2 text-info"></i>Panel de Control (Dashboard)
+                    </button>
+                </h2>
+                <div id="secDashboard" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <p>El Dashboard es la pantalla principal después de iniciar sesión. Muestra un resumen del estado del hotel:</p>
+                        <ul>
+                            <li><strong>Tarjetas de estadísticas:</strong> Total de reservaciones, pendientes, confirmadas, canceladas y completadas.</li>
+                            <li><strong>Ingresos:</strong> Total de ingresos por reservaciones confirmadas y completadas.</li>
+                            <li><strong>Estado de habitaciones:</strong> Disponibles, ocupadas y en mantenimiento.</li>
+                            <li><strong>Check-ins / Check-outs del día:</strong> Reservaciones que inician o terminan hoy.</li>
+                        </ul>
+
+                        <h6>Selector de Módulo</h6>
+                        <p>En la parte superior del dashboard encontrará un selector para cambiar entre:</p>
+                        <ul>
+                            <li><strong>Habitaciones:</strong> Gestión de reservaciones de habitaciones del hotel.</li>
+                            <li><strong>Spa & Gym:</strong> Gestión de reservaciones de servicios de Spa y Gimnasio.</li>
+                        </ul>
+
+                        <h6>Filtros de Reservaciones</h6>
+                        <p>Puede filtrar las reservaciones por estado (pendiente, confirmada, etc.) y por tipo de servicio usando los selectores disponibles en la tabla.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 3: DASHBOARD SPA/GYM (Operador) -->
+            <!-- ============================================ -->
+            {% if is_operador_aqua %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secDashboardSpa">
+                        <i class="fas fa-spa me-2 text-purple"></i>Panel de Control - Spa & Gym
+                    </button>
+                </h2>
+                <div id="secDashboardSpa" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <p>Como Operador Aqua Spa Gym, su dashboard muestra exclusivamente las reservaciones de servicios de <strong>Spa y Gimnasio</strong>.</p>
+                        <ul>
+                            <li><strong>Estadísticas de Spa:</strong> Total, pendientes, pagos subidos, confirmadas y canceladas.</li>
+                            <li><strong>Estadísticas de Gym:</strong> Las mismas categorías para el gimnasio.</li>
+                            <li><strong>Comprobantes pendientes:</strong> Pagos de servicios que esperan verificación.</li>
+                        </ul>
+                        <div class="tip-box info-tip">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>Nota:</strong> No tiene acceso al módulo de Habitaciones ni a la gestión de usuarios.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 4: RESERVACIONES -->
+            <!-- ============================================ -->
+            {% if is_super_admin or is_encargado or is_recepcionista %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secReservaciones">
+                        <i class="fas fa-calendar-alt me-2 text-success"></i>Gestión de Reservaciones
+                    </button>
+                </h2>
+                <div id="secReservaciones" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <h6>Ver Detalle de una Reservación</h6>
+                        <ul>
+                            <li>En la tabla de reservaciones del dashboard, haga clic en el botón <strong>"Ver"</strong> de la reservación deseada.</li>
+                            <li>Se mostrará toda la información: datos del cliente, fechas, habitación, estado y comprobantes de pago.</li>
+                        </ul>
+
+                        {% if is_super_admin or is_encargado %}
+                        <h6>Actualizar Estado de una Reservación</h6>
+                        <ul>
+                            <li>Dentro del detalle de la reservación, seleccione el nuevo estado del menú desplegable.</li>
+                            <li>Presione <strong>"Actualizar Estado"</strong>.</li>
+                            <li>Los estados disponibles son: Pendiente, Pago Subido, Confirmada, Cancelada, Completada.</li>
+                        </ul>
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            Al confirmar o completar/cancelar una reservación, el estado de la habitación se actualiza automáticamente.
+                        </div>
+                        {% endif %}
+
+                        {% if is_super_admin %}
+                        <h6>Eliminar una Reservación</h6>
+                        <ul>
+                            <li>Solo el <strong>Super Administrador</strong> puede eliminar reservaciones.</li>
+                            <li>Dentro del detalle, haga clic en <strong>"Eliminar Reservación"</strong>.</li>
+                            <li>Confirme la acción en el cuadro de diálogo.</li>
+                        </ul>
+                        <div class="tip-box warning-tip">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>Precaución:</strong> Esta acción es irreversible. Todos los datos de la reservación y sus comprobantes serán eliminados permanentemente.
+                        </div>
+                        {% endif %}
+
+                        {% if is_recepcionista %}
+                        <div class="tip-box info-tip">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>Su rol (Recepcionista):</strong> Solo puede visualizar las reservaciones. No puede modificar estados, verificar pagos ni eliminar registros.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 5: RESERVACIONES SPA/GYM -->
+            <!-- ============================================ -->
+            {% if is_super_admin or is_encargado or is_operador_aqua %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secServiciosSpa">
+                        <i class="fas fa-spa me-2" style="color: #8e44ad;"></i>Reservaciones de Spa & Gym
+                    </button>
+                </h2>
+                <div id="secServiciosSpa" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <h6>Ver Reservaciones de Servicios</h6>
+                        <ul>
+                            <li>Cambie al modo <strong>"Spa & Gym"</strong> en el selector del dashboard (si no es Operador Aqua).</li>
+                            <li>Verá las reservaciones de servicios con sus estadísticas y comprobantes pendientes.</li>
+                        </ul>
+
+                        <h6>Verificar Pagos de Servicios</h6>
+                        <ul>
+                            <li>En la sección de comprobantes pendientes, haga clic en <strong>"Verificar"</strong>.</li>
+                            <li>Revise el comprobante subido por el cliente.</li>
+                            <li>Puede <strong>Aprobar</strong> (confirma la reserva) o <strong>Rechazar</strong> (devuelve a pendiente).</li>
+                            <li>Opcionalmente puede agregar notas para el cliente.</li>
+                        </ul>
+
+                        <h6>Actualizar Estado de Servicio</h6>
+                        <ul>
+                            <li>Dentro del detalle del servicio, seleccione el nuevo estado y presione <strong>"Actualizar"</strong>.</li>
+                        </ul>
+
+                        {% if is_super_admin %}
+                        <h6>Eliminar Reservación de Servicio</h6>
+                        <ul>
+                            <li>Solo disponible para el Super Administrador.</li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 6: VERIFICACIÓN DE PAGOS -->
+            <!-- ============================================ -->
+            {% if is_super_admin or is_encargado %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secPagos">
+                        <i class="fas fa-credit-card me-2 text-warning"></i>Verificación de Comprobantes de Pago
+                    </button>
+                </h2>
+                <div id="secPagos" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <h6>Proceso de Verificación</h6>
+                        <ul>
+                            <li><span class="step-number">1</span>En el dashboard, ubique la sección <strong>"Comprobantes Pendientes"</strong>.</li>
+                            <li><span class="step-number">2</span>Haga clic en <strong>"Verificar"</strong> junto al comprobante que desea revisar.</li>
+                            <li><span class="step-number">3</span>Revise la imagen del comprobante, los datos del cliente y el monto.</li>
+                            <li><span class="step-number">4</span>Seleccione una acción:
+                                <ul>
+                                    <li><strong>Aprobar:</strong> El pago se marca como verificado y la reservación pasa a "Confirmada". Se envía un correo de confirmación al cliente.</li>
+                                    <li><strong>Rechazar:</strong> El pago se marca como rechazado y la reservación vuelve a "Pendiente". Se envía un correo informando al cliente.</li>
+                                </ul>
+                            </li>
+                            <li><span class="step-number">5</span>Opcionalmente, agregue notas antes de confirmar la acción.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 7: GESTIÓN DE HABITACIONES -->
+            <!-- ============================================ -->
+            {% if is_super_admin or is_encargado or is_recepcionista %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secHabitaciones">
+                        <i class="fas fa-door-open me-2 text-secondary"></i>Gestión de Habitaciones
+                    </button>
+                </h2>
+                <div id="secHabitaciones" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <p>Acceda desde el botón <strong>"Gestionar Habitaciones"</strong> en el dashboard.</p>
+                        <ul>
+                            <li><strong>Ver habitaciones:</strong> Se muestra una lista de todas las habitaciones organizadas por piso.</li>
+                            <li><strong>Filtrar:</strong> Puede filtrar por piso, canal de venta y tipo de habitación.</li>
+                        </ul>
+
+                        {% if is_super_admin or is_encargado %}
+                        <h6>Modificar una Habitación</h6>
+                        <ul>
+                            <li>Cambie el <strong>estado</strong> (Disponible, Ocupada, Mantenimiento) o el <strong>canal de venta</strong> (Web, Puerta).</li>
+                            <li>Presione <strong>"Guardar"</strong> para aplicar los cambios.</li>
+                        </ul>
+                        {% endif %}
+
+                        {% if is_recepcionista %}
+                        <div class="tip-box info-tip">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>Su rol (Recepcionista):</strong> Solo puede consultar las habitaciones. No puede modificar su estado ni canal de venta.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 8: CONSULTAS DE EVENTOS -->
+            <!-- ============================================ -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secEventos">
+                        <i class="fas fa-glass-cheers me-2" style="color: #e74c3c;"></i>Consultas de Eventos y Salones
+                    </button>
+                </h2>
+                <div id="secEventos" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <h6>Ver Consultas</h6>
+                        <ul>
+                            <li>En el dashboard, desplácese hasta la sección <strong>"Consultas de Eventos"</strong>.</li>
+                            <li>Verá las consultas recibidas desde el portal web y las registradas por el personal.</li>
+                        </ul>
+
+                        <h6>Marcar como Leída / Respondida</h6>
+                        <ul>
+                            <li>Haga clic en los botones de acción para marcar una consulta como <strong>leída</strong>, <strong>respondida</strong> o <strong>no leída</strong>.</li>
+                        </ul>
+
+                        <h6>Registrar Consulta Presencial</h6>
+                        <ul>
+                            <li>Use el botón <strong>"Registrar Consulta"</strong> para agregar una consulta recibida por teléfono o presencialmente.</li>
+                            <li>Complete los datos del cliente, tipo de evento, salón, fecha y número de invitados.</li>
+                        </ul>
+
+                        {% if is_super_admin or is_encargado %}
+                        <h6>Eliminar Consulta</h6>
+                        <ul>
+                            <li>Solo los roles con permiso de edición pueden eliminar consultas de eventos.</li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 9: GESTIÓN DE USUARIOS (Solo Admin) -->
+            <!-- ============================================ -->
+            {% if is_super_admin %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secUsuarios">
+                        <i class="fas fa-users-cog me-2 text-dark"></i>Gestión de Usuarios
+                    </button>
+                </h2>
+                <div id="secUsuarios" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <p>Acceda desde el botón <strong>"Gestionar Usuarios"</strong> en el dashboard. Esta sección es <strong>exclusiva del Super Administrador</strong>.</p>
+
+                        <h6>Crear un Nuevo Usuario</h6>
+                        <ul>
+                            <li><span class="step-number">1</span>Haga clic en <strong>"Crear Nuevo Usuario"</strong>.</li>
+                            <li><span class="step-number">2</span>Complete el formulario: nombre de usuario, contraseña, nombre, apellido, correo electrónico.</li>
+                            <li><span class="step-number">3</span>Seleccione el <strong>rol</strong> del nuevo usuario:
+                                <ul>
+                                    <li><strong>Super Administrador:</strong> Acceso total al sistema.</li>
+                                    <li><strong>Encargado de Reservaciones:</strong> Puede gestionar reservaciones y pagos. No puede eliminar ni gestionar usuarios.</li>
+                                    <li><strong>Recepcionista de Datos:</strong> Solo lectura. Consulta información sin modificar nada.</li>
+                                    <li><strong>Operador Aqua Spa Gym:</strong> Gestiona exclusivamente servicios de Spa y Gimnasio.</li>
+                                </ul>
+                            </li>
+                            <li><span class="step-number">4</span>Presione <strong>"Crear Usuario"</strong>.</li>
+                        </ul>
+
+                        <h6>Editar un Usuario</h6>
+                        <ul>
+                            <li>Haga clic en <strong>"Editar"</strong> junto al usuario deseado.</li>
+                            <li>Modifique los datos necesarios. Puede cambiar el rol y la contraseña.</li>
+                        </ul>
+
+                        <h6>Eliminar un Usuario</h6>
+                        <ul>
+                            <li>Haga clic en <strong>"Eliminar"</strong> y confirme la acción.</li>
+                        </ul>
+
+                        <div class="tip-box warning-tip">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>Importante:</strong> No puede eliminar su propia cuenta ni cambiar su propio rol de Super Administrador.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 10: AUDITORÍA (Solo Admin) -->
+            <!-- ============================================ -->
+            {% if is_super_admin %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secAuditoria">
+                        <i class="fas fa-history me-2" style="color: #2c3e50;"></i>Historial de Auditoría
+                    </button>
+                </h2>
+                <div id="secAuditoria" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <p>El historial de auditoría registra todas las acciones importantes realizadas en el sistema.</p>
+
+                        <h6>Acceso</h6>
+                        <ul>
+                            <li>Haga clic en el botón <strong>"Auditoría"</strong> en el dashboard.</li>
+                        </ul>
+
+                        <h6>Información Registrada</h6>
+                        <ul>
+                            <li><strong>Inicios y cierres de sesión</strong> de todos los usuarios.</li>
+                            <li><strong>Verificaciones y rechazos de pagos</strong> (habitaciones y servicios).</li>
+                            <li><strong>Cambios de estado</strong> en reservaciones y servicios.</li>
+                            <li><strong>Eliminación</strong> de reservaciones y servicios.</li>
+                            <li><strong>Creación, edición y eliminación de usuarios.</strong></li>
+                            <li><strong>Actualización de habitaciones.</strong></li>
+                            <li><strong>Respaldos</strong> creados, restaurados y eliminados.</li>
+                            <li><strong>Consultas de eventos</strong> registradas, marcadas y eliminadas.</li>
+                        </ul>
+
+                        <h6>Filtros Disponibles</h6>
+                        <ul>
+                            <li>Filtrar por <strong>tipo de acción</strong>, <strong>usuario</strong> y <strong>rango de fechas</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN 11: RESPALDO BD (Solo Admin) -->
+            <!-- ============================================ -->
+            {% if is_super_admin %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#secRespaldo">
+                        <i class="fas fa-database me-2 text-success"></i>Respaldo y Restauración de Base de Datos
+                    </button>
+                </h2>
+                <div id="secRespaldo" class="accordion-collapse collapse" data-bs-parent="#manualAccordion">
+                    <div class="accordion-body">
+                        <p>Esta sección permite crear copias de seguridad de la base de datos y restaurarlas en caso necesario.</p>
+
+                        <h6>Crear un Respaldo</h6>
+                        <ul>
+                            <li>Acceda desde el botón <strong>"Respaldo BD"</strong> en el dashboard.</li>
+                            <li>Haga clic en <strong>"Crear Nuevo Respaldo"</strong>.</li>
+                            <li>El sistema generará una copia con la fecha y hora actual.</li>
+                        </ul>
+
+                        <h6>Descargar un Respaldo</h6>
+                        <ul>
+                            <li>Haga clic en el icono de <strong>descarga</strong> junto al respaldo deseado.</li>
+                            <li>El archivo se descargará a su computador.</li>
+                        </ul>
+
+                        <h6>Restaurar un Respaldo</h6>
+                        <ul>
+                            <li><span class="step-number">1</span>Haga clic en el botón de <strong>restaurar</strong> (icono de retroceso).</li>
+                            <li><span class="step-number">2</span>Lea la advertencia en el cuadro de confirmación.</li>
+                            <li><span class="step-number">3</span>Confirme presionando <strong>"Sí, Restaurar"</strong>.</li>
+                        </ul>
+
+                        <div class="tip-box warning-tip">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>ADVERTENCIA:</strong> La restauración reemplaza TODA la base de datos actual. 
+                            Antes de restaurar, el sistema crea automáticamente un respaldo de seguridad que puede usar para revertir la operación.
+                        </div>
+
+                        <h6>Respaldos de Seguridad</h6>
+                        <p>Aparecen en una sección separada. Son copias automáticas creadas justo antes de cada restauración.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
+

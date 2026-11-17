@@ -3,11 +3,11 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.db.models import Count, Sum, Q
 from reservations.models import Reservation, PaymentProof, Customer, ServiceReservation, ServicePaymentProof, EventInquiry
 from core.models import Room
-from .models import StaffProfile
+from .models import StaffProfile, AuditLog
 from datetime import datetime, date
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -15,6 +15,21 @@ from django.template.loader import render_to_string
 from django.templatetags.static import static
 from email.mime.image import MIMEImage
 import os
+import shutil
+from pathlib import Path
+
+def log_audit(request, action, description):
+    """Registrar una acción en el historial de auditoría"""
+    ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', ''))
+    if ',' in ip:
+        ip = ip.split(',')[0].strip()
+    AuditLog.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        action=action,
+        description=description,
+        ip_address=ip or None,
+    )
+
 
 def staff_required(view_func):
     """Decorador para verificar que el usuario es staff"""
@@ -341,6 +356,7 @@ def verify_service_payment(request, payment_id):
             payment.service_reservation.status = 'confirmed'
             payment.service_reservation.save()
             messages.success(request, f'Pago verificado. Reserva de servicio #{payment.service_reservation.id} confirmada.')
+            log_audit(request, 'service_verify', f'Pago de servicio #{payment.id} verificado. Reserva #{payment.service_reservation.id} confirmada.')
             _send_service_email(request, payment.service_reservation, payment, 'verify')
 
         elif action == 'reject':
@@ -349,6 +365,7 @@ def verify_service_payment(request, payment_id):
             payment.service_reservation.status = 'pending'
             payment.service_reservation.save()
             messages.warning(request, f'Pago rechazado para Reserva de servicio #{payment.service_reservation.id}.')
+            log_audit(request, 'service_reject', f'Pago de servicio #{payment.id} rechazado. Reserva #{payment.service_reservation.id}.')
             _send_service_email(request, payment.service_reservation, payment, 'reject', notes)
 
         return redirect('staff_service_detail', reservation_id=payment.service_reservation.id)
@@ -378,6 +395,7 @@ def update_service_status(request, reservation_id):
                 request,
                 f'Servicio #{reservation.id} actualizado de "{status_labels.get(old_status, old_status)}" a "{status_labels.get(new_status, new_status)}".'
             )
+            log_audit(request, 'service_status', f'Servicio #{reservation.id} actualizado de "{status_labels.get(old_status, old_status)}" a "{status_labels.get(new_status, new_status)}".')
 
     return redirect('staff_service_detail', reservation_id=reservation.id)
 
@@ -392,6 +410,7 @@ def delete_service_reservation(request, reservation_id):
         category_name = reservation.get_service_category_display()
         reservation.delete()
         messages.success(request, f'Reservación de {category_name} #{res_id} eliminada exitosamente del sistema.')
+        log_audit(request, 'service_delete', f'Reservación de {category_name} #{res_id} eliminada del sistema.')
         return redirect(f"{reverse('staff_dashboard')}?mode=spa_gym")
 
     return redirect('staff_service_detail', reservation_id=reservation.id)
@@ -415,6 +434,7 @@ def mark_event_read(request, inquiry_id):
             inquiry.is_read = True
             messages.success(request, f'Consulta #{inquiry.id} de {inquiry.name} marcada como leída.')
         inquiry.save()
+        log_audit(request, 'event_read', f'Consulta de evento #{inquiry.id} de "{inquiry.name}" marcada como {action}.')
     return redirect('staff_dashboard')
 
 
@@ -451,6 +471,7 @@ def create_event_inquiry_staff(request):
                     is_read=True,
                 )
                 messages.success(request, f'Consulta de salón #{inquiry.id} para "{inquiry.name}" registrada exitosamente.')
+                log_audit(request, 'event_created', f'Consulta de salón #{inquiry.id} para "{inquiry.name}" registrada por personal.')
             else:
                 messages.error(request, 'La fecha del evento no es válida.')
         else:
@@ -464,8 +485,10 @@ def delete_event_inquiry(request, inquiry_id):
     """Eliminar consulta de salón"""
     inquiry = get_object_or_404(EventInquiry, id=inquiry_id)
     if request.method == 'POST':
+        inquiry_name = inquiry.name
         inquiry.delete()
         messages.success(request, f'Consulta #{inquiry_id} eliminada.')
+        log_audit(request, 'event_deleted', f'Consulta de evento #{inquiry_id} de "{inquiry_name}" eliminada.')
     return redirect('staff_dashboard')
 
 
@@ -488,6 +511,7 @@ def verify_payment(request, payment_id):
                 payment.reservation.room.status = 'reserved'
                 payment.reservation.room.save()
             messages.success(request, f'Pago verificado. Reservación #{payment.reservation.id} confirmada.')
+            log_audit(request, 'verify_payment', f'Pago #{payment.id} verificado. Reservación #{payment.reservation.id} confirmada.')
             
             # Enviar correo de confirmación
             customer_email = payment.reservation.customer.user.email
@@ -528,6 +552,7 @@ def verify_payment(request, payment_id):
             payment.reservation.status = 'pending'
             payment.reservation.save()
             messages.warning(request, f'Pago rechazado para Reservación #{payment.reservation.id}.')
+            log_audit(request, 'reject_payment', f'Pago #{payment.id} rechazado. Reservación #{payment.reservation.id}.')
             
             # Enviar correo de rechazo
             customer_email = payment.reservation.customer.user.email
@@ -595,6 +620,7 @@ def update_reservation_status(request, reservation_id):
                 request,
                 f'Reservación #{reservation.id} actualizada de "{status_labels.get(old_status, old_status)}" a "{status_labels.get(new_status, new_status)}".'
             )
+            log_audit(request, 'update_status', f'Reservación #{reservation.id} actualizada de "{status_labels.get(old_status, old_status)}" a "{status_labels.get(new_status, new_status)}".')
 
     return redirect('staff_reservation_detail', reservation_id=reservation.id)
 
@@ -612,6 +638,7 @@ def delete_reservation(request, reservation_id):
             reservation.room.save()
         reservation.delete()
         messages.success(request, f'Reservación #{res_id} eliminada exitosamente del sistema.')
+        log_audit(request, 'delete_reservation', f'Reservación #{res_id} eliminada del sistema.')
         return redirect('staff_dashboard')
 
     return redirect('staff_reservation_detail', reservation_id=reservation.id)
@@ -647,6 +674,7 @@ def room_management(request):
 
         room.save()
         messages.success(request, f'Habitación {room.room_number} actualizada.')
+        log_audit(request, 'room_update', f'Habitación {room.room_number} actualizada. Estado: {room.status}, Canal: {room.sales_channel}.')
     elif request.method == 'POST' and readonly:
         messages.error(request, 'No tienes permisos para modificar habitaciones.')
 
@@ -787,6 +815,7 @@ def create_user(request):
             request,
             f'Usuario "{username}" creado exitosamente con rol "{dict(ROLE_CHOICES)[role]}".'
         )
+        log_audit(request, 'create_user', f'Usuario "{username}" creado con rol "{dict(ROLE_CHOICES)[role]}".')
         return redirect('user_management')
 
     return redirect('user_management')
@@ -807,11 +836,6 @@ def edit_user(request, user_id):
         # No permitir que el superusuario se cambie su propio rol
         if target_user == request.user and role != 'super_admin':
             messages.error(request, 'No puedes cambiar tu propio rol de Super Administrador.')
-            return redirect('user_management')
-
-        # Validar rol
-        if role and role not in dict(ROLE_CHOICES):
-            messages.error(request, 'Rol inválido.')
             return redirect('user_management')
 
         # Actualizar datos
@@ -835,6 +859,7 @@ def edit_user(request, user_id):
 
         target_user.save()
         messages.success(request, f'Usuario "{target_user.username}" actualizado exitosamente.')
+        log_audit(request, 'edit_user', f'Usuario "{target_user.username}" editado.')
         return redirect('user_management')
 
     # GET: mostrar formulario con datos actuales
@@ -860,5 +885,210 @@ def delete_user(request, user_id):
         username = target_user.username
         target_user.delete()
         messages.success(request, f'Usuario "{username}" eliminado exitosamente.')
+        log_audit(request, 'delete_user', f'Usuario "{username}" eliminado del sistema.')
 
     return redirect('user_management')
+
+
+# ============================================================
+# HISTORIAL DE AUDITORÍA
+# Solo accesible por el superusuario
+# ============================================================
+
+@superuser_required
+def audit_log_view(request):
+    """Vista del historial de auditoría"""
+    logs = AuditLog.objects.select_related('user').all()
+
+    # Filtros
+    action_filter = request.GET.get('action', '')
+    user_filter = request.GET.get('user', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+
+    if action_filter:
+        logs = logs.filter(action=action_filter)
+    if user_filter:
+        logs = logs.filter(user__id=user_filter)
+    if date_from:
+        logs = logs.filter(timestamp__date__gte=date_from)
+    if date_to:
+        logs = logs.filter(timestamp__date__lte=date_to)
+
+    logs = logs[:300]
+    staff_users = User.objects.filter(is_staff=True).order_by('username')
+
+    context = {
+        'logs': logs,
+        'action_choices': AuditLog.ACTION_CHOICES,
+        'action_filter': action_filter,
+        'user_filter': user_filter,
+        'date_from': date_from,
+        'date_to': date_to,
+        'staff_users': staff_users,
+    }
+    return render(request, 'staff/audit_log.html', context)
+
+
+# ============================================================
+# RESPALDO Y RESTAURACIÓN DE BASE DE DATOS
+# Solo accesible por el superusuario
+# ============================================================
+
+@superuser_required
+def backup_database(request):
+    """Vista principal de respaldos y crear nuevo respaldo"""
+    backup_dir = Path(settings.BASE_DIR) / 'backups'
+
+    if request.method == 'POST':
+        backup_dir.mkdir(exist_ok=True)
+        db_path = settings.DATABASES['default']['NAME']
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        backup_name = f'db_backup_{timestamp}.sqlite3'
+        backup_path = backup_dir / backup_name
+
+        try:
+            if Path(str(db_path)).exists():
+                shutil.copy2(str(db_path), str(backup_path))
+            else:
+                # Fallback para bases de datos SQLite en memoria
+                import sqlite3
+                conn = sqlite3.connect(str(backup_path))
+                conn.execute("CREATE TABLE IF NOT EXISTS _backup_meta (created_at TIMESTAMP)")
+                conn.close()
+
+            log_audit(request, 'backup_created', f'Respaldo de base de datos creado: {backup_name}')
+            messages.success(request, f'Respaldo creado exitosamente: {backup_name}')
+        except Exception as e:
+            messages.error(request, f'Error al crear el respaldo: {str(e)}')
+
+        return redirect('backup_restore')
+
+    # Listar respaldos existentes
+    backups = []
+    if backup_dir.exists():
+        for f in sorted(backup_dir.glob('db_backup_*.sqlite3'), reverse=True):
+            size_mb = f.stat().st_size / (1024 * 1024)
+            try:
+                file_date = datetime.strptime(f.stem.replace('db_backup_', ''), '%Y%m%d_%H%M%S')
+            except ValueError:
+                file_date = datetime.fromtimestamp(f.stat().st_mtime)
+            backups.append({
+                'name': f.name,
+                'size': f'{size_mb:.2f} MB',
+                'date': file_date,
+            })
+
+    # También listar los respaldos de seguridad (pre-restore)
+    safety_backups = []
+    if backup_dir.exists():
+        for f in sorted(backup_dir.glob('db_pre_restore_*.sqlite3'), reverse=True):
+            size_mb = f.stat().st_size / (1024 * 1024)
+            safety_backups.append({
+                'name': f.name,
+                'size': f'{size_mb:.2f} MB',
+                'date': datetime.fromtimestamp(f.stat().st_mtime),
+            })
+
+    context = {
+        'backups': backups,
+        'safety_backups': safety_backups,
+    }
+    return render(request, 'staff/backup_restore.html', context)
+
+
+@superuser_required
+def download_backup(request, filename):
+    """Descargar un archivo de respaldo"""
+    backup_dir = Path(settings.BASE_DIR) / 'backups'
+    file_path = backup_dir / filename
+
+    if not file_path.exists() or not (filename.startswith('db_backup_') or filename.startswith('db_pre_restore_')):
+        messages.error(request, 'El archivo de respaldo no existe.')
+        return redirect('backup_restore')
+
+    return FileResponse(open(str(file_path), 'rb'), as_attachment=True, filename=filename)
+
+
+@superuser_required
+def delete_backup(request, filename):
+    """Eliminar un archivo de respaldo"""
+    if request.method == 'POST':
+        backup_dir = Path(settings.BASE_DIR) / 'backups'
+        file_path = backup_dir / filename
+
+        if file_path.exists() and (filename.startswith('db_backup_') or filename.startswith('db_pre_restore_')):
+            file_path.unlink()
+            log_audit(request, 'backup_deleted', f'Respaldo eliminado: {filename}')
+            messages.success(request, f'Respaldo "{filename}" eliminado exitosamente.')
+        else:
+            messages.error(request, 'Archivo de respaldo no encontrado.')
+
+    return redirect('backup_restore')
+
+
+@superuser_required
+def restore_database(request):
+    """Restaurar la base de datos desde un respaldo"""
+    if request.method == 'POST':
+        filename = request.POST.get('filename', '')
+        backup_dir = Path(settings.BASE_DIR) / 'backups'
+        backup_path = backup_dir / filename
+        db_path = Path(str(settings.DATABASES['default']['NAME']))
+
+        if not backup_path.exists() or not (filename.startswith('db_backup_') or filename.startswith('db_pre_restore_')):
+            messages.error(request, 'El archivo de respaldo no existe.')
+            return redirect('backup_restore')
+
+        try:
+            # Crear respaldo de seguridad antes de restaurar
+            backup_dir.mkdir(exist_ok=True)
+            safety_name = f'db_pre_restore_{datetime.now().strftime("%Y%m%d_%H%M%S")}.sqlite3'
+            safety_path = backup_dir / safety_name
+            if db_path.exists():
+                shutil.copy2(str(db_path), str(safety_path))
+
+            # Cerrar conexiones activas
+            from django.db import connections
+            for conn in connections.all():
+                conn.close()
+
+            # Restaurar
+            if db_path.exists():
+                shutil.copy2(str(backup_path), str(db_path))
+
+            log_audit(request, 'backup_restored', f'Base de datos restaurada desde: {filename}')
+
+            messages.success(
+                request,
+                f'Base de datos restaurada exitosamente desde "{filename}". '
+                f'Se creó un respaldo de seguridad automático: "{safety_name}".'
+            )
+        except Exception as e:
+            messages.error(request, f'Error al restaurar la base de datos: {str(e)}')
+
+        return redirect('backup_restore')
+
+    return redirect('backup_restore')
+
+
+# ============================================================
+# MANUAL DE USO DEL SISTEMA
+# Accesible para todo el staff, contenido según rol
+# ============================================================
+
+@staff_required
+def user_manual(request):
+    """Manual de uso del sistema - contenido filtrado por rol"""
+    user_role = _get_user_role(request.user)
+    role_display = _get_user_role_display(request.user)
+
+    context = {
+        'user_role': user_role,
+        'role_display': role_display,
+        'is_super_admin': request.user.is_superuser,
+        'is_encargado': user_role == 'encargado_reservas',
+        'is_recepcionista': user_role == 'recepcionista',
+        'is_operador_aqua': user_role == 'operador_aqua',
+    }
+    return render(request, 'staff/user_manual.html', context)
