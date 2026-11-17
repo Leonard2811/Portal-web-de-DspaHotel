@@ -130,7 +130,7 @@ class ContactInfo(models.Model):
     google_maps_embed = models.TextField(
         verbose_name="Google Maps Embed",
         help_text="Pegar código iframe completo",
-        default='<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3921.5!2d-64.7!3d10.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDEyJzAwLjAiTiA2NMKwNDInMDAuMCJX!5e0!3m2!1ses!2sve!4v1234567890" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'
+        default='<iframe src="https://maps.google.com/maps?q=10.17936,-64.67849+(D\'Spa+Hotel)&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed" width="100%" height="500" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
     )
 
     class Meta:
